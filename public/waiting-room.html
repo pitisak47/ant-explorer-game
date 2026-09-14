@@ -362,7 +362,6 @@
             position: relative;
         }
 
-        /* เอฟเฟกต์เด้งพุ่งออร่าของปุ่มเริ่มเกมเมื่อทุกทีมพร้อมแล้ว */
         .btn-start-game.active {
             background: #2ecc71;
             cursor: pointer;
@@ -375,10 +374,12 @@
                 transform: scale(1);
                 box-shadow: 0 6px 0 #27ae60, 0 0 0 0 rgba(46, 204, 113, 0.7);
             }
+
             50% {
                 transform: scale(1.05);
                 box-shadow: 0 8px 0 #219d55, 0 0 25px 10px rgba(46, 204, 113, 0.8);
             }
+
             100% {
                 transform: scale(1);
                 box-shadow: 0 6px 0 #27ae60, 0 0 0 0 rgba(46, 204, 113, 0);
@@ -620,74 +621,51 @@
             }
         }
 
-        .btn-open-wardrobe {
-            width: 100%;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-            color: #fff;
-            border: 2px solid #fff;
-            border-radius: 18px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 6px 16px rgba(155, 89, 182, 0.35);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.2s;
-            margin-top: 10px;
-            margin-bottom: 18px;
-        }
-
-        .btn-open-wardrobe:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.45);
-            background: linear-gradient(135deg, #a569bd 0%, #9b59b6 100%);
-        }
-
+        /* ---------------- การปรับแต่งขนาดการ์ดเกร็ดความรู้ (Did You Know?) ให้ใหญ่ขึ้น ---------------- */
         .lobby-tip-card {
             background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
-            border: 2px dashed #81c784;
-            border-radius: 16px;
-            padding: 10px 14px;
+            border: 3px dashed #81c784;
+            border-radius: 20px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.08);
-            margin-bottom: 10px;
+            gap: 16px;
+            box-shadow: 0 6px 16px rgba(46, 204, 113, 0.12);
+            margin-bottom: 14px;
         }
 
         .lobby-tip-icon {
-            font-size: 1.6rem;
+            font-size: 2.3rem;
             background: #e8f8f5;
-            width: 40px;
-            height: 40px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            border: 2px solid #a5d6a7;
         }
 
         .lobby-tip-body {
             display: flex;
             flex-direction: column;
-            gap: 1px;
+            gap: 4px;
             text-align: left;
         }
 
         .lobby-tip-tag {
-            font-size: 0.75rem;
-            font-weight: 800;
+            font-size: 0.95rem;
+            font-weight: 900;
             color: #27ae60;
+            letter-spacing: 0.5px;
         }
 
         .lobby-tip-text {
-            font-size: 0.86rem;
-            font-weight: 700;
-            color: #37474f;
-            line-height: 1.35;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #2c3e50;
+            line-height: 1.45;
             transition: opacity 0.25s ease;
         }
 
@@ -818,198 +796,6 @@
             color: #fff;
         }
 
-        /* Modal หน้าต่างแต่งตัว */
-        .wardrobe-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.82);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1500;
-            padding: 16px;
-        }
-
-        .wardrobe-modal-card {
-            background: #ffffff;
-            border-radius: 32px;
-            width: 100%;
-            max-width: 820px;
-            padding: 26px 28px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
-            border: 4px solid #fff;
-            animation: popIn 0.3s ease;
-            text-align: center;
-        }
-
-        .wardrobe-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            border-bottom: 2px dashed #eceff1;
-            padding-bottom: 12px;
-        }
-
-        .wardrobe-title {
-            font-size: 1.45rem;
-            font-weight: 900;
-            color: #8e44ad;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .wardrobe-content-split {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .wardrobe-left {
-            flex: 0.35;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .wardrobe-right {
-            flex: 0.65;
-            max-height: 50vh;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .wardrobe-preview-box {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, #f5eef8 0%, #e8daf0 100%);
-            border: 3px solid #d7bde2;
-            border-radius: 28px;
-            padding: 10px;
-            box-shadow: inset 0 0 15px rgba(155, 89, 182, 0.15);
-        }
-
-        .wardrobe-preview-box svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
-        }
-
-        .costume-category-title {
-            font-size: 1.05rem;
-            font-weight: 900;
-            color: #34495e;
-            text-align: left;
-            margin: 10px 0 8px;
-            border-left: 4px solid #8e44ad;
-            padding-left: 8px;
-        }
-
-        .costume-options-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .costume-btn {
-            background: #f8f9fa;
-            border: 2.5px solid #e0e0e0;
-            border-radius: 16px;
-            padding: 10px 6px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .costume-btn:hover {
-            transform: translateY(-3px);
-            border-color: #bb8fce;
-            background: #fdfefe;
-        }
-
-        .costume-btn.active {
-            border-color: #8e44ad;
-            background: #f4ecf7;
-            box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
-        }
-
-        .costume-btn.active::after {
-            content: '✓';
-            position: absolute;
-            top: 4px;
-            right: 6px;
-            background: #8e44ad;
-            color: #fff;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            font-size: 0.72rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-        }
-
-        .costume-icon {
-            font-size: 1.8rem;
-        }
-
-        .costume-name {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: #2c3e50;
-        }
-
-        .btn-save-costume {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 6px 18px rgba(46, 204, 113, 0.35);
-            transition: transform 0.2s;
-            width: 100%;
-        }
-
-        .btn-save-costume:hover {
-            transform: scale(1.03);
-        }
-
-        .btn-reset-costume {
-            background: #ff7675;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 0.92rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            box-shadow: 0 4px 12px rgba(235, 77, 75, 0.25);
-        }
-
-        .btn-reset-costume:hover {
-            background: #d63031;
-            transform: scale(1.02);
-        }
-
         /* ---------------- Modal แสดง QR Code เต็มหน้าจอ ---------------- */
         .qr-modal-overlay {
             position: fixed;
@@ -1085,7 +871,7 @@
             transform: scale(1.05);
         }
 
-        /* ---------------- ป๊อปอัปแจ้งเตือนเริ่มเกมเด้งผ่านหน้า (Game Start Alert Modal) ---------------- */
+        /* ---------------- ป๊อปอัปแจ้งเตือนเริ่มเกม ---------------- */
         .game-start-modal-overlay {
             position: fixed;
             inset: 0;
@@ -1122,7 +908,7 @@
             font-size: 2.2rem;
             font-weight: 900;
             color: #27ae60;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .game-start-subtitle {
@@ -1136,6 +922,7 @@
                 transform: scale(0.2) translateY(100px);
                 opacity: 0;
             }
+
             100% {
                 transform: scale(1) translateY(0);
                 opacity: 1;
@@ -1143,11 +930,16 @@
         }
 
         @keyframes rocketFly {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-15px) rotate(10deg); }
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-15px) rotate(10deg);
+            }
         }
 
-        /* ---------------- ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ (แสดงกลางหน้าจอ) ---------------- */
+        /* ---------------- ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ ---------------- */
         .join-popup-overlay {
             position: fixed;
             inset: 0;
@@ -1333,16 +1125,19 @@
                 height: 36px;
             }
 
-            .btn-open-wardrobe {
-                font-size: 0.95rem;
-                padding: 10px;
-                border-radius: 14px;
-                margin-top: 6px;
-                margin-bottom: 12px;
+            .lobby-tip-card {
+                padding: 12px;
+                gap: 10px;
             }
 
-            .lobby-tip-card {
-                padding: 8px 12px;
+            .lobby-tip-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.8rem;
+            }
+
+            .lobby-tip-text {
+                font-size: 0.95rem;
             }
 
             .lobby-quick-guide-grid {
@@ -1360,23 +1155,6 @@
 
             .btn-dev {
                 width: 100%;
-            }
-
-            .wardrobe-content-split {
-                flex-direction: column;
-            }
-
-            .costume-options-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .wardrobe-preview-box {
-                width: 120px;
-                height: 120px;
-            }
-
-            .wardrobe-modal-card {
-                padding: 18px 16px;
             }
         }
     </style>
@@ -1441,7 +1219,7 @@
             </button>
         </div>
 
-        <!-- ฝั่งขวา: แสดง 10 สล็อตผู้เล่น & ปุ่มแต่งตัว & เกร็ดความรู้ -->
+        <!-- ฝั่งขวา: แสดง 10 สล็อตผู้เล่น & เกร็ดความรู้ -->
         <div class="right-players-panel">
             <div>
                 <div class="players-panel-header">
@@ -1452,14 +1230,7 @@
                 <!-- ตารางแสดง 10 ช่องรอผู้เล่น -->
                 <div class="players-grid" id="playersGrid"></div>
 
-                <!-- ปุ่มเปิดหน้าต่างแต่งตัว (เพิ่มระยะห่างจากด้านบนและล่าง) -->
-                <button class="btn-open-wardrobe" onclick="openWardrobeModal()">
-                    <span>🎨</span>
-                    <span>แต่งตัวมาสคอตของทีม (คลิกเพื่อเลือกชุด)</span>
-                    <span>✨</span>
-                </button>
-
-                <!-- 1. การ์ดเกร็ดความรู้สลับอัตโนมัติ (Did You Know?) -->
+                <!-- 1. การ์ดเกร็ดความรู้สลับอัตโนมัติ (Did You Know?) ขนาดใหญ่พิเศษ -->
                 <div class="lobby-tip-card">
                     <div class="lobby-tip-icon" id="lobbyTipIcon">💡</div>
                     <div class="lobby-tip-body">
@@ -1539,126 +1310,6 @@
 
     </div>
 
-    <!-- Modal หน้าต่างแต่งตัวมาสคอต (Wardrobe) -->
-    <div class="wardrobe-modal-overlay" id="wardrobeModal">
-        <div class="wardrobe-modal-card">
-            <div class="wardrobe-header">
-                <div class="wardrobe-title">
-                    <span>👒</span>
-                    <span>ห้องแต่งตัวมาสคอตสำรวจ</span>
-                </div>
-                <button style="background:none; border:none; font-size:1.5rem; cursor:pointer;"
-                    onclick="closeWardrobeModal()">✖</button>
-            </div>
-
-            <div class="wardrobe-content-split">
-                <div class="wardrobe-left">
-                    <div class="wardrobe-preview-box" id="wardrobePreview"></div>
-                    <p style="font-size:0.85rem; color:#7f8c8d; font-weight:700;">พรีวิวตัวละคร</p>
-
-                    <button class="btn-reset-costume" onclick="resetAllCostumes()">
-                        <span>🔄</span>
-                        <span>รีเซ็ตชุดทั้งหมด</span>
-                    </button>
-
-                    <button class="btn-save-costume" onclick="saveAndApplyCostume()">
-                        <span>บันทึกและสวมใส่ ✨</span>
-                    </button>
-                </div>
-
-                <div class="wardrobe-right">
-                    <!-- 1. หมวดศีรษะ -->
-                    <div class="costume-category-title">หมวดเครื่องประดับศีรษะ (Hats)</div>
-                    <div class="costume-options-grid">
-                        <div class="costume-btn" id="btnCostume-safari" onclick="toggleCostume('safari')">
-                            <span class="costume-icon">🧭</span>
-                            <span class="costume-name">หมวกซาฟารี</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-grad" onclick="toggleCostume('grad')">
-                            <span class="costume-icon">🎓</span>
-                            <span class="costume-name">หมวกบัณฑิต</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-crown" onclick="toggleCostume('crown')">
-                            <span class="costume-icon">👑</span>
-                            <span class="costume-name">มงกุฎทอง</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-gamer" onclick="toggleCostume('gamer')">
-                            <span class="costume-icon">🧢</span>
-                            <span class="costume-name">หมวกแก๊ป</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-ribbon" onclick="toggleCostume('ribbon')">
-                            <span class="costume-icon">🎀</span>
-                            <span class="costume-name">โบว์สีหวาน</span>
-                        </div>
-                    </div>
-
-                    <!-- 2. หมวดใบหน้า -->
-                    <div class="costume-category-title">หมวดใบหน้าและสายตา (Glasses)</div>
-                    <div class="costume-options-grid">
-                        <div class="costume-btn" id="btnCostume-glasses" onclick="toggleCostume('glasses')">
-                            <span class="costume-icon">🕶️</span>
-                            <span class="costume-name">แว่นกันแดด</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-monocle" onclick="toggleCostume('monocle')">
-                            <span class="costume-icon">🔍</span>
-                            <span class="costume-name">แว่นขยาย</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-smart" onclick="toggleCostume('smart')">
-                            <span class="costume-icon">👓</span>
-                            <span class="costume-name">แว่นเด็กเนิร์ด</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-vr" onclick="toggleCostume('vr')">
-                            <span class="costume-icon">🥽</span>
-                            <span class="costume-name">แว่น VR</span>
-                        </div>
-                    </div>
-
-                    <!-- 3. หมวดลำตัว -->
-                    <div class="costume-category-title">หมวดลำตัวและคอ (Body)</div>
-                    <div class="costume-options-grid">
-                        <div class="costume-btn" id="btnCostume-backpack" onclick="toggleCostume('backpack')">
-                            <span class="costume-icon">🎒</span>
-                            <span class="costume-name">กระเป๋าเป้</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-tie" onclick="toggleCostume('tie')">
-                            <span class="costume-icon">👔</span>
-                            <span class="costume-name">เนกไทฮีโร่</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-cape" onclick="toggleCostume('cape')">
-                            <span class="costume-icon">🛡️</span>
-                            <span class="costume-name">ผ้าคลุมแดง</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-scarf" onclick="toggleCostume('scarf')">
-                            <span class="costume-icon">🧣</span>
-                            <span class="costume-name">ผ้าพันคอ</span>
-                        </div>
-                    </div>
-
-                    <!-- 4. หมวดของถือ -->
-                    <div class="costume-category-title">หมวดไอเทมประจำตัว (Items)</div>
-                    <div class="costume-options-grid">
-                        <div class="costume-btn" id="btnCostume-flash" onclick="toggleCostume('flash')">
-                            <span class="costume-icon">🔦</span>
-                            <span class="costume-name">ไฟฉาย</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-phone" onclick="toggleCostume('phone')">
-                            <span class="costume-icon">📱</span>
-                            <span class="costume-name">สมาร์ตโฟน</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-flag" onclick="toggleCostume('flag')">
-                            <span class="costume-icon">🚩</span>
-                            <span class="costume-name">ธงประจำทีม</span>
-                        </div>
-                        <div class="costume-btn" id="btnCostume-shovel" onclick="toggleCostume('shovel')">
-                            <span class="costume-icon">🪓</span>
-                            <span class="costume-name">พลั่วจิ๋ว</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal QR Code เต็มหน้าจอ -->
     <div class="qr-modal-overlay" id="qrModal">
         <div class="qr-modal-card">
@@ -1690,50 +1341,8 @@
             beetle: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 35 L50 14 Q50 6 42 6 M50 14 Q50 6 58 6 M50 20 L44 17 M50 20 L56 17" stroke="#4a148c" stroke-width="4.5" fill="none"/><ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c"/><circle cx="42" cy="36" r="3" fill="#ffca28"/><circle cx="58" cy="36" r="3" fill="#ffca28"/><ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a"/><line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3"/></svg>`
         };
 
-        /* เลเยอร์ SVG เครื่องแต่งกาย */
-        const COSTUME_LAYERS = {
-            safari: `<path d="M22 24 Q50 12 78 24 L86 26 Q50 18 14 26 Z" fill="#795548"/><ellipse cx="50" cy="20" rx="18" ry="7" fill="#8d6e63"/><rect x="42" y="18" width="16" height="3" fill="#3e2723"/>`,
-            grad: `<polygon points="25,18 50,8 75,18 50,28" fill="#2c3e50"/><rect x="40" y="24" width="20" height="8" fill="#34495e"/><line x1="75" y1="18" x2="82" y2="28" stroke="#f1c40f" stroke-width="2"/><circle cx="82" cy="28" r="2" fill="#f1c40f"/>`,
-            crown: `<polygon points="36,22 41,12 50,18 59,12 64,22" fill="#f1c40f" stroke="#d4ac0d" stroke-width="1.5"/><circle cx="50" cy="14" r="2" fill="#e74c3c"/>`,
-            gamer: `<path d="M30 24 Q50 12 70 24 L85 24 Q50 18 30 24 Z" fill="#e74c3c"/><ellipse cx="50" cy="20" rx="15" ry="8" fill="#c0392b"/>`,
-            ribbon: `<path d="M43 42 L34 36 L36 48 Z M57 42 L66 36 L64 48 Z" fill="#e74c3c"/><circle cx="50" cy="42" r="3.5" fill="#c0392b"/>`,
-            glasses: `<rect x="36" y="27" width="12" height="7" rx="2" fill="#2c3e50"/><rect x="52" y="27" width="12" height="7" rx="2" fill="#2c3e50"/><line x1="48" y1="30" x2="52" y2="30" stroke="#2c3e50" stroke-width="2"/>`,
-            monocle: `<circle cx="58" cy="28" r="7" stroke="#f1c40f" stroke-width="2" fill="rgba(255,255,255,0.3)"/><line x1="64" y1="32" x2="70" y2="38" stroke="#f1c40f" stroke-width="2"/>`,
-            smart: `<circle cx="43" cy="29" r="6" stroke="#2980b9" stroke-width="2.5" fill="rgba(255,255,255,0.4)"/><circle cx="57" cy="29" r="6" stroke="#2980b9" stroke-width="2.5" fill="rgba(255,255,255,0.4)"/><line x1="49" y1="29" x2="51" y2="29" stroke="#2980b9" stroke-width="2.5"/>`,
-            vr: `<rect x="30" y="24" width="40" height="12" rx="4" fill="#34495e"/><rect x="35" y="26" width="30" height="8" rx="2" fill="#00cec9"/><line x1="20" y1="30" x2="30" y2="30" stroke="#2c3e50" stroke-width="3"/><line x1="70" y1="30" x2="80" y2="30" stroke="#2c3e50" stroke-width="3"/>`,
-            backpack: `<rect x="35" y="55" width="30" height="25" rx="5" fill="#e67e22"/><rect x="40" y="60" width="20" height="15" rx="3" fill="#d35400"/>`,
-            tie: `<polygon points="48,45 52,45 55,65 50,70 45,65" fill="#e74c3c"/><circle cx="50" cy="45" r="3" fill="#c0392b"/>`,
-            cape: `<path d="M30 45 Q20 70 35 90 L65 90 Q80 70 70 45 Z" fill="#e74c3c" opacity="0.8"/>`,
-            scarf: `<path d="M35 45 Q50 50 65 45 L60 55 L50 60 L40 55 Z" fill="#2ecc71"/><line x1="50" y1="60" x2="50" y2="70" stroke="#2ecc71" stroke-width="4"/>`,
-            flash: `<rect x="75" y="50" width="8" height="20" fill="#34495e"/><polygon points="75,50 83,50 87,42 71,42" fill="#f1c40f"/><circle cx="79" cy="42" r="5" fill="#fff" opacity="0.8"/>`,
-            phone: `<rect x="20" y="50" width="14" height="22" rx="2" fill="#2c3e50"/><rect x="22" y="52" width="10" height="16" fill="#0984e3"/>`,
-            flag: `<line x1="25" y1="40" x2="25" y2="70" stroke="#7f8c8d" stroke-width="3"/><polygon points="25,40 40,45 25,50" fill="#e74c3c"/>`,
-            shovel: `<line x1="80" y1="50" x2="80" y2="75" stroke="#8d6e63" stroke-width="3"/><path d="M75 75 L85 75 L82 85 L78 85 Z" fill="#bdc3c7"/>`
-        };
-
-        function parseCostumes(costumeInput) {
-            if (!costumeInput) return [];
-            if (Array.isArray(costumeInput)) return costumeInput.filter(c => c && c !== 'none');
-            if (typeof costumeInput === 'string') {
-                return costumeInput.split(',')
-                    .map(s => s.trim())
-                    .filter(c => c && c !== 'none');
-            }
-            return [];
-        }
-
-        function getRenderedAvatar(avatarKey, costumeInput = []) {
-            const baseSvg = AVATAR_SVGS[avatarKey] || AVATAR_SVGS.ant;
-            const costumeList = parseCostumes(costumeInput);
-
-            let combinedLayers = '';
-            costumeList.forEach(cKey => {
-                if (COSTUME_LAYERS[cKey]) {
-                    combinedLayers += COSTUME_LAYERS[cKey];
-                }
-            });
-
-            return baseSvg.replace('</svg>', `${combinedLayers}</svg>`);
+        function getRenderedAvatar(avatarKey) {
+            return AVATAR_SVGS[avatarKey] || AVATAR_SVGS.ant;
         }
 
         const currentRoomCode = sessionStorage.getItem('ant_room') || '8492';
@@ -1742,9 +1351,7 @@
         const myRole = sessionStorage.getItem('ant_role') || 'player';
         const isHostClient = myRole === 'host';
 
-        let myCurrentCostume = sessionStorage.getItem('ant_costume') || '';
         let myIsReady = false;
-
         let players = [];
         const MAX_SLOTS = 10;
         let broadcastChan = null;
@@ -1761,78 +1368,6 @@
 
         function closeQrModal() {
             document.getElementById('qrModal').style.display = 'none';
-        }
-
-        /* ---------------- ระบบห้องแต่งตัว (Wardrobe) Real-time ---------------- */
-        let tempSelectedCostumes = parseCostumes(myCurrentCostume);
-
-        function openWardrobeModal() {
-            tempSelectedCostumes = parseCostumes(myCurrentCostume);
-            updateWardrobePreview();
-            updateCostumeButtonsUI();
-            document.getElementById('wardrobeModal').style.display = 'flex';
-        }
-
-        function closeWardrobeModal() {
-            document.getElementById('wardrobeModal').style.display = 'none';
-        }
-
-        function toggleCostume(costumeKey) {
-            const idx = tempSelectedCostumes.indexOf(costumeKey);
-            if (idx > -1) {
-                tempSelectedCostumes.splice(idx, 1);
-            } else {
-                tempSelectedCostumes.push(costumeKey);
-            }
-            updateWardrobePreview();
-            updateCostumeButtonsUI();
-
-            // ส่งข้อมูลแต่งตัวให้ทุกทีมในห้องเห็นแบบเรียลไทม์สดๆ ทันทีที่เลือกชุด
-            broadcastCostumeChange(tempSelectedCostumes.join(','));
-        }
-
-        function resetAllCostumes() {
-            tempSelectedCostumes = [];
-            updateWardrobePreview();
-            updateCostumeButtonsUI();
-
-            // ส่งข้อมูลรีเซ็ตให้ทุกทีมในห้องเห็นทันที
-            broadcastCostumeChange('');
-        }
-
-        function broadcastCostumeChange(costumeStr) {
-            myCurrentCostume = costumeStr;
-            sessionStorage.setItem('ant_costume', costumeStr);
-
-            const me = players.find(p => p.name === hostGroupName);
-            if (me) me.costume = costumeStr;
-
-            if (socket) {
-                socket.emit('game-sync', {
-                    roomCode: currentRoomCode,
-                    type: 'UPDATE_PLAYER_COSTUME',
-                    playerName: hostGroupName,
-                    costume: costumeStr
-                });
-            }
-            renderLobby();
-        }
-
-        function updateCostumeButtonsUI() {
-            document.querySelectorAll('.costume-btn').forEach(btn => btn.classList.remove('active'));
-            tempSelectedCostumes.forEach(cKey => {
-                const btn = document.getElementById(`btnCostume-${cKey}`);
-                if (btn) btn.classList.add('active');
-            });
-        }
-
-        function updateWardrobePreview() {
-            document.getElementById('wardrobePreview').innerHTML = getRenderedAvatar(hostAvatar, tempSelectedCostumes);
-        }
-
-        function saveAndApplyCostume() {
-            broadcastCostumeChange(tempSelectedCostumes.join(','));
-            closeWardrobeModal();
         }
 
         /* ---------------- คลังเกร็ดความรู้สลับเปลี่ยนอัตโนมัติ ---------------- */
@@ -1900,7 +1435,6 @@
                     const data = event.data;
                     if (!data) return;
                     if (data.type === 'GLOBAL_GO_HOME') {
-                        sessionStorage.removeItem('ant_costume'); // รีเซ็ตชุดเมื่อย้อนกลับ
                         window.location.href = 'index.html';
                     } else if (data.type === 'GLOBAL_RESTART') {
                         location.reload();
@@ -1922,7 +1456,6 @@
                 player: {
                     name: hostGroupName,
                     avatar: hostAvatar,
-                    costume: myCurrentCostume,
                     isHost: isHostClient,
                     isReady: isHostClient ? true : false
                 }
@@ -1941,12 +1474,6 @@
                         if (np.isReady === undefined) {
                             np.isReady = existing.isReady;
                         }
-                        if (!np.costume && existing.costume) {
-                            np.costume = existing.costume;
-                        }
-                    }
-                    if (np.name === hostGroupName && myCurrentCostume) {
-                        np.costume = myCurrentCostume;
                     }
                 });
 
@@ -1966,13 +1493,7 @@
 
             socket.on('game-sync', (data) => {
                 if (!data) return;
-                if (data.type === 'UPDATE_PLAYER_COSTUME') {
-                    const p = players.find(player => player.name === data.playerName);
-                    if (p) {
-                        p.costume = data.costume;
-                        renderLobby();
-                    }
-                } else if (data.type === 'TOGGLE_READY') {
+                if (data.type === 'TOGGLE_READY') {
                     const p = players.find(player => player.name === data.playerName);
                     if (p) {
                         p.isReady = data.isReady;
@@ -1981,7 +1502,6 @@
                 } else if (data.type === 'START_GAME_DIRECT') {
                     triggerGameStartSequence();
                 } else if (data.type === 'GLOBAL_GO_HOME') {
-                    sessionStorage.removeItem('ant_costume'); // รีเซ็ตชุดเมื่อย้อนกลับ
                     window.location.href = 'index.html';
                 } else if (data.type === 'GLOBAL_RESTART') {
                     location.reload();
@@ -1997,7 +1517,7 @@
             popup.innerHTML = `
                 <div class="join-popup-card">
                     <div class="join-popup-title">🎉 ยินดีต้อนรับทีมใหม่!</div>
-                    <div class="join-popup-avatar">${getRenderedAvatar(player.avatar, player.costume || '')}</div>
+                    <div class="join-popup-avatar">${getRenderedAvatar(player.avatar)}</div>
                     <div class="join-popup-name">${player.name}</div>
                     <div style="font-size: 0.85rem; color: #7f8c8d; font-weight: 700;">เข้าร่วมการสำรวจแล้ว ✨</div>
                 </div>
@@ -2101,7 +1621,7 @@
                     ${p.isHost ? '<span class="host-tag">หัวหน้าห้อง</span>' : ''}
                     ${showReadyCheck ? '<div class="ready-check-badge" title="เตรียมพร้อมแล้ว">✓</div>' : ''}
                     <div class="player-avatar">
-                        ${getRenderedAvatar(p.avatar, p.costume || '')}
+                        ${getRenderedAvatar(p.avatar)}
                     </div>
                     <div class="player-name" title="${p.name}">${p.name}</div>
                     ${showReadyCheck ? `<div class="team-ready-toast">ทีม ${p.name} พร้อมแล้ว!</div>` : ''}
@@ -2226,7 +1746,6 @@
 
             if (!isHostClient || players.length < 2 || readyNonHosts.length < nonHostPlayers.length) return;
 
-            // ส่งสัญญาณไปยังทุกคนรวมถึงหัวหน้าห้อง
             if (socket) {
                 socket.emit('game-sync', {
                     roomCode: currentRoomCode,
@@ -2257,9 +1776,7 @@
         function leaveRoom() {
             if (confirm('คุณต้องการออกจากห้องและย้อนกลับไปยังหน้าแรกใช่หรือไม่?')) {
                 clearInterval(bgmInterval);
-                // ล้างค่าชุดแต่งตัวเมื่อกดออกย้อนกลับหน้าแรก (เพื่อให้เข้าใหม่แล้วรีเซ็ทชุด)
-                sessionStorage.removeItem('ant_costume');
-                
+
                 if (socket) {
                     socket.emit('leave-room', {roomCode: currentRoomCode});
                 }
