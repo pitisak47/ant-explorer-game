@@ -44,7 +44,6 @@
             position: relative;
         }
 
-        /* ป้ายชื่อสาขาวิชาและมหาวิทยาลัยมุมซ้ายบน */
         .edu-global-badge {
             position: fixed;
             top: 18px;
@@ -65,7 +64,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* โลโก้สาขาวิชาวงกลม */
         .edu-badge-logo {
             width: 30px;
             height: 30px;
@@ -76,7 +74,6 @@
             border: 1.5px solid #2ecc71;
         }
 
-        /* แถบปุ่มด้านขวาบน (ปุ่มย้อนกลับ) */
         .top-right-controls {
             position: fixed;
             top: 18px;
@@ -120,7 +117,6 @@
             color: #fff;
         }
 
-        /* แอนิเมชันฉากหลังธรรมชาติลอยไหว */
         .bg-decor {
             position: absolute;
             font-size: 3.5rem;
@@ -180,7 +176,6 @@
             }
         }
 
-        /* ---------------- กล่องพักรอแนวนอน (Landscape Lobby Card) ---------------- */
         .landscape-card {
             position: relative;
             z-index: 10;
@@ -199,7 +194,6 @@
             align-items: stretch;
         }
 
-        /* ฝั่งซ้าย: โลโก้, รหัสห้อง, เวลาสร้าง, สถานะ และปุ่มเริ่มเกม */
         .left-room-panel {
             flex: 0.95;
             display: flex;
@@ -224,7 +218,7 @@
         }
 
         .ant-logo-big img {
-            width: 160px;
+            width: 150px;
             max-width: 100%;
             height: auto;
             display: block;
@@ -244,13 +238,16 @@
         }
 
         .room-code-box {
-            margin: 8px 0;
+            margin: 6px 0;
             background: #fff8e1;
             border: 3px dashed #ffb300;
             border-radius: 22px;
             padding: 12px 18px;
             width: 100%;
             box-shadow: 0 6px 16px rgba(255, 179, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .room-code-label {
@@ -260,11 +257,38 @@
         }
 
         .room-code-display {
-            font-size: 2.4rem;
+            font-size: 2.3rem;
             font-weight: 900;
             letter-spacing: 5px;
             color: #d84315;
             margin: 2px 0;
+        }
+
+        /* กรอบแสดง QR Code สำหรับสแกนเข้าห้อง */
+        .qr-wrapper {
+            margin: 6px auto 10px auto;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 16px;
+            border: 2px solid #ffe082;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-img {
+            width: 125px;
+            height: 125px;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .qr-caption {
+            font-size: 0.8rem;
+            color: #795548;
+            font-weight: 800;
+            margin-top: 4px;
         }
 
         .btn-copy-code {
@@ -285,15 +309,14 @@
             transform: scale(1.04);
         }
 
-        /* แสดงเวลาสร้างห้อง & ตัวนับเวลา */
         .room-timer-info {
             background: rgba(255, 255, 255, 0.9);
             border: 2px solid #81c784;
             border-radius: 16px;
             padding: 8px 14px;
             width: 100%;
-            margin: 6px 0;
-            font-size: 0.88rem;
+            margin: 4px 0;
+            font-size: 0.85rem;
             color: #2e7d32;
             font-weight: 700;
             display: flex;
@@ -302,13 +325,13 @@
         }
 
         .timer-highlight {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             color: #1b5e20;
             font-weight: 900;
         }
 
         .status-msg {
-            font-size: 1rem;
+            font-size: 0.98rem;
             color: #d63031;
             font-weight: 800;
             padding: 8px 14px;
@@ -316,7 +339,7 @@
             background: rgba(255, 255, 255, 0.85);
             border: 2px solid #ff7675;
             width: 100%;
-            margin: 6px 0;
+            margin: 4px 0;
         }
 
         .status-msg.ready {
@@ -332,7 +355,7 @@
             color: #ffffff;
             border: none;
             border-radius: 20px;
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 900;
             cursor: not-allowed;
             box-shadow: none;
@@ -356,7 +379,6 @@
             box-shadow: 0 2px 0 #219d55;
         }
 
-        /* ฝั่งขวา: รายชื่อทีม 10 สล็อต & คอนโทรลจำลอง */
         .right-players-panel {
             flex: 1.55;
             display: flex;
@@ -388,7 +410,6 @@
             color: #27ae60;
         }
 
-        /* ตารางแสดง 10 ทีม (5 คอลัมน์ x 2 แถว) */
         .players-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -459,7 +480,6 @@
             font-weight: 700;
         }
 
-        /* แผงปุ่มควบคุมถ่ายทอดสด */
         .dev-controls {
             background: #f8f9fa;
             border-radius: 20px;
@@ -509,7 +529,6 @@
             color: #fff;
         }
 
-        /* ---------------- ป๊อปอัปแจ้งเตือนเมื่อมีทีมใหม่เข้าร่วม ---------------- */
         .join-toast {
             position: fixed;
             bottom: 30px;
@@ -593,7 +612,6 @@
             }
         }
 
-        /* ================= ปรับแต่งการแสดงผลสำหรับมือถือ (Mobile Responsive) ================= */
         @media (max-width: 980px) {
             body {
                 padding: 70px 12px 20px 12px;
@@ -602,7 +620,6 @@
                 height: auto;
             }
 
-            /* ปรับแต่งส่วนหัวฝั่งซ้ายและขวาให้มีขนาดเท่ากัน ได้สัดส่วนสมบูรณ์ */
             .edu-global-badge {
                 top: 10px;
                 left: 10px;
@@ -634,7 +651,7 @@
             .btn-top-bar {
                 height: 40px;
                 padding: 0 14px;
-                font-size: 0.8rem;
+                font-size: 0.82rem;
                 border-width: 2px;
             }
 
@@ -657,13 +674,13 @@
             }
 
             .ant-logo-big img {
-                width: 110px;
+                width: 105px;
             }
 
             .room-code-box {
                 padding: 8px 12px;
                 border-radius: 18px;
-                margin: 6px 0;
+                margin: 4px 0;
             }
 
             .room-code-label {
@@ -673,6 +690,11 @@
             .room-code-display {
                 font-size: 1.8rem;
                 letter-spacing: 4px;
+            }
+
+            .qr-img {
+                width: 105px;
+                height: 105px;
             }
 
             .btn-copy-code {
@@ -709,7 +731,6 @@
                 font-size: 0.88rem;
             }
 
-            /* ปรับตารางทีมเป็น 2 คอลัมน์บนหน้าจอมือถือ */
             .players-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
@@ -771,7 +792,8 @@
 
     <!-- ป้ายสถาบันมุมซ้ายบนนอกกรอบเกม -->
     <div class="edu-global-badge">
-        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo">
+        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo"
+            onerror="this.style.display='none'">
         <span>สาขาวิชาคอมพิวเตอร์ศึกษา RERU</span>
     </div>
 
@@ -798,13 +820,21 @@
         <div class="left-room-panel">
             <div class="room-header-wrap">
                 <div class="ant-logo-big">
-                    <img src="mod.png" alt="บอร์ดเกม มดนักสำรวจ">
+                    <img src="mod.png" alt="บอร์ดเกม มดนักสำรวจ"
+                        onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=ant'">
                 </div>
             </div>
 
             <div class="room-code-box">
                 <span class="room-code-label">รหัสห้องสำรวจ (PIN)</span>
                 <div class="room-code-display" id="displayRoomCode">----</div>
+
+                <!-- กล่องแสดงภาพ QR Code -->
+                <div class="qr-wrapper">
+                    <img id="roomQrCodeImg" class="qr-img" src="" alt="QR Code สแกนเข้าห้อง">
+                    <span class="qr-caption">📷 สแกนเข้าห้องทันที</span>
+                </div>
+
                 <button class="btn-copy-code" id="btnCopyCode" onclick="copyRoomCode()">📋 คัดลอกรหัสห้อง</button>
             </div>
 
@@ -839,7 +869,8 @@
                 <div class="spectator-info-tag">
                     🔒 เปิดเฉพาะผู้จัดกิจกรรม
                 </div>
-                <button class="btn-dev btn-spectator-link" onclick="openSpectatorWindow()">📺 เปิดจอถ่ายทอดสด (โปรเจกเตอร์)</button>
+                <button class="btn-dev btn-spectator-link" onclick="openSpectatorWindow()">📺 เปิดจอถ่ายทอดสด
+                    (โปรเจกเตอร์)</button>
             </div>
         </div>
 
@@ -896,7 +927,7 @@
             }, 1000);
         }
 
-        /* ---------------- ระบบ BroadcastChannel & Socket.io ---------------- */
+        /* ---------------- ระบบ BroadcastChannel ---------------- */
         function initBroadcastChannel() {
             if ('BroadcastChannel' in window) {
                 broadcastChan = new BroadcastChannel('ant_explorer_game_sync');
@@ -920,7 +951,7 @@
             socket.emit('join-room', {
                 roomCode: currentRoomCode,
                 isHost: isHostClient,
-                player: { name: hostGroupName, avatar: hostAvatar, isHost: isHostClient }
+                player: {name: hostGroupName, avatar: hostAvatar, isHost: isHostClient}
             });
 
             socket.on('lobby-update', (data) => {
@@ -949,7 +980,7 @@
             });
         }
 
-        /* ---------------- ป๊อปอัปแจ้งเตือนเมื่อมีสมาชิกใหม่เข้ามา ---------------- */
+        /* ---------------- ป๊อปอัปแจ้งเตือนสมาชิกใหม่ ---------------- */
         function showJoinToast(player) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -1000,10 +1031,10 @@
             if (!isMusicPlaying) return;
             initAudio();
             const melody = [
-                { f: 523.25, d: 0.3 }, { f: 659.25, d: 0.3 }, { f: 783.99, d: 0.3 }, { f: 1046.50, d: 0.5 },
-                { f: 880.00, d: 0.3 }, { f: 783.99, d: 0.3 }, { f: 659.25, d: 0.5 },
-                { f: 587.33, d: 0.3 }, { f: 659.25, d: 0.3 }, { f: 698.46, d: 0.3 }, { f: 783.99, d: 0.5 },
-                { f: 659.25, d: 0.3 }, { f: 587.33, d: 0.3 }, { f: 523.25, d: 0.6 }
+                {f: 523.25, d: 0.3}, {f: 659.25, d: 0.3}, {f: 783.99, d: 0.3}, {f: 1046.50, d: 0.5},
+                {f: 880.00, d: 0.3}, {f: 783.99, d: 0.3}, {f: 659.25, d: 0.5},
+                {f: 587.33, d: 0.3}, {f: 659.25, d: 0.3}, {f: 698.46, d: 0.3}, {f: 783.99, d: 0.5},
+                {f: 659.25, d: 0.3}, {f: 587.33, d: 0.3}, {f: 523.25, d: 0.6}
             ];
 
             let now = audioCtx.currentTime;
@@ -1016,7 +1047,7 @@
         function startBGM() {
             if (isMusicPlaying) return;
             initAudio();
-            if (audioCtx && audioCtx.state === 'suspended') {
+            if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
 
@@ -1040,10 +1071,16 @@
 
         function renderLobby() {
             document.getElementById('displayRoomCode').innerText = currentRoomCode;
+
+            // สร้างภาพ QR Code ชี้มาที่หน้า index.html พร้อม parameter รหัสห้อง
+            const joinUrl = `${window.location.origin}/index.html?room=${currentRoomCode}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(joinUrl)}`;
+            const qrImg = document.getElementById('roomQrCodeImg');
+            if (qrImg) qrImg.src = qrApiUrl;
+
             const grid = document.getElementById('playersGrid');
             grid.innerHTML = '';
 
-            // แสดงรายการผู้เล่นปัจจุบัน
             players.forEach(p => {
                 const card = document.createElement('div');
                 card.className = `player-card ${p.isHost ? 'is-host' : ''}`;
@@ -1055,7 +1092,6 @@
                 grid.appendChild(card);
             });
 
-            // เติมสล็อตว่างให้ครบ 10 สล็อต
             for (let i = players.length; i < MAX_SLOTS; i++) {
                 const empty = document.createElement('div');
                 empty.className = 'player-card empty-slot';
@@ -1104,7 +1140,7 @@
             if (!isHostClient || players.length < 2) return;
             sessionStorage.setItem('ant_all_players', JSON.stringify(players));
             if (socket) {
-                socket.emit('start-game', { roomCode: currentRoomCode, players });
+                socket.emit('start-game', {roomCode: currentRoomCode, players});
             } else {
                 window.location.href = 'board.html';
             }
@@ -1114,13 +1150,12 @@
             if (confirm('คุณต้องการออกจากห้องและย้อนกลับไปยังหน้าแรกใช่หรือไม่?')) {
                 clearInterval(bgmInterval);
                 if (socket) {
-                    socket.emit('leave-room', { roomCode: currentRoomCode });
+                    socket.emit('leave-room', {roomCode: currentRoomCode});
                 }
                 window.location.href = 'index.html';
             }
         }
 
-        // เริ่มทำงานเมื่อเปิดหน้าเว็บ
         initRoomDateTime();
         startTimer();
         initBroadcastChannel();
