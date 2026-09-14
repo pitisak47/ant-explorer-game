@@ -231,9 +231,9 @@
             background: #fff8e1;
             border: 2.5px dashed #ffb300;
             border-radius: 18px;
-            padding: 8px 12px;
-            width: 90%;
-            max-width: 260px;
+            padding: 10px 14px;
+            width: 95%;
+            max-width: 280px;
             box-shadow: 0 4px 12px rgba(255, 179, 0, 0.15);
             display: flex;
             flex-direction: column;
@@ -254,31 +254,36 @@
             margin: 1px 0;
         }
 
-        /* ปรับขนาด QR Code กระทัดรัด */
+        /* ปรับขนาด QR Code เพิ่มขนาดให้ชัดเจนและสวยงาม */
         .qr-wrapper {
-            margin: 3px auto 6px auto;
+            margin: 6px auto 8px auto;
             background: #ffffff;
-            padding: 4px;
-            border-radius: 12px;
-            border: 1.5px solid #ffe082;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            padding: 8px;
+            border-radius: 16px;
+            border: 2px solid #ffe082;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .qr-wrapper:hover {
+            transform: scale(1.03);
         }
 
         .qr-img {
-            width: 85px;
-            height: 85px;
+            width: 145px;
+            height: 145px;
             display: block;
-            border-radius: 6px;
+            border-radius: 8px;
         }
 
         .qr-caption {
-            font-size: 0.72rem;
+            font-size: 0.78rem;
             color: #795548;
             font-weight: 800;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
         .btn-copy-code {
@@ -509,6 +514,46 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             padding: 0 4px;
+        }
+
+        /* ติ๊กถูกสีเขียวสำหรับทีมที่กดเตรียมพร้อม */
+        .ready-check-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #2ecc71;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 900;
+            border: 2px solid #fff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* ข้อความแจ้งสถานะเด้งขึ้นมาข้างๆ / ด้านล่างการ์ดทีม */
+        .team-ready-toast {
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2ecc71;
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+            border: 1.5px solid #ffffff;
+            z-index: 12;
+            animation: popIn 0.25s ease;
         }
 
         /* เอฟเฟกต์ช่องรอเพื่อน - หมุน/กระพริบช้าๆ ด้านบน */
@@ -1169,8 +1214,8 @@
             }
 
             .qr-img {
-                width: 75px;
-                height: 75px;
+                width: 110px;
+                height: 110px;
             }
 
             .right-players-panel {
@@ -1903,7 +1948,7 @@
             document.getElementById('displayRoomCode').innerText = currentRoomCode;
 
             const joinUrl = `${window.location.origin}/index.html?room=${currentRoomCode}`;
-            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(joinUrl)}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(joinUrl)}`;
             const qrImg = document.getElementById('roomQrCodeImg');
             if (qrImg) qrImg.src = qrApiUrl;
 
@@ -1918,16 +1963,17 @@
 
                 card.innerHTML = `
                     ${p.isHost ? '<span class="host-tag">หัวหน้าห้อง</span>' : ''}
+                    ${showReadyCheck ? '<div class="ready-check-badge" title="เตรียมพร้อมแล้ว">✓</div>' : ''}
                     <div class="player-avatar">
                         ${getRenderedAvatar(p.avatar, p.costume || '')}
-                        ${showReadyCheck ? '<div class="avatar-ready-check" title="เตรียมพร้อมแล้ว">✓</div>' : ''}
                     </div>
                     <div class="player-name" title="${p.name}">${p.name}</div>
+                    ${showReadyCheck ? `<div class="team-ready-toast">ทีม ${p.name} พร้อมแล้ว!</div>` : ''}
                 `;
                 grid.appendChild(card);
             });
 
-            /* เพิ่มช่องว่างรอเพื่อน พร้อมเอฟเฟกต์หมุน/กระพริบช้าๆ ด้านบน */
+            /* เพิ่มช่องว่างรอเพื่อน พร้อมเอฟเฟกต์หมุนกำลังเตรียมพร้อม */
             for (let i = players.length; i < MAX_SLOTS; i++) {
                 const empty = document.createElement('div');
                 empty.className = 'player-card empty-slot';
@@ -2055,8 +2101,13 @@
             }
         }
 
-        /* ฟังก์ชันแสดง Pop-up นับถอยหลังสวยงาม 5-0 */
+        let isCountingDown = false;
+
+        /* ฟังก์ชันแสดง Pop-up นับถอยหลังสวยงาม 5-4-3-2-1-0 และย้ายไปยังหน้าเล่นเกม */
         function triggerStartCountdown() {
+            if (isCountingDown) return;
+            isCountingDown = true;
+
             const container = document.getElementById('countdownContainer');
             container.innerHTML = `
                 <div class="countdown-overlay">
@@ -2072,13 +2123,12 @@
 
             const timer = setInterval(() => {
                 count--;
-                if (count > 0) {
+                if (count >= 0) {
                     numEl.innerText = count;
+                    numEl.className = "countdown-num";
                     numEl.style.animation = 'none';
                     void numEl.offsetWidth; // Trigger Reflow สำหรับ Restart Animation
                     numEl.style.animation = 'zoomPulse 0.85s ease infinite';
-                } else if (count === 0) {
-                    numEl.innerText = "0";
                 } else {
                     clearInterval(timer);
                     numEl.className = "countdown-num start-text";
@@ -2088,7 +2138,7 @@
                         sessionStorage.setItem('ant_all_players', JSON.stringify(players));
                         if (isHostClient && socket) {
                             socket.emit('start-game', {roomCode: currentRoomCode, players});
-                        } else if (!socket) {
+                        } else {
                             window.location.href = 'board.html';
                         }
                     }, 800);
