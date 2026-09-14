@@ -222,6 +222,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            height: 100%;
         }
 
         .header-panel {
@@ -230,6 +231,7 @@
             border-radius: 18px;
             text-align: center;
             border: 2px solid #a5d6a7;
+            flex-shrink: 0;
         }
 
         .top-controls-bar {
@@ -292,6 +294,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            min-height: 120px;
         }
 
         .leaderboard-title {
@@ -394,6 +397,7 @@
             padding: 12px;
             text-align: center;
             border: 2px solid #ffe0b2;
+            flex-shrink: 0;
         }
 
         .powerup-row {
@@ -508,6 +512,48 @@
             padding: 7px 10px;
             border-radius: 8px;
             border-left: 4px solid #0984e3;
+        }
+
+        /* Pop-up แจ้งเตือนเมื่อถึงตาเล่นของตนเอง */
+        .my-turn-alert-popup {
+            position: fixed;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            background: linear-gradient(135deg, #ff9f1a 0%, #eb3b5a 100%);
+            color: #fff;
+            padding: 22px 42px;
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 4px solid #fff;
+            z-index: 3500;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        .my-turn-alert-popup.show {
+            display: flex;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .my-turn-alert-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .my-turn-alert-sub {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffeaa7;
         }
 
         /* 3D DICE SYSTEM */
@@ -1116,7 +1162,7 @@
             }
         }
 
-        /* ---------------- STYLES FOR STARTUP WHEEL & COUNTDOWN (ปรับปรุงใหม่ตามสั่ง) ---------------- */
+        /* STYLES FOR STARTUP WHEEL & COUNTDOWN */
         .wheel-modal-overlay {
             position: fixed;
             inset: 0;
@@ -1188,7 +1234,7 @@
             border-radius: 50%;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             border: 6px solid #fff;
-            transition: transform 3.5s cubic-bezier(0.15, 0.9, 0.2, 1);
+            transition: transform 5.5s cubic-bezier(0.15, 0.9, 0.2, 1);
         }
 
         .wheel-right-side {
@@ -1252,7 +1298,7 @@
             }
         }
 
-        /* ================= RESPONSIVE MOBILE STYLES ================= */
+        /* ================= RESPONSIVE MOBILE & TABLET STYLES ================= */
         @media (max-width: 992px) {
             body {
                 padding: 65px 10px 16px 10px;
@@ -1298,11 +1344,12 @@
             .sidebar-section {
                 width: 100%;
                 gap: 10px;
+                height: auto;
             }
 
             .leaderboard-panel {
-                max-height: 220px;
-                min-height: 160px;
+                max-height: 240px;
+                min-height: 140px;
             }
 
             .pawn {
@@ -1431,6 +1478,13 @@
         <div class="log-content" id="logContent"></div>
     </div>
 
+    <!-- Pop-up แจ้งเตือน "ถึงตาคุณแล้ว!" บนเครื่องของทีมที่ถึงตาเล่น -->
+    <div class="my-turn-alert-popup" id="myTurnAlertPopup">
+        <div style="font-size: 3.5rem;">🎲</div>
+        <div class="my-turn-alert-title">ถึงตาคุณแล้ว!</div>
+        <div class="my-turn-alert-sub">กรุณากดทอยลูกเต๋าภายใน 15 วินาที</div>
+    </div>
+
     <div class="game-wrapper">
         <div class="board-section">
             <div class="board-container" id="boardMap">
@@ -1445,7 +1499,7 @@
                     <div class="room-tag">🚩 รหัสห้อง: <span id="lblRoom">8844</span></div>
                 </div>
                 <div class="turn-indicator" id="lblTurn">ตาทีม: -</div>
-                <div class="turn-timer-wrap" id="turnTimerWrap">⏳ เวลาทอยเต๋า: <span id="turnCountdown">10</span>s</div>
+                <div class="turn-timer-wrap" id="turnTimerWrap">⏳ เวลาทอยเต๋า: <span id="turnCountdown">15</span>s</div>
             </div>
 
             <div class="leaderboard-panel">
@@ -1470,7 +1524,7 @@
         </div>
     </div>
 
-    <!-- POB-UP สุ่มลำดับการเล่นก่อนเริ่มเกม (ปรับแต่งตรงตามดีไซน์และระบบหมุนจริง) -->
+    <!-- POP-UP สุ่มลำดับการเล่นก่อนเริ่มเกม -->
     <div class="wheel-modal-overlay" id="startupWheelModal">
         <div class="wheel-modal-card">
             <h2 id="wheelStatusTitle" style="color: #0984e3; font-size: 1.6rem; margin-bottom: 2px;">🎡
@@ -1500,7 +1554,7 @@
         </div>
     </div>
 
-    <!-- COUNTDOWN 5-0 BEFORE GAME START -->
+    <!-- COUNTDOWN BEFORE GAME START -->
     <div class="game-countdown-overlay" id="gameCountdownOverlay">
         <div style="color: #fff; font-size: 1.8rem; font-weight: 800; margin-bottom: 10px;">เตรียมตัวให้พร้อม!</div>
         <div class="game-countdown-num" id="countdownBigNum">5</div>
@@ -1658,7 +1712,7 @@
         });
 
         function broadcast(type, payload = {}) {
-            if (gameBroadcast) gameBroadcast.postMessage({type, ...payload, playersState: players});
+            if (gameBroadcast) gameBroadcast.postMessage({type, ...payload, playersState: players, currentTurnIndex});
             socket.emit('game-sync', {
                 roomCode: netRoomCode,
                 type,
@@ -1877,13 +1931,13 @@
                 ],
                 3: [
                     {q: "ก่อนที่จะคลิก 'แชร์' โพสต์ข่าวหรือคลิปวิดีโอ ควรยึดหลักข้อใดดีที่สุด?", options: ["แชร์ทันทีเพราะเห็นยอดแชร์เยอะ", "คิด วิเคราะห์ ตรวจสอบแหล่งที่มาก่อนแชร์เสมอ", "แชร์เฉพาะเรื่องที่น่าตกใจ", "แต่งเรื่องเพิ่มเติมให้ตื่นเต้น"], correctText: "คิด วิเคราะห์ ตรวจสอบแหล่งที่มาก่อนแชร์เสมอ", tip: "หลักการ 'คิด เช็ก ชัวร์' ช่วยหยุดยั้งการแพร่กระจายของข่าวปลอม"},
-                    {q: "หากเพื่อนขอยืมโทรศัพท์ไปเข้าแอปธนาคารหรือบัญชีส่วนตัว ควรปฏิัติต่างไร?", options: ["ให้ยืมโดยไม่สนใจอะไร", "ดูแลและอยู่ด้วยขณะเพื่อนใช้งาน เพื่อความปลอดภัยทั้งสองฝ่าย", "บอกรหัสผ่านทั้งหมดให้เพื่อน", "เอาของเพื่อนมาใช้แลกกัน"], correctText: "ดูแลและอยู่ด้วยขณะเพื่อนใช้งาน เพื่อความปลอดภัยทั้งสองฝ่าย", tip: "การเปิดเผยข้อมูลการเงินมีความเสี่ยง ควรอยู่ช่วยดูแลใกล้ชิด"},
+                    {q: "หากเพื่อนขอยืมโทรศัพท์ไปเข้าแอปธนาคารหรือบัญชีส่วนตัว ควรปฏิบัติต่างไร?", options: ["ให้ยืมโดยไม่สนใจอะไร", "ดูแลและอยู่ด้วยขณะเพื่อนใช้งาน เพื่อความปลอดภัยทั้งสองฝ่าย", "บอกรหัสผ่านทั้งหมดให้เพื่อน", "เอาของเพื่อนมาใช้แลกกัน"], correctText: "ดูแลและอยู่ด้วยขณะเพื่อนใช้งาน เพื่อความปลอดภัยทั้งสองฝ่าย", tip: "การเปิดเผยข้อมูลการเงินมีความเสี่ยง ควรอยู่ช่วยดูแลใกล้ชิด"},
                     {q: "ข้อใดคือการสร้าง 'ความฉลาดทางดิจิทัล' (DQ) ที่ถูกต้องของนักเรียน ป.4?", options: ["เล่นเกมติดต่อกันเกินวันละ 8 ชั่วโมง", "รู้จักแบ่งเวลาใช้งานหน้าจอและรักษามารยาทในการสื่อสาร", "โพสต์ด่าคนที่ไม่ชอบหน้า", "แอบดูประวัติการค้นหาของพ่อแม่"], correctText: "รู้จักแบ่งเวลาใช้งานหน้าจอและรักษามารยาทในการสื่อสาร", tip: "การแบ่งเวลาหน้าจอ (Screen Time) มีความสำคัญต่อสุขภาพและการเรียนรู้"}
                 ],
                 4: [
                     {q: "เมื่อพบเห็นโพสต์เชิญชวนเล่นการพนันออนไลน์ในแอปวิดีโอสั้น ควรทำอย่างไร?", options: ["ลองเล่นดูเผื่อได้เงิน", "กดรายงาน (Report) บัญชีนั้น และไม่คลิกลิงก์ใดๆ", "แชร์ต่อให้เพื่อนลองเล่น", "พิมพ์ชวนเพื่อนไปเล่นด้วยกัน"], correctText: "กดรายงาน (Report) บัญชีนั้น และไม่คลิกลิงก์ใดๆ", tip: "การพนันออนไลน์ผิดกฎหมายและหลอกลวง ให้กด Report ทันที"},
                     {q: "การตั้งค่าความเป็นส่วนตัวในโซเชียลให้เป็น 'เฉพาะเพื่อน' มีประโยชน์อย่างไร?", options: ["ทำให้ไม่มีใครเห็นโพสต์เลย", "ป้องกันคนแปลกหน้าเข้ามาดูข้อมูลส่วนตัวและรูปภาพของเรา", "ทำให้เล่นเกมชนะบ่อยขึ้น", "ทำให้ยอดไลก์พุ่งสูง"], correctText: "ป้องกันคนแปลกหน้าเข้ามาดูข้อมูลส่วนตัวและรูปภาพของเรา", tip: "ช่วยจำกัดให้เฉพาะคนที่ไว้ใจได้มองเห็นข้อมูลของเรา"},
-                    {q: "หากเพื่อนส่งคลิปที่มีเนื้อหารุนแรงมาให้ในกลุ่มแชต ควรปฏิัติต่างไร?", options: ["ส่งต่อไปกลุ่มอื่นๆ ทันที", "เตือนเพื่อนว่าไม่ควรส่งต่อ และแจ้งผู้ปกครองหรือครู", "เปิดวนซ้ำหลายๆ รอบ", "บันทึกลงเครื่องเก็บไว้"], correctText: "เตือนเพื่อนว่าไม่ควรส่งต่อ และแจ้งผู้ปกครองหรือครู", tip: "ไม่ส่งต่อคลิปรุนแรงและช่วยเตือนเพื่อนเพื่อความปลอดภัยของทุกคน"}
+                    {q: "หากเพื่อนส่งคลิปที่มีเนื้อหารุนแรงมาให้ในกลุ่มแชต ควรปฏิบัติต่างไร?", options: ["ส่งต่อไปกลุ่มอื่นๆ ทันที", "เตือนเพื่อนว่าไม่ควรส่งต่อ และแจ้งผู้ปกครองหรือครู", "เปิดวนซ้ำหลายๆ รอบ", "บันทึกลงเครื่องเก็บไว้"], correctText: "เตือนเพื่อนว่าไม่ควรส่งต่อ และแจ้งผู้ปกครองหรือครู", tip: "ไม่ส่งต่อคลิปรุนแรงและช่วยเตือนเพื่อนเพื่อความปลอดภัยของทุกคน"}
                 ]
             },
             orange: {
@@ -1919,6 +1973,7 @@
         const myClientGroupName = sessionStorage.getItem('ant_group') || 'ทีมมดสายลุย';
         let players = [];
         let actionLog = [];
+        let hasWinnerDeclared = false; // Flag สำหรับเช็คตัดสิทธิ์ชัยชนะรอบแรก
 
         function parsePlayerData() {
             const rawPlayers = sessionStorage.getItem('ant_all_players');
@@ -1966,11 +2021,45 @@
         let cardSelectTimer = null;
         let quizTimer = null;
 
-        let currentTurnTimeLeft = 10;
+        let currentTurnTimeLeft = 15; // ปรับเวลาเป็น 15 วินาที
         let currentCardTimeLeft = 10;
         let currentQuizTimeLeft = 30;
 
         document.getElementById('lblRoom').innerText = sessionStorage.getItem('ant_room') || '8492';
+
+        /* Real-time Listeners */
+        if (gameBroadcast) {
+            gameBroadcast.onmessage = (event) => {
+                handleSyncData(event.data);
+            };
+        }
+
+        socket.on('game-sync', (data) => {
+            handleSyncData(data);
+        });
+
+        function handleSyncData(data) {
+            if (!data) return;
+            if (data.playersState) {
+                players = data.playersState;
+            }
+            if (data.currentTurnIndex !== undefined) {
+                currentTurnIndex = data.currentTurnIndex;
+            }
+
+            renderPawns();
+            updateLeaderboard();
+
+            if (data.type === 'SYNC_LOG' && data.msg) {
+                addLog(data.msg, true);
+            } else if (data.type === 'NEXT_TURN') {
+                startTurn();
+            } else if (data.type === 'GAME_OVER') {
+                showPodiumModal(data.winner);
+            } else if (data.type === 'TEAM_LEFT') {
+                addLog(`🚪 ทีม ${data.leftTeamName} ออกจากเกมแล้ว`);
+            }
+        }
 
         /* ---------------- ระบบวงล้อแบบ Canvas & สุ่มลำดับตามจำนวนทีม ---------------- */
         const wheelColors = ["#00b894", "#0984e3", "#6c5ce7", "#e17055", "#fdcb6e", "#e84393", "#00cec9", "#ff7675"];
@@ -1980,6 +2069,8 @@
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             const numSegments = teams.length;
+            if (numSegments === 0) return;
+
             const anglePerSegment = (2 * Math.PI) / numSegments;
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
@@ -1991,7 +2082,6 @@
                 const startAngle = currentAngle + i * anglePerSegment;
                 const endAngle = startAngle + anglePerSegment;
 
-                // วาดชิ้นส่วนวงล้อ
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -2002,7 +2092,6 @@
                 ctx.strokeStyle = '#ffffff';
                 ctx.stroke();
 
-                // วาดชื่อทีมในวงล้อ
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(startAngle + anglePerSegment / 2);
@@ -2015,7 +2104,6 @@
                 ctx.restore();
             });
 
-            // วาดจุดศูนย์กลางวงล้อ
             ctx.beginPath();
             ctx.arc(centerX, centerY, 28, 0, 2 * Math.PI);
             ctx.fillStyle = '#ffffff';
@@ -2030,11 +2118,9 @@
             updateLeaderboard();
             startBGMAutoplay();
 
-            // ล็อคปุ่มทอยลูกเต๋าระหว่างรอการสุ่ม
             document.getElementById('btnRollDice').disabled = true;
             document.getElementById('btnRollDice').innerHTML = '<span>⏳ กำลังจัดลำดับการทอย...</span>';
 
-            // เริ่มต้นกระบวนการสุ่มวงล้อ
             startOrderSpinProcess();
         }
 
@@ -2048,17 +2134,15 @@
             resultList.innerHTML = '<div style="color: #b2bec3; font-size: 0.9rem; text-align: center; padding: 15px 0;">กำลังเริ่มหมุนสุ่ม...</div>';
 
             let pool = [...players];
-            let numRounds = pool.length; // จำนวนครั้งหมุนเท่ากับจำนวนทีม
+            let numRounds = pool.length;
             let finalOrder = [];
 
-            // เริ่มแรกวาดรูปวงล้อโดยอิงทีมทั้งหมดที่มี
             drawWheel(pool, 0);
 
             let currentRound = 0;
 
             function runSpinRound() {
                 if (currentRound >= numRounds) {
-                    // หมุนครบทุกทีมแล้ว สรุปลำดับการทอย
                     players = finalOrder;
                     renderPawns();
                     updateLeaderboard();
@@ -2068,7 +2152,6 @@
 
                     addLog(`🎡 สุ่มลำดับสำเร็จ: ${players.map(p => p.name).join(' ➔ ')}`);
 
-                    // ค้างไว้นานนิดนึงในหน้าสรุป (3 วินาที) แล้วค่อยปิดไปนับถอยหลังต่อ
                     setTimeout(() => {
                         wheelModal.style.display = 'none';
                         runStartCountdown();
@@ -2076,30 +2159,26 @@
                     return;
                 }
 
-                // สุ่มทีมที่จะชนะในรอบนี้จาก pool
                 const winningIndex = Math.floor(Math.random() * pool.length);
                 const winningTeam = pool[winningIndex];
 
-                const canvas = document.getElementById('wheelCanvas');
                 const numSegments = pool.length;
                 const anglePerSegment = (2 * Math.PI) / numSegments;
 
-                // คำนวณองศาเพื่อให้หมุนไปตกที่ทีมที่สุ่มได้ (ชี้ไปที่ด้านบน 270 องศา หรือ 3*PI/2)
                 const targetSegmentAngle = winningIndex * anglePerSegment + anglePerSegment / 2;
                 const targetAngle = (3 * Math.PI / 2) - targetSegmentAngle;
-                const extraSpins = (4 + Math.floor(Math.random() * 2)) * 2 * Math.PI; // หมุน 4-5 รอบ
+                const extraSpins = (4 + Math.floor(Math.random() * 2)) * 2 * Math.PI;
                 const totalRotation = extraSpins + targetAngle;
 
                 let start = null;
-                const duration = 2800; // ระยะเวลาหมุน 2.8 วินาที
+                const duration = 5500; // ปรับสปีดวงล้อให้หมุนช้าลงตามคำขอ (5.5 วินาที)
 
-                let soundTimer = setInterval(() => playRollSound(), 150);
+                let soundTimer = setInterval(() => playRollSound(), 260); // ชะลอเสียงตามการหมุนที่ช้าลง
 
                 function animateWheel(timestamp) {
                     if (!start) start = timestamp;
                     const elapsed = timestamp - start;
                     const progress = Math.min(elapsed / duration, 1);
-                    // Easing out cubic
                     const easeOut = 1 - Math.pow(1 - progress, 3);
                     const currentAngle = totalRotation * easeOut;
 
@@ -2111,12 +2190,9 @@
                         clearInterval(soundTimer);
                         playCorrectSound();
 
-                        // เพิ่มทีมที่หมุนได้เข้าสู่ลำดับ
                         finalOrder.push(winningTeam);
-                        // ลบทันทีเพื่อให้เหลือหมุนต่อเฉพาะทีมที่ยังไม่ได้
                         pool.splice(winningIndex, 1);
 
-                        // อัปเดตตารางลำดับการทอยทางด้านขวา
                         resultList.innerHTML = finalOrder.map((p, idx) => `
                             <div class="order-item-row">
                                 <span>ที่ ${idx + 1}: ${p.name}</span>
@@ -2126,11 +2202,10 @@
 
                         currentRound++;
 
-                        // หากยังเหลือทีม ให้หมุนต่อทีมถัดไป
                         if (pool.length > 0) {
                             setTimeout(() => {
                                 drawWheel(pool, 0);
-                                setTimeout(runSpinRound, 400);
+                                setTimeout(runSpinRound, 500);
                             }, 800);
                         } else {
                             runSpinRound();
@@ -2141,7 +2216,7 @@
                 requestAnimationFrame(animateWheel);
             }
 
-            setTimeout(runSpinRound, 600);
+            setTimeout(runSpinRound, 800);
         }
 
         function runStartCountdown() {
@@ -2164,7 +2239,6 @@
                 } else {
                     clearInterval(timer);
                     countdownOverlay.style.display = 'none';
-                    // ปลดล็อกการทำงานเกมอย่างเป็นทางการ
                     isGamePaused = false;
                     currentTurnIndex = 0;
                     startTurn();
@@ -2188,6 +2262,64 @@
             const logContent = document.getElementById('logContent');
             logContent.innerHTML = actionLog.map(l => `<div class="log-entry">${l}</div>`).join('');
             if (!fromRemote) broadcast('SYNC_LOG', {msg});
+        }
+
+        function renderPawns() {
+            const container = document.getElementById('pawnsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            players.forEach((p) => {
+                const coord = TILE_COORDS[p.pos] || TILE_COORDS[0];
+                const pawnEl = document.createElement('div');
+                pawnEl.className = 'pawn';
+                pawnEl.style.left = `${coord.x}%`;
+                pawnEl.style.top = `${coord.y}%`;
+
+                const svgContent = AVATAR_SVGS[p.avatar] || AVATAR_SVGS.ant;
+                pawnEl.innerHTML = `
+                    <div class="pawn-badge">${p.name}</div>
+                    ${svgContent}
+                `;
+                container.appendChild(pawnEl);
+            });
+        }
+
+        function updateTurnIndicator() {
+            if (!players[currentTurnIndex]) return;
+            const currentP = players[currentTurnIndex];
+            document.getElementById('lblTurn').innerText = `ตาทีม: ${currentP.name}`;
+        }
+
+        function updateLeaderboard() {
+            const rankListEl = document.getElementById('playersRankList');
+            if (!rankListEl) return;
+
+            const sorted = [...players].sort((a, b) => {
+                if (b.pos !== a.pos) return b.pos - a.pos;
+                return b.score - a.score;
+            });
+
+            rankListEl.innerHTML = sorted.map((p, idx) => {
+                const isCurrentTurn = players[currentTurnIndex] && players[currentTurnIndex].id === p.id;
+                const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
+                return `
+                    <div class="player-row ${isCurrentTurn ? 'active-turn' : ''}">
+                        <div class="player-info-left">
+                            <span class="player-rank ${rankClass}">${idx + 1}</span>
+                            <div class="mini-avatar">${AVATAR_SVGS[p.avatar] || AVATAR_SVGS.ant}</div>
+                            <div class="name-pos">
+                                <div class="p-name">${p.name}</div>
+                                <div class="p-pos">ช่องที่ ${p.pos}</div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="stat-score">⭐ ${p.score}</div>
+                            <div class="stat-coins">🪙 ${p.coins}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderPowerups() {
@@ -2292,6 +2424,17 @@
             return arr;
         }
 
+        /* แจ้งเตือนเมื่อถึงตาตนเองเฉพาะเครื่อง */
+        function triggerMyTurnAlert() {
+            const alertEl = document.getElementById('myTurnAlertPopup');
+            if (!alertEl) return;
+            alertEl.classList.add('show');
+            playCorrectSound();
+            setTimeout(() => {
+                alertEl.classList.remove('show');
+            }, 2500);
+        }
+
         function startTurn() {
             clearInterval(turnTimer);
             updateTurnIndicator();
@@ -2306,13 +2449,14 @@
             if (isMyTurn && !isGamePaused) {
                 rollBtn.disabled = false;
                 rollBtn.innerHTML = '<span>🎲 ทอยลูกเต๋า 3D</span>';
+                triggerMyTurnAlert(); // เด้ง Pop-up เฉพาะเครื่องตนเอง
             } else {
                 rollBtn.disabled = true;
                 rollBtn.innerHTML = isGamePaused ? '<span>⏸️ เกมหยุดชั่วคราว</span>' : `<span>⏳ รอตาทีม ${players[currentTurnIndex].name}...</span>`;
             }
 
             isRolling = false;
-            currentTurnTimeLeft = 10;
+            currentTurnTimeLeft = 15; // ปรับตั้งเป็น 15 วินาที
             const countEl = document.getElementById('turnCountdown');
             const wrapEl = document.getElementById('turnTimerWrap');
             countEl.innerText = currentTurnTimeLeft;
@@ -2322,10 +2466,10 @@
                 if (isGamePaused) return;
                 currentTurnTimeLeft--;
                 countEl.innerText = currentTurnTimeLeft;
-                if (currentTurnTimeLeft <= 3) wrapEl.classList.add('timer-warning');
+                if (currentTurnTimeLeft <= 4) wrapEl.classList.add('timer-warning');
                 if (currentTurnTimeLeft <= 0) {
                     clearInterval(turnTimer);
-                    if (isMyTurn) triggerDiceRoll(true);
+                    if (isMyTurn) triggerDiceRoll(true); // ทอยให้อัตโนมัติเมื่อครบ 15s
                 }
             }, 1000);
         }
@@ -2364,7 +2508,7 @@
                 };
 
                 diceCube.style.transform = targetRotations[rollResult];
-                diceBanner.innerText = `ได้ ${rollResult} แต้ม! 🎲 ${isAutoRoll ? '(สุ่ม)' : ''}`;
+                diceBanner.innerText = `ได้ ${rollResult} แต้ม! 🎲 ${isAutoRoll ? '(สุ่มอัตโนมัติ)' : ''}`;
                 diceBanner.style.display = 'block';
 
                 broadcast('ROLL_DICE', {steps: rollResult, teamName: players[currentTurnIndex].name});
@@ -2559,32 +2703,27 @@
                 document.getElementById('cardSelectCountdown').innerText = currentCardTimeLeft;
                 if (currentCardTimeLeft <= 0) {
                     clearInterval(cardSelectTimer);
-                    openChosenCard(Math.floor(1 + Math.random() * 4), true);
+                    if (isMyTurn) handleCardClick(Math.floor(1 + Math.random() * 4));
                 }
             }, 1000);
         }
 
         function handleCardClick(cardIndex) {
             if (!isCurrentTurnMyTeam() || isGamePaused) return;
-            openChosenCard(cardIndex);
-        }
-
-        function openChosenCard(cardIndex, isAutoSelected = false) {
             clearInterval(cardSelectTimer);
 
-            const category = QUESTION_BANK[activeBoxType] || QUESTION_BANK['green'];
-            const questions = category[cardIndex] || category[1];
-            currentQuizData = questions[Math.floor(Math.random() * questions.length)];
+            const questionsArr = QUESTION_BANK[activeBoxType][cardIndex] || QUESTION_BANK['green'][1];
+            currentQuizData = questionsArr[Math.floor(Math.random() * questionsArr.length)];
             currentShuffledOptions = shuffleArray(currentQuizData.options);
 
-            broadcast('CHOOSE_CARD', {cardIndex, quiz: currentQuizData, options: currentShuffledOptions, boxType: activeBoxType});
-            showQuizQuestionView();
+            broadcast('CARD_SELECTED', {cardIndex, quizData: currentQuizData, options: currentShuffledOptions});
+            showQuizQuestionPhase();
         }
 
-        function showQuizQuestionView() {
+        function showQuizQuestionPhase() {
+            clearInterval(quizTimer);
             const cardPhase = document.getElementById('cardSelectPhase');
             const quizPhase = document.getElementById('quizQuestionPhase');
-            const isMyTurn = isCurrentTurnMyTeam();
 
             cardPhase.style.display = 'none';
             quizPhase.style.display = 'block';
@@ -2592,30 +2731,20 @@
             const quizBoxTag = document.getElementById('quizBoxTag');
             if (activeBoxType === 'green') {
                 quizBoxTag.className = 'box-theme-badge box-green';
-                quizBoxTag.innerText = '🟩 กล่องเขียว (+10 แต้ม)';
+                quizBoxTag.innerText = '🟩 กล่องเขียว';
             } else if (activeBoxType === 'yellow') {
                 quizBoxTag.className = 'box-theme-badge box-yellow';
-                quizBoxTag.innerText = '🟨 กล่องเหลือง (+20 แต้ม & 1 เหรียญ)';
+                quizBoxTag.innerText = '🟨 กล่องเหลือง';
             } else {
                 quizBoxTag.className = 'box-theme-badge box-orange';
-                quizBoxTag.innerText = '🟧 กล่องส้ม (+30 แต้ม & 2 เหรียญ)';
+                quizBoxTag.innerText = '🟧 กล่องส้ม';
             }
 
             document.getElementById('quizText').innerText = currentQuizData.q;
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
 
-            const btnHalf = document.getElementById('btnPwHalf');
-            const btnDouble = document.getElementById('btnPwDouble');
-            const p = players[currentTurnIndex];
-
-            if (isMyTurn) {
-                btnHalf.disabled = p.powerups.half <= 0;
-                btnDouble.disabled = p.powerups.double <= 0;
-            } else {
-                btnHalf.disabled = true;
-                btnDouble.disabled = true;
-            }
+            const isMyTurn = isCurrentTurnMyTeam();
 
             currentShuffledOptions.forEach((optText, idx) => {
                 const btn = document.createElement('button');
@@ -2625,11 +2754,18 @@
                 if (!isMyTurn) {
                     btn.disabled = true;
                 } else {
-                    btn.onclick = () => checkQuizAnswer(optText);
+                    btn.onclick = () => submitAnswer(optText);
                 }
-
                 container.appendChild(btn);
             });
+
+            if (isMyTurn) {
+                const btnHalf = document.getElementById('btnPwHalf');
+                const btnDouble = document.getElementById('btnPwDouble');
+                const p = players[currentTurnIndex];
+                btnHalf.disabled = p.powerups.half <= 0;
+                btnDouble.disabled = p.powerups.double <= 0;
+            }
 
             currentQuizTimeLeft = 30;
             document.getElementById('quizCountdown').innerText = currentQuizTimeLeft;
@@ -2640,331 +2776,179 @@
                 document.getElementById('quizCountdown').innerText = currentQuizTimeLeft;
                 if (currentQuizTimeLeft <= 0) {
                     clearInterval(quizTimer);
-                    if (isMyTurn) checkQuizAnswer(null, true);
+                    if (isMyTurn) submitAnswer(null);
                 }
             }, 1000);
         }
 
-        function checkQuizAnswer(chosenText, isTimeout = false) {
+        function submitAnswer(chosenText) {
             clearInterval(quizTimer);
             document.querySelectorAll('#optionsContainer .btn-option').forEach(b => b.disabled = true);
 
             const player = players[currentTurnIndex];
-            const oldLeader = [...players].sort((a, b) => b.score - a.score)[0];
-
-            let isCorrect = false;
-            let scoreGain = 0;
-            let coinsGain = 0;
-
-            if (!isTimeout && chosenText === currentQuizData.correctText) {
-                isCorrect = true;
-                if (activeBoxType === 'green') {
-                    scoreGain = 10;
-                    coinsGain = 0;
-                } else if (activeBoxType === 'yellow') {
-                    scoreGain = 20;
-                    coinsGain = 1;
-                } else if (activeBoxType === 'orange') {
-                    scoreGain = 30;
-                    coinsGain = 2;
-                }
-
-                if (player.multiplier) coinsGain *= player.multiplier;
-
-                player.score += scoreGain;
-                player.coins += coinsGain;
-            }
+            const isCorrect = (chosenText === currentQuizData.correctText);
 
             document.getElementById('quizModal').style.display = 'none';
 
-            // ตรวจสอบการแซงขึ้นอันดับ 1
-            const newLeader = [...players].sort((a, b) => b.score - a.score)[0];
-            if (isCorrect && oldLeader && newLeader && oldLeader.id !== newLeader.id && newLeader.id === player.id) {
-                triggerTakeoverPopup(player);
-            }
-
-            showFeedback(isCorrect, scoreGain, coinsGain, isTimeout);
-            broadcast('SUBMIT_QUIZ', {isCorrect, scoreGain, coinsGain, isTimeout, teamName: player.name});
-        }
-
-        function showFeedback(isCorrect, scoreGain, coinsGain, isTimeout = false) {
-            const modal = document.getElementById('feedbackModal');
-            const icon = document.getElementById('fbIcon');
-            const title = document.getElementById('fbTitle');
-            const desc = document.getElementById('fbDesc');
+            let pointsGained = 0;
+            let coinsGained = 0;
 
             if (isCorrect) {
+                if (activeBoxType === 'green') pointsGained = 10;
+                else if (activeBoxType === 'yellow') { pointsGained = 20; coinsGained = 1; }
+                else if (activeBoxType === 'orange') { pointsGained = 30; coinsGained = 2; }
+
+                if (player.multiplier && player.multiplier > 1) {
+                    coinsGained *= player.multiplier;
+                    player.multiplier = 1;
+                }
+
+                player.score += pointsGained;
+                player.coins += coinsGained;
+
                 playCorrectSound();
-                icon.innerText = '🎉';
-                title.style.color = '#27ae60';
-                title.innerText = `ถูกต้อง! (+${scoreGain} แต้ม ${coinsGain > 0 ? `, +${coinsGain} เหรียญ` : ''})`;
-                desc.innerHTML = `<strong>คำอธิบาย:</strong> ${currentQuizData.tip}`;
+                showFeedback(true, `ถูกต้อง! (+${pointsGained} แต้ม${coinsGained > 0 ? ` & +${coinsGained} เหรียญ` : ''})`, currentQuizData.tip);
+                addLog(`${player.name} ตอบคำถามถูกต้อง (+${pointsGained} แต้ม)`);
             } else {
                 playWrongSound();
-                icon.innerText = isTimeout ? '⏰' : '❌';
-                title.style.color = '#d63031';
-                title.innerText = isTimeout ? 'หมดเวลาตอบคำถาม!' : 'ตอบไม่ถูกต้อง!';
-                desc.innerHTML = `<strong>เฉลย:</strong> ${currentQuizData.correctText}<br><br><strong>คำแนะนำ:</strong> ${currentQuizData.tip}`;
+                showFeedback(false, `คำตอบยังไม่ถูกต้อง!`, `เฉลย: ${currentQuizData.correctText}\n💡 ${currentQuizData.tip}`);
+                addLog(`${player.name} ตอบคำถามไม่ถูกต้อง`);
             }
 
-            modal.style.display = 'flex';
+            renderPawns(); updateLeaderboard();
+            broadcast('QUIZ_RESULT', {isCorrect, pointsGained, coinsGained});
+        }
+
+        function showFeedback(isSuccess, title, desc) {
+            const fbModal = document.getElementById('feedbackModal');
+            document.getElementById('fbIcon').innerText = isSuccess ? '🎉' : '❌';
+            const titleEl = document.getElementById('fbTitle');
+            titleEl.innerText = title;
+            titleEl.style.color = isSuccess ? '#27ae60' : '#d63031';
+            document.getElementById('fbDesc').innerText = desc;
+            fbModal.style.display = 'flex';
         }
 
         function closeFeedback() {
             document.getElementById('feedbackModal').style.display = 'none';
-            renderPawns(); updateLeaderboard();
             endTurn();
         }
 
-        function triggerTakeoverPopup(player) {
-            playTakeoverSound();
-            const popup = document.getElementById('takeoverPopup');
-            document.getElementById('takeoverAvatar').innerHTML = AVATAR_SVGS[player.avatar] || AVATAR_SVGS.ant;
-            document.getElementById('takeoverTeamName').innerText = player.name;
-            popup.style.display = 'flex';
-
-            setTimeout(() => {
-                popup.style.display = 'none';
-            }, 2600);
-        }
-
-        function endTurn() {
-            if (isGamePaused) return;
-            currentTurnIndex = (currentTurnIndex + 1) % players.length;
-            broadcast('NEXT_TURN', {nextTurnIndex: currentTurnIndex});
-            startTurn();
-        }
-
-        function renderPawns() {
-            const container = document.getElementById('pawnsContainer');
-            container.innerHTML = '';
-
-            players.forEach((p, idx) => {
-                const coord = TILE_COORDS[p.pos] || TILE_COORDS[0];
-                const pawnDiv = document.createElement('div');
-                pawnDiv.className = 'pawn';
-
-                // ปรับตำแหน่งไม่ให้ทับกันตรงๆ เมื่อตกช่องเดียวกัน
-                const offset = (idx % 3 - 1) * 8;
-                pawnDiv.style.left = `calc(${coord.x}% + ${offset}px)`;
-                pawnDiv.style.top = `calc(${coord.y}% + ${offset}px)`;
-
-                pawnDiv.innerHTML = `
-                    <div class="pawn-badge">${p.name}</div>
-                    ${AVATAR_SVGS[p.avatar] || AVATAR_SVGS.ant}
-                `;
-                container.appendChild(pawnDiv);
-            });
-        }
-
-        function updateLeaderboard() {
-            const list = document.getElementById('playersRankList');
-            list.innerHTML = '';
-
-            const sorted = [...players].sort((a, b) => {
-                if (b.score !== a.score) return b.score - a.score;
-                return b.coins - a.coins;
-            });
-
-            sorted.forEach((p, idx) => {
-                const row = document.createElement('div');
-                const isCurrent = players[currentTurnIndex] && players[currentTurnIndex].id === p.id;
-
-                row.className = `player-row ${isCurrent ? 'active-turn' : ''}`;
-                row.innerHTML = `
-                    <div class="player-info-left">
-                        <span class="player-rank ${idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : ''}">#${idx + 1}</span>
-                        <div class="mini-avatar">${AVATAR_SVGS[p.avatar] || AVATAR_SVGS.ant}</div>
-                        <div class="name-pos">
-                            <div class="p-name">${p.name}</div>
-                            <div class="p-pos">ช่องที่ ${p.pos}</div>
-                        </div>
-                    </div>
-                    <div class="player-stats">
-                        <div class="stat-score">${p.score} แต้ม</div>
-                        <div class="stat-coins">🪙 ${p.coins}</div>
-                    </div>
-                `;
-                list.appendChild(row);
-            });
-        }
-
-        function updateTurnIndicator() {
-            if (!players[currentTurnIndex]) return;
-            const activePlayer = players[currentTurnIndex];
-            const indicator = document.getElementById('lblTurn');
-
-            if (isCurrentTurnMyTeam()) {
-                indicator.innerText = `ตาทีม: ${activePlayer.name} (คุณ)`;
-                indicator.style.color = '#27ae60';
-            } else {
-                indicator.innerText = `ตาทีม: ${activePlayer.name}`;
-                indicator.style.color = '#d84315';
-            }
-        }
-
         function declareWinner(winnerPlayer) {
+            if (hasWinnerDeclared) return;
+            hasWinnerDeclared = true;
+
+            // มอบคะแนนโบนัส +40 แต้ม แก่ทีมแรกที่เข้าเส้นชัย
+            winnerPlayer.score += 40;
+            playTakeoverSound();
+            addLog(`🏆 ${winnerPlayer.name} เข้าเส้นชัยเป็นทีมแรก! รับโบนัสพิเศษ +40 คะแนน!`);
+
+            renderPawns();
+            updateLeaderboard();
+
+            // ส่งสัญญาณแจ้งเตือนทุกเครื่องตัดไปหน้าสรุปคะแนนทันที
+            broadcast('GAME_OVER', {winner: winnerPlayer});
+            showPodiumModal(winnerPlayer);
+        }
+
+        function showPodiumModal(winner) {
             isGamePaused = true;
             clearInterval(turnTimer);
             clearInterval(cardSelectTimer);
             clearInterval(quizTimer);
 
-            playCorrectSound();
-            broadcast('GAME_OVER', {winner: winnerPlayer});
+            const podiumModal = document.getElementById('podiumModal');
+            podiumModal.style.display = 'flex';
 
-            const modal = document.getElementById('podiumModal');
-            const sorted = [...players].sort((a, b) => b.score - a.score || b.coins - a.coins);
+            const sorted = [...players].sort((a, b) => b.score - a.score);
 
-            // อันดับ 1
             if (sorted[0]) {
                 document.getElementById('avatarRank1').innerHTML = AVATAR_SVGS[sorted[0].avatar] || AVATAR_SVGS.ant;
                 document.getElementById('nameRank1').innerText = sorted[0].name;
                 document.getElementById('scoreRank1').innerText = `${sorted[0].score} แต้ม (${sorted[0].coins} เหรียญ)`;
                 setTimeout(() => document.getElementById('podiumRank1').classList.add('show-podium'), 300);
             }
-            // อันดับ 2
+
             if (sorted[1]) {
                 document.getElementById('avatarRank2').innerHTML = AVATAR_SVGS[sorted[1].avatar] || AVATAR_SVGS.ant;
                 document.getElementById('nameRank2').innerText = sorted[1].name;
                 document.getElementById('scoreRank2').innerText = `${sorted[1].score} แต้ม (${sorted[1].coins} เหรียญ)`;
                 setTimeout(() => document.getElementById('podiumRank2').classList.add('show-podium'), 600);
+            } else {
+                document.getElementById('podiumRank2').style.display = 'none';
             }
-            // อันดับ 3
+
             if (sorted[2]) {
                 document.getElementById('avatarRank3').innerHTML = AVATAR_SVGS[sorted[2].avatar] || AVATAR_SVGS.ant;
                 document.getElementById('nameRank3').innerText = sorted[2].name;
                 document.getElementById('scoreRank3').innerText = `${sorted[2].score} แต้ม (${sorted[2].coins} เหรียญ)`;
                 setTimeout(() => document.getElementById('podiumRank3').classList.add('show-podium'), 900);
+            } else {
+                document.getElementById('podiumRank3').style.display = 'none';
             }
 
-            // รองรับกรณีมีทีมมากกว่า 3 ทีมขึ้นไป
             if (sorted.length > 3) {
-                const runnerBoard = document.getElementById('runnerUpBoard');
                 const runnerGrid = document.getElementById('runnerUpGrid');
-                runnerGrid.innerHTML = '';
-                sorted.slice(3).forEach((p, idx) => {
-                    runnerGrid.innerHTML += `
-                        <div class="runner-up-row">
-                            <span>อันดับ ${idx + 4}: ${p.name}</span>
-                            <span>${p.score} แต้ม (${p.coins} เหรียญ)</span>
-                        </div>
-                    `;
-                });
-                runnerBoard.style.display = 'block';
+                runnerGrid.innerHTML = sorted.slice(3).map((p, i) => `
+                    <div class="runner-up-row">
+                        <span>อันดับ ${i + 4}: ${p.name}</span>
+                        <span>⭐ ${p.score} แต้ม</span>
+                    </div>
+                `).join('');
+                document.getElementById('runnerUpBoard').style.display = 'block';
             }
 
-            modal.style.display = 'flex';
-            initFireworksCanvas();
+            initFireworks();
         }
 
-        function initFireworksCanvas() {
+        function initFireworks() {
             const canvas = document.getElementById('fireworksCanvas');
+            if (!canvas) return;
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            const particles = [];
-            const colors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#e67e22'];
+            let particles = [];
+            const colors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
 
-            function createParticle(x, y) {
-                const count = 30;
-                for (let i = 0; i < count; i++) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = 2 + Math.random() * 5;
-                    particles.push({
-                        x, y,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
-                        color: colors[Math.floor(Math.random() * colors.length)],
-                        alpha: 1,
-                        decay: 0.015 + Math.random() * 0.02
-                    });
-                }
-            }
-
-            let fireInterval = setInterval(() => {
-                createParticle(Math.random() * canvas.width, Math.random() * canvas.height * 0.6);
-            }, 400);
-
-            function loop() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach((p, idx) => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.alpha -= p.decay;
-                    ctx.globalAlpha = Math.max(0, p.alpha);
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    if (p.alpha <= 0) particles.splice(idx, 1);
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    dx: (Math.random() - 0.5) * 12,
+                    dy: (Math.random() - 0.5) * 12,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    radius: Math.random() * 4 + 2,
+                    life: 100
                 });
-
-                if (document.getElementById('podiumModal').style.display === 'flex') {
-                    requestAnimationFrame(loop);
-                } else {
-                    clearInterval(fireInterval);
-                }
             }
 
-            loop();
-        }
-
-        /* ---------------- ระบบ Real-time Listeners (BroadcastChannel & Socket) ---------------- */
-        if (gameBroadcast) {
-            gameBroadcast.onmessage = (e) => handleRemoteSync(e.data);
-        }
-
-        socket.on('game-sync', (data) => handleRemoteSync(data));
-
-        function handleRemoteSync(data) {
-            if (!data || !data.type) return;
-
-            if (data.playersState) {
-                data.playersState.forEach(rp => {
-                    const lp = players.find(p => p.id === rp.id || p.name === rp.name);
-                    if (lp) {
-                        lp.pos = rp.pos;
-                        lp.score = rp.score;
-                        lp.coins = rp.coins;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, i) => {
+                    if (p.life > 0) {
+                        p.x += p.dx;
+                        p.y += p.dy;
+                        p.life--;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
                     }
                 });
-                renderPawns(); updateLeaderboard();
+                if (particles.some(p => p.life > 0)) {
+                    requestAnimationFrame(animate);
+                }
             }
+            animate();
+        }
 
-            switch (data.type) {
-                case 'ROLL_DICE':
-                    addLog(`${data.teamName} ทอยลูกเต๋าได้ ${data.steps}`, true);
-                    break;
+        function endTurn() {
+            if (isGamePaused || hasWinnerDeclared) return;
 
-                case 'CHOOSE_CARD':
-                    currentQuizData = data.quiz;
-                    currentShuffledOptions = data.options;
-                    activeBoxType = data.boxType;
-                    showQuizQuestionView();
-                    break;
-
-                case 'SUBMIT_QUIZ':
-                    addLog(`${data.teamName} ตอบคำถาม ${data.isCorrect ? 'ถูกต้อง' : 'ไม่ถูกต้อง'}`, true);
-                    break;
-
-                case 'NEXT_TURN':
-                    currentTurnIndex = data.nextTurnIndex;
-                    startTurn();
-                    break;
-
-                case 'TEAM_LEFT':
-                    alert(`ทีม "${data.leftTeamName}" ได้ออกจากเกมไปแล้ว`);
-                    players = data.remainingPlayers || players;
-                    currentTurnIndex = data.nextTurn || 0;
-                    renderPawns(); updateLeaderboard(); startTurn();
-                    break;
-
-                case 'SYNC_LOG':
-                    addLog(data.msg, true);
-                    break;
-            }
+            currentTurnIndex = (currentTurnIndex + 1) % players.length;
+            broadcast('NEXT_TURN', {nextTurnIndex: currentTurnIndex});
+            startTurn();
         }
 
         window.onload = () => {
