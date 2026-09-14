@@ -225,8 +225,13 @@
         }
 
         @keyframes blinkDot {
-            from { opacity: 0.3; }
-            to { opacity: 1; }
+            from {
+                opacity: 0.3;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .board-container {
@@ -396,9 +401,17 @@
             color: #b2bec3;
         }
 
-        .rank-gold { color: #f1c40f; }
-        .rank-silver { color: #dfe6e9; }
-        .rank-bronze { color: #e17055; }
+        .rank-gold {
+            color: #f1c40f;
+        }
+
+        .rank-silver {
+            color: #dfe6e9;
+        }
+
+        .rank-bronze {
+            color: #e17055;
+        }
 
         .spec-avatar-icon {
             width: 40px;
@@ -464,8 +477,15 @@
         }
 
         @keyframes fadeInFeed {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .bottom-global-controls {
@@ -545,20 +565,42 @@
             box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.15), 0 15px 35px rgba(0, 0, 0, 0.3);
         }
 
-        .face-1 { transform: rotateY(0deg) translateZ(120px); }
-        .face-2 { transform: rotateY(90deg) translateZ(120px); }
-        .face-3 { transform: rotateY(180deg) translateZ(120px); }
-        .face-4 { transform: rotateY(-90deg) translateZ(120px); }
-        .face-5 { transform: rotateX(90deg) translateZ(120px); }
-        .face-6 { transform: rotateX(-90deg) translateZ(120px); }
+        .face-1 {
+            transform: rotateY(0deg) translateZ(120px);
+        }
+
+        .face-2 {
+            transform: rotateY(90deg) translateZ(120px);
+        }
+
+        .face-3 {
+            transform: rotateY(180deg) translateZ(120px);
+        }
+
+        .face-4 {
+            transform: rotateY(-90deg) translateZ(120px);
+        }
+
+        .face-5 {
+            transform: rotateX(90deg) translateZ(120px);
+        }
+
+        .face-6 {
+            transform: rotateX(-90deg) translateZ(120px);
+        }
 
         .dice-rolling-anim {
             animation: spinDiceSmooth 1.1s infinite linear;
         }
 
         @keyframes spinDiceSmooth {
-            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-            100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg); }
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+
+            100% {
+                transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg);
+            }
         }
 
         .dice-result-banner {
@@ -612,9 +654,17 @@
             color: #fff;
         }
 
-        .box-green { background: #2ecc71; }
-        .box-yellow { background: #f39c12; }
-        .box-orange { background: #e67e22; }
+        .box-green {
+            background: #2ecc71;
+        }
+
+        .box-yellow {
+            background: #f39c12;
+        }
+
+        .box-orange {
+            background: #e67e22;
+        }
 
         .spec-team-badge {
             background: #fff8e1;
@@ -706,9 +756,19 @@
         }
 
         @keyframes zoomInBounce {
-            0% { transform: scale(0.3); opacity: 0; }
-            70% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .takeover-crown {
@@ -717,8 +777,13 @@
         }
 
         @keyframes bounceCrown {
-            from { transform: translateY(0); }
-            to { transform: translateY(-15px); }
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-15px);
+            }
         }
 
         .takeover-title {
@@ -933,8 +998,14 @@
         }
 
         @keyframes popIn {
-            from { transform: scale(0.85); opacity: 0; }
-            to { transform: scale(1); }
+            from {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+            }
         }
 
         @media (max-width: 1024px) {
@@ -1037,9 +1108,17 @@
                 font-size: 1.8rem;
             }
 
-            .pillar-1 { height: 160px; }
-            .pillar-2 { height: 120px; }
-            .pillar-3 { height: 90px; }
+            .pillar-1 {
+                height: 160px;
+            }
+
+            .pillar-2 {
+                height: 120px;
+            }
+
+            .pillar-3 {
+                height: 90px;
+            }
         }
     </style>
 </head>
@@ -1547,6 +1626,21 @@
                 window.location.href = 'index.html';
             } else if (data.type === 'GLOBAL_RESTART') {
                 location.reload();
+            } else if (data.type === 'PAUSE_GAME') {
+                isGamePaused = data.isPaused;
+                const btn = document.getElementById('btnPauseGame');
+                const icon = document.getElementById('pauseIcon');
+                const text = document.getElementById('pauseText');
+
+                if (isGamePaused) {
+                    btn.classList.add('is-paused');
+                    icon.innerText = '▶️';
+                    text.innerText = 'เล่นต่อ';
+                } else {
+                    btn.classList.remove('is-paused');
+                    icon.innerText = '⏸️';
+                    text.innerText = 'พักเกม';
+                }
             }
         }
 
@@ -1598,7 +1692,7 @@
 
             const quizInfo = syncQuiz || (currentQuizData ? currentQuizData.quiz : null);
             const optsInfo = syncOptions || (currentQuizData ? currentQuizData.options : (quizInfo ? quizInfo.options : []));
-            
+
             let correctAnswerText = '-';
             if (quizInfo) {
                 if (quizInfo.a) correctAnswerText = quizInfo.a;
@@ -1662,9 +1756,9 @@
 
         function triggerPodiumScene() {
             const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
-            const p1 = sorted[0] || {name: '-', avatar: 'ant', score: 0, coins: 0};
-            const p2 = sorted[1] || {name: '-', avatar: 'bee', score: 0, coins: 0};
-            const p3 = sorted[2] || {name: '-', avatar: 'beetle', score: 0, coins: 0};
+            const p1 = sorted[0] || { name: '-', avatar: 'ant', score: 0, coins: 0 };
+            const p2 = sorted[1] || { name: '-', avatar: 'bee', score: 0, coins: 0 };
+            const p3 = sorted[2] || { name: '-', avatar: 'beetle', score: 0, coins: 0 };
 
             document.getElementById('avatarRank1').innerHTML = AVATAR_SVGS[p1.avatar] || AVATAR_SVGS.ant;
             document.getElementById('nameRank1').innerText = p1.name;
@@ -1717,7 +1811,7 @@
                 for (let i = 0; i < 70; i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const speed = Math.random() * 6 + 2;
-                    particles.push({x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, alpha: 1, color, radius: Math.random() * 3 + 2});
+                    particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, alpha: 1, color, radius: Math.random() * 3 + 2 });
                 }
             }
             function loop() {
