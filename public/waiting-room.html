@@ -1118,51 +1118,6 @@
             line-height: 1.2;
         }
 
-        /* ---------------- Pop-up นับถอยหลังใหญ่ 5-0 ---------------- */
-        .countdown-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-        }
-
-        .countdown-card {
-            text-align: center;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .countdown-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: #ff9f1a;
-            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            letter-spacing: 2px;
-        }
-
-        .countdown-num {
-            font-size: 9rem;
-            font-weight: 900;
-            color: #2ecc71;
-            text-shadow: 0 0 35px rgba(46, 204, 113, 0.8);
-            line-height: 1;
-            animation: zoomPulse 0.85s ease infinite;
-        }
-
-        .countdown-num.start-text {
-            font-size: 5.5rem;
-            color: #00cec9;
-            text-shadow: 0 0 40px rgba(0, 206, 201, 0.9);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
         @keyframes popupScale {
             0% {
                 transform: scale(0.6);
@@ -1181,23 +1136,6 @@
             }
 
             100% {
-                opacity: 1;
-            }
-        }
-
-        @keyframes zoomPulse {
-            0% {
-                transform: scale(0.7);
-                opacity: 0.3;
-            }
-
-            50% {
-                transform: scale(1.15);
-                opacity: 1;
-            }
-
-            100% {
-                transform: scale(1);
                 opacity: 1;
             }
         }
@@ -1358,14 +1296,6 @@
 
             .wardrobe-modal-card {
                 padding: 18px 16px;
-            }
-
-            .countdown-num {
-                font-size: 6rem;
-            }
-
-            .countdown-num.start-text {
-                font-size: 3.5rem;
             }
         }
     </style>
@@ -1662,9 +1592,6 @@
     <!-- Container ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ (กลางหน้าจอ) -->
     <div id="joinPopupContainer"></div>
 
-    <!-- Container หน้าต่างนับถอยหลังใหญ่ 5-0 -->
-    <div id="countdownContainer"></div>
-
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const AVATAR_SVGS = {
@@ -1877,8 +1804,8 @@
                         window.location.href = 'index.html';
                     } else if (data.type === 'GLOBAL_RESTART') {
                         location.reload();
-                    } else if (data.type === 'START_COUNTDOWN') {
-                        triggerStartCountdown();
+                    } else if (data.type === 'START_GAME_DIRECT') {
+                        goToBoardPage();
                     }
                 };
             }
@@ -1927,12 +1854,11 @@
                 renderLobby();
             });
 
-            socket.on('trigger-start-countdown', () => {
-                triggerStartCountdown();
+            socket.on('trigger-start-game', () => {
+                goToBoardPage();
             });
 
             socket.on('game-start', (data) => {
-                if (isHostClient) return; // ฝั่งหัวหน้าห้องจะไม่ไปหน้าเริ่มเกม
                 const activePlayers = (data && data.players) ? data.players : players;
                 sessionStorage.setItem('ant_all_players', JSON.stringify(activePlayers));
                 window.location.href = 'board.html';
@@ -1952,8 +1878,8 @@
                         p.isReady = data.isReady;
                         renderLobby();
                     }
-                } else if (data.type === 'START_COUNTDOWN') {
-                    triggerStartCountdown();
+                } else if (data.type === 'START_GAME_DIRECT') {
+                    goToBoardPage();
                 } else if (data.type === 'GLOBAL_GO_HOME') {
                     window.location.href = 'index.html';
                 } else if (data.type === 'GLOBAL_RESTART') {
@@ -2192,66 +2118,28 @@
             window.open('spectator.html', '_blank');
         }
 
-        /* ฟังก์ชันเริ่มเกมและเรียก Popup นับถอยหลัง 5 ถึง 0 */
+        /* ฟังก์ชันเริ่มเกม โดยส่งสัญญาณให้ทุกคนย้ายหน้าทันที */
         function handleStartAdventure() {
             const nonHostPlayers = players.filter(p => !p.isHost);
             const readyNonHosts = nonHostPlayers.filter(p => p.isReady);
 
             if (!isHostClient || players.length < 2 || readyNonHosts.length < nonHostPlayers.length) return;
 
-            // ส่งสัญญาณไปยังผู้เล่นทุกคนในห้องให้เริ่มนับถอยหลังพร้อมกัน
+            // ส่งสัญญาณไปยังทุกคนรวมถึงหัวหน้าห้อง
             if (socket) {
                 socket.emit('game-sync', {
                     roomCode: currentRoomCode,
-                    type: 'START_COUNTDOWN'
+                    type: 'START_GAME_DIRECT'
                 });
-            } else {
-                triggerStartCountdown();
             }
+
+            goToBoardPage();
         }
 
-        let isCountingDown = false;
-
-        /* ฟังก์ชันแสดง Pop-up นับถอยหลังสวยงาม 5-4-3-2-1-0 และย้ายไปยังหน้าเล่นเกม */
-        function triggerStartCountdown() {
-            // หัวหน้าห้องจะไม่นับถอยหลัง และไม่ย้ายหน้าไป board.html
-            if (isHostClient) return;
-
-            if (isCountingDown) return;
-            isCountingDown = true;
-
-            const container = document.getElementById('countdownContainer');
-            container.innerHTML = `
-                <div class="countdown-overlay">
-                    <div class="countdown-card">
-                        <div class="countdown-title">🚀 การสำรวจกำลังจะเริ่มต้นขึ้น!</div>
-                        <div class="countdown-num" id="countdownNum">5</div>
-                    </div>
-                </div>
-            `;
-
-            let count = 5;
-            const numEl = document.getElementById('countdownNum');
-
-            const timer = setInterval(() => {
-                count--;
-                if (count >= 0) {
-                    numEl.innerText = count;
-                    numEl.className = "countdown-num";
-                    numEl.style.animation = 'none';
-                    void numEl.offsetWidth; // Trigger Reflow สำหรับ Restart Animation
-                    numEl.style.animation = 'zoomPulse 0.85s ease infinite';
-                } else {
-                    clearInterval(timer);
-                    numEl.className = "countdown-num start-text";
-                    numEl.innerText = "เริ่มเกม! 🎉";
-
-                    setTimeout(() => {
-                        sessionStorage.setItem('ant_all_players', JSON.stringify(players));
-                        window.location.href = 'board.html';
-                    }, 800);
-                }
-            }, 1000);
+        /* ฟังก์ชันย้ายไปยังหน้าเล่นเกม board.html */
+        function goToBoardPage() {
+            sessionStorage.setItem('ant_all_players', JSON.stringify(players));
+            window.location.href = 'board.html';
         }
 
         function leaveRoom() {
