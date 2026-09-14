@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="mod.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RERU มดนักสำรวจ - จอถ่ายทอดสดสำหรับผู้ชม (Spectator View)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: radial-gradient(circle at 20% 20%, #1e272e 0%, #0f1418 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 65px 20px 20px 20px;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .ambient-light {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+            animation: floatLight 12s infinite alternate ease-in-out;
+        }
+
+        .light-1 {
+            width: 450px;
+            height: 450px;
+            background: #00cec9;
+            top: -50px;
+            left: 10%;
+        }
+
+        .light-2 {
+            width: 500px;
+            height: 500px;
+            background: #6c5ce7;
+            bottom: -100px;
+            right: 5%;
+            animation-duration: 16s;
+        }
+
+        .light-3 {
+            width: 350px;
+            height: 350px;
+            background: #2ecc71;
+            top: 40%;
+            right: 35%;
+            animation-duration: 10s;
+        }
+
+        @keyframes floatLight {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-70px) scale(1.15) rotate(40deg);
+            }
+        }
+
+        .edu-global-badge {
+            position: fixed;
+            top: 14px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 2px solid #0984e3;
+            padding: 6px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #0984e3;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        /* โลโก้สาขาวิชาวงกลม */
+        .edu-badge-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            border: 1.5px solid #2ecc71;
+        }
+
+        /* แถบปุ่มควบคุมมุมบนขวา */
+        .top-controls-group {
+            position: fixed;
+            top: 14px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .btn-top-action {
+            background: rgba(255, 255, 255, 0.92);
+            color: #2d3436;
+            border: 2px solid #0984e3;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            transition: all 0.2s;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-top-action:hover,
+        .btn-top-action:active {
+            background: #0984e3;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .btn-pause-toggle {
+            color: #d63031;
+            border-color: #ff7675;
+            background: #fff0f0;
+        }
+
+        .btn-pause-toggle:hover,
+        .btn-pause-toggle:active {
+            background: #ff7675;
+            color: #fff;
+        }
+
+        .btn-pause-toggle.is-paused {
+            background: #2ecc71;
+            color: #fff;
+            border-color: #27ae60;
+        }
+
+        .spectator-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: row;
+            gap: 18px;
+            width: 100%;
+            max-width: 1560px;
+            height: calc(88vh - 55px);
+            max-height: 800px;
+            background: rgba(30, 39, 46, 0.85);
+            border-radius: 28px;
+            padding: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .board-stage {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #2d3436;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 3px solid #00b894;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .live-badge {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            background: #eb4d4b;
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(235, 77, 75, 0.5);
+            z-index: 50;
+            letter-spacing: 1px;
+        }
+
+        .live-dot {
+            width: 9px;
+            height: 9px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blinkDot 1s infinite alternate;
+        }
+
+        @keyframes blinkDot {
+            from {
+                opacity: 0.3;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .board-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 1050px;
+            aspect-ratio: 1000 / 680;
+        }
+
+        .board-bg-img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+            border-radius: 18px;
+        }
+
+        .pawn {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            transform: translate(-50%, -50%);
+            transition: left 0.4s ease-in-out, top 0.4s ease-in-out;
+            z-index: 20;
+            pointer-events: none;
+            filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.5));
+        }
+
+        .pawn-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4757;
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            border: 1px solid #fff;
+        }
+
+        .pawn svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .spectator-sidebar {
+            width: 410px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .spec-header {
+            background: linear-gradient(135deg, #0984e3 0%, #6c5ce7 100%);
+            border-radius: 18px;
+            padding: 10px 14px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .spec-game-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .spec-room-tag {
+            font-size: 0.85rem;
+            color: #dfe6e9;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        .current-action-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 8px 12px;
+            border: 2px solid #fdcb6e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .action-turn-label {
+            font-size: 0.8rem;
+            color: #b2bec3;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .action-turn-name {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #f1c40f;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+
+        .action-status-desc {
+            font-size: 0.8rem;
+            color: #dfe6e9;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: right;
+        }
+
+        .leaderboard-box {
+            flex: 1;
+            min-height: 300px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+        }
+
+        .lb-header {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fdcb6e;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+            padding-bottom: 6px;
+        }
+
+        .spec-player-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 10px 12px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .spec-player-row.active {
+            background: rgba(241, 196, 15, 0.25);
+            border-color: #f1c40f;
+            transform: scale(1.02);
+        }
+
+        .spec-player-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spec-rank-num {
+            font-size: 1.25rem;
+            font-weight: 900;
+            width: 28px;
+            color: #b2bec3;
+        }
+
+        .rank-gold {
+            color: #f1c40f;
+        }
+
+        .rank-silver {
+            color: #dfe6e9;
+        }
+
+        .rank-bronze {
+            color: #e17055;
+        }
+
+        .spec-avatar-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .spec-name-tag {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+            max-width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .spec-pos-tag {
+            font-size: 0.82rem;
+            color: #00cec9;
+            font-weight: 600;
+        }
+
+        .spec-score-tag {
+            text-align: right;
+        }
+
+        .spec-points {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #ffeaa7;
+        }
+
+        .spec-coins {
+            font-size: 0.88rem;
+            color: #f39c12;
+            font-weight: 700;
+        }
+
+        .live-feed-panel {
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            padding: 8px 10px;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 5px;
+        }
+
+        .feed-item {
+            font-size: 0.8rem;
+            padding: 5px 8px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #dfe6e9;
+            font-weight: 600;
+            animation: fadeInFeed 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-left: 3px solid #0984e3;
+        }
+
+        @keyframes fadeInFeed {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* แถบปุ่มควบคุมเกมหลักด้านล่างหน้าจอ */
+        .bottom-global-controls {
+            margin-top: 14px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .btn-bottom-cmd {
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-bottom-cmd:hover,
+        .btn-bottom-cmd:active {
+            transform: scale(1.05);
+        }
+
+        .btn-cmd-home {
+            background: #e67e22;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-cmd-restart {
+            background: #2ecc71;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(46, 204, 113, 0.4);
+        }
+
+        /* ลูกเต๋า 3D เต็มจอสำหรับผู้ชม */
+        .dice-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1500;
+            perspective: 1200px;
+        }
+
+        .dice-cube {
+            width: 240px;
+            height: 240px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            background: #ffffff;
+            border: 8px solid #e2e8f0;
+            border-radius: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 6.5rem;
+            font-weight: 900;
+            color: #e74c3c;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.15), 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .face-1 {
+            transform: rotateY(0deg) translateZ(120px);
+        }
+
+        .face-2 {
+            transform: rotateY(90deg) translateZ(120px);
+        }
+
+        .face-3 {
+            transform: rotateY(180deg) translateZ(120px);
+        }
+
+        .face-4 {
+            transform: rotateY(-90deg) translateZ(120px);
+        }
+
+        .face-5 {
+            transform: rotateX(90deg) translateZ(120px);
+        }
+
+        .face-6 {
+            transform: rotateX(-90deg) translateZ(120px);
+        }
+
+        .dice-rolling-anim {
+            animation: spinDiceSmooth 1.1s infinite linear;
+        }
+
+        @keyframes spinDiceSmooth {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+
+            100% {
+                transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg);
+            }
+        }
+
+        .dice-result-banner {
+            color: #fff;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-top: 50px;
+            text-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+            display: none;
+        }
+
+        /* Modal คำถามและผลลัพธ์ */
+        .spec-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+            padding: 20px;
+        }
+
+        .spec-modal-card {
+            background: #ffffff;
+            border-radius: 32px;
+            max-width: 880px;
+            width: 95%;
+            padding: 32px 36px;
+            border: 4px solid #fff;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+            text-align: center;
+            animation: popIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .spec-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .box-theme-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .box-green {
+            background: #2ecc71;
+        }
+
+        .box-yellow {
+            background: #f39c12;
+        }
+
+        .box-orange {
+            background: #e67e22;
+        }
+
+        .spec-team-badge {
+            background: #fff8e1;
+            color: #d84315;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 1.15rem;
+            border: 2px solid #ffb300;
+            box-shadow: 0 4px 10px rgba(255, 179, 0, 0.25);
+        }
+
+        .spec-question-box {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.55;
+            color: #2d3436;
+            background: #f8f9fa;
+            padding: 22px 28px;
+            border-radius: 20px;
+            border-left: 6px solid #0984e3;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .spec-options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .spec-opt-item {
+            background: #f1f2f6;
+            border: 2px solid #dfe4ea;
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2f3542;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-close-spec-modal {
+            background: #0984e3;
+            color: white;
+            border: none;
+            padding: 12px 36px;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(9, 132, 227, 0.35);
+            transition: transform 0.2s, background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-close-spec-modal:hover {
+            transform: scale(1.04);
+            background: #0773c5;
+        }
+
+        /* ป๊อปอัปแซงขึ้นที่ 1 */
+        .takeover-popup {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2500;
+        }
+
+        .takeover-card {
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            border: 6px solid #fff;
+            border-radius: 36px;
+            padding: 45px 55px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(241, 196, 15, 0.6);
+            animation: zoomInBounce 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #fff;
+            max-width: 650px;
+            width: 90%;
+        }
+
+        @keyframes zoomInBounce {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .takeover-crown {
+            font-size: 5rem;
+            animation: bounceCrown 1s infinite alternate;
+        }
+
+        @keyframes bounceCrown {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-15px);
+            }
+        }
+
+        .takeover-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            margin: 10px 0;
+        }
+
+        .takeover-hero-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: #fff;
+            padding: 10px 25px;
+            border-radius: 50px;
+            margin: 15px auto;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            width: fit-content;
+        }
+
+        .takeover-hero-avatar {
+            width: 55px;
+            height: 55px;
+        }
+
+        .takeover-team {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #2c3e50;
+        }
+
+        /* แท่นรับรางวัล PODIUM */
+        .podium-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 15, 29, 0.96);
+            backdrop-filter: blur(14px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 25px 15px;
+        }
+
+        #fireworksCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .podium-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+            max-width: 960px;
+        }
+
+        .podium-title {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #f1c40f;
+            text-shadow: 0 4px 20px rgba(241, 196, 15, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            height: 330px;
+            margin-bottom: 25px;
+        }
+
+        .podium-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 220px;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .podium-col.show-podium {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .podium-hero-avatar {
+            width: 85px;
+            height: 85px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+        }
+
+        .podium-team-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .podium-score-info {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffeaa7;
+            margin-bottom: 10px;
+        }
+
+        .podium-pillar {
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 15px;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-bottom: none;
+        }
+
+        .pillar-1 {
+            height: 220px;
+            background: linear-gradient(180deg, #f1c40f 0%, #d4ac0d 100%);
+        }
+
+        .pillar-2 {
+            height: 160px;
+            background: linear-gradient(180deg, #bdc3c7 0%, #95a5a6 100%);
+        }
+
+        .pillar-3 {
+            height: 120px;
+            background: linear-gradient(180deg, #e67e22 0%, #d35400 100%);
+        }
+
+        .runner-up-board {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            display: none;
+        }
+
+        .runner-up-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #00cec9;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .runner-up-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+        }
+
+        .runner-up-row {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .podium-actions-bar {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 15px;
+        }
+
+        .btn-podium-cmd {
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 900;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-podium-cmd:hover,
+        .btn-podium-cmd:active {
+            transform: scale(1.05);
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive มือถือและแท็บเล็ต */
+        @media (max-width: 1024px) {
+            body {
+                padding: 60px 10px 15px 10px;
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .edu-global-badge {
+                top: 8px;
+                left: 10px;
+                font-size: 0.78rem;
+                padding: 4px 12px;
+            }
+
+            .top-controls-group {
+                top: 8px;
+                right: 10px;
+                gap: 6px;
+            }
+
+            .btn-top-action {
+                padding: 4px 12px;
+                font-size: 0.78rem;
+            }
+
+            .spectator-wrapper {
+                flex-direction: column;
+                height: auto;
+                max-height: none;
+                padding: 12px;
+                border-radius: 20px;
+            }
+
+            .spectator-sidebar {
+                width: 100%;
+            }
+
+            .leaderboard-box {
+                min-height: 200px;
+                max-height: 280px;
+            }
+
+            .pawn {
+                width: 44px;
+                height: 44px;
+            }
+
+            .pawn-badge {
+                font-size: 0.7rem;
+                top: -12px;
+            }
+
+            .bottom-global-controls {
+                flex-direction: column;
+                width: 100%;
+                gap: 8px;
+            }
+
+            .btn-bottom-cmd {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+                font-size: 1.05rem;
+            }
+
+            .podium-actions-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn-podium-cmd {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .podium-container {
+                height: 250px;
+                gap: 8px;
+            }
+
+            .podium-col {
+                width: 100px;
+            }
+
+            .podium-hero-avatar {
+                width: 50px;
+                height: 50px;
+            }
+
+            .podium-team-name {
+                font-size: 0.85rem;
+                max-width: 90px;
+            }
+
+            .podium-pillar {
+                font-size: 1.8rem;
+            }
+
+            .pillar-1 {
+                height: 160px;
+            }
+
+            .pillar-2 {
+                height: 120px;
+            }
+
+            .pillar-3 {
+                height: 90px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
+    <div class="ambient-light light-3"></div>
+
+    <!-- ป้ายสถาบันมุมซ้ายบนนอกกรอบเกม (เปลี่ยนไอคอนเป็นรูปภาพโลโก้วงกลม) -->
+    <div class="edu-global-badge">
+        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo">
+        <span>สาขาวิชาคอมพิวเตอร์ศึกษา RERU</span>
+    </div>
+
+    <!-- ปุ่มควบคุมมุมขวาบน -->
+    <div class="top-controls-group">
+        <button class="btn-top-action btn-pause-toggle" id="btnPauseGame">
+            <span id="pauseIcon">⏸️</span>
+            <span id="pauseText">พักเกม</span>
+        </button>
+        <button class="btn-top-action" id="btnFullscreenToggle">
+            <span id="fullscreenIcon">🖥️</span>
+            <span id="fullscreenText">เต็มจอ</span>
+        </button>
+    </div>
+
+    <div class="spectator-wrapper">
+        <div class="board-stage">
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                <span>LIVE BROADCAST</span>
+            </div>
+
+            <div class="board-container" id="boardContainer">
+                <img src="board-map.jpg" alt="กระดานมดนักสำรวจ" class="board-bg-img">
+                <div id="pawnsContainer"></div>
+            </div>
+        </div>
+
+        <div class="spectator-sidebar">
+            <div class="spec-header">
+                <div class="spec-game-title">🐜 มดนักสำรวจ (จอผู้ชม)</div>
+                <div class="spec-room-tag">ห้องแข่งขัน: <strong id="lblRoomCode">8492</strong></div>
+            </div>
+
+            <div class="current-action-card">
+                <div class="action-turn-label">📍 ทีมที่กำลังเดิน:</div>
+                <div class="action-turn-name" id="lblCurrentTeam">-</div>
+                <div class="action-status-desc" id="lblActionStatus">กำลังรอเริ่มเกม...</div>
+            </div>
+
+            <div class="leaderboard-box">
+                <div class="lb-header">
+                    <span>🏆 ตารางอันดับสด</span>
+                    <span style="font-size: 0.95rem; color: #b2bec3;">แต้ม / เหรียญ</span>
+                </div>
+                <div id="leaderboardList"></div>
+            </div>
+
+            <div class="live-feed-panel" id="liveFeed">
+                <div class="feed-item">📢 ระบบถ่ายทอดสดพร้อมแล้ว!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- แถบปุ่มควบคุมด้านล่างหน้าจอ (ระหว่างแข่งขัน) -->
+    <div class="bottom-global-controls">
+        <button class="btn-bottom-cmd btn-cmd-restart" id="btnBottomRestart">
+            <span>🔄</span>
+            <span>เริ่มต้นใหม่ (ทุกคน)</span>
+        </button>
+        <button class="btn-bottom-cmd btn-cmd-home" id="btnBottomHome">
+            <span>🏠</span>
+            <span>กลับสู่หน้าแรก (ทุกคน)</span>
+        </button>
+    </div>
+
+    <!-- ลูกเต๋า 3D เต็มจอสำหรับผู้ชม -->
+    <div class="dice-overlay" id="diceModal">
+        <div class="dice-cube dice-rolling-anim" id="diceCube">
+            <div class="dice-face face-1">1</div>
+            <div class="dice-face face-2">2</div>
+            <div class="dice-face face-3">3</div>
+            <div class="dice-face face-4">4</div>
+            <div class="dice-face face-5">5</div>
+            <div class="dice-face face-6">6</div>
+        </div>
+        <div class="dice-result-banner" id="diceBanner">ได้ 5 แต้ม!</div>
+    </div>
+
+    <!-- Modal คำถาม/ผลลัพธ์ -->
+    <div class="spec-modal-overlay" id="specQuizModal">
+        <div class="spec-modal-card" id="specModalCardContent"></div>
+    </div>
+
+    <!-- ป๊อปอัปแจ้งเตือนแซงขึ้นที่ 1 -->
+    <div class="takeover-popup" id="takeoverPopup">
+        <div class="takeover-card">
+            <div class="takeover-crown">👑</div>
+            <div class="takeover-title">แซงขึ้นสู่อันดับที่ 1!</div>
+            <div class="takeover-hero-box">
+                <div class="takeover-hero-avatar" id="takeoverAvatar"></div>
+                <div class="takeover-team" id="takeoverTeamName">ทีมมดสายลุย</div>
+            </div>
+            <div style="font-size: 1.3rem; font-weight: 700;">🔥 พลิกเกมสำเร็จ ขึ้นนำจ่าฝูงแล้ว! 🔥</div>
+        </div>
+    </div>
+
+    <!-- แท่นรับรางวัล PODIUM -->
+    <div class="podium-modal" id="podiumModal">
+        <canvas id="fireworksCanvas"></canvas>
+        <div class="podium-inner">
+            <div class="podium-title">🎉 สรุปผลการผจญภัยมดนักสำรวจ 🏆</div>
+            <div class="podium-container">
+                <div class="podium-col" id="podiumRank2">
+                    <div class="podium-hero-avatar" id="avatarRank2"></div>
+                    <div class="podium-team-name" id="nameRank2">-</div>
+                    <div class="podium-score-info" id="scoreRank2">-</div>
+                    <div class="podium-pillar pillar-2">2</div>
+                </div>
+                <div class="podium-col" id="podiumRank1">
+                    <div style="font-size: 2.2rem; margin-bottom: -5px;">👑</div>
+                    <div class="podium-hero-avatar" id="avatarRank1"></div>
+                    <div class="podium-team-name" id="nameRank1">-</div>
+                    <div class="podium-score-info" id="scoreRank1">-</div>
+                    <div class="podium-pillar pillar-1">1</div>
+                </div>
+                <div class="podium-col" id="podiumRank3">
+                    <div class="podium-hero-avatar" id="avatarRank3"></div>
+                    <div class="podium-team-name" id="nameRank3">-</div>
+                    <div class="podium-score-info" id="scoreRank3">-</div>
+                    <div class="podium-pillar pillar-3">3</div>
+                </div>
+            </div>
+
+            <div class="runner-up-board" id="runnerUpBoard">
+                <div class="runner-up-title">🎖️ อันดับทีมสำรวจอื่น ๆ:</div>
+                <div class="runner-up-grid" id="runnerUpGrid"></div>
+            </div>
+
+            <!-- ปุ่มควบคุมด้านล่างแท่นสรุปผล -->
+            <div class="podium-actions-bar">
+                <button class="btn-podium-cmd btn-cmd-restart" id="btnPodiumRestart">
+                    <span>🔄</span>
+                    <span>เริ่มต้นใหม่ (ทุกคน)</span>
+                </button>
+                <button class="btn-podium-cmd btn-cmd-home" id="btnPodiumHome">
+                    <span>🏠</span>
+                    <span>กลับสู่หน้าแรก (ทุกคน)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const TILE_COORDS = [
+            {x: 12, y: 7}, {x: 19, y: 14}, {x: 19, y: 22}, {x: 25, y: 22},
+            {x: 11, y: 35}, {x: 8, y: 47}, {x: 8, y: 60}, {x: 8, y: 74},
+            {x: 8, y: 84}, {x: 18, y: 92}, {x: 26, y: 88}, {x: 34, y: 92},
+            {x: 44, y: 92}, {x: 52, y: 87}, {x: 52, y: 74}, {x: 47, y: 66},
+            {x: 38, y: 66}, {x: 30, y: 66}, {x: 22, y: 62}, {x: 21, y: 55},
+            {x: 25, y: 46}, {x: 32, y: 42}, {x: 40, y: 46}, {x: 48, y: 46},
+            {x: 57, y: 45}, {x: 61, y: 54}, {x: 62, y: 64}, {x: 62, y: 79},
+            {x: 65, y: 91}, {x: 74, y: 91}, {x: 75, y: 76}, {x: 75, y: 60},
+            {x: 75, y: 50}, {x: 75, y: 38}, {x: 68, y: 28}, {x: 59, y: 31},
+            {x: 50, y: 31}, {x: 41, y: 30}, {x: 34, y: 23}, {x: 36, y: 11},
+            {x: 47, y: 9}, {x: 57, y: 9}, {x: 68, y: 9}, {x: 75, y: 9},
+            {x: 84, y: 9}, {x: 93, y: 9}, {x: 96, y: 21}, {x: 96, y: 34},
+            {x: 89, y: 42}, {x: 85, y: 54}, {x: 86, y: 72}
+        ];
+
+        const AVATAR_SVGS = {
+            ant: `<svg viewBox="0 0 100 100"><circle cx="50" cy="32" r="17" fill="#e74c3c"/><circle cx="44" cy="30" r="3.5" fill="#2c3e50"/><circle cx="56" cy="30" r="3.5" fill="#2c3e50"/><ellipse cx="50" cy="54" rx="12" ry="10" fill="#c0392b"/><ellipse cx="50" cy="76" rx="18" ry="16" fill="#e74c3c"/><path d="M39 52 Q22 48 18 60" stroke="#a93226" stroke-width="4" fill="none"/><path d="M61 52 Q78 48 82 60" stroke="#a93226" stroke-width="4" fill="none"/></svg>`,
+            bee: `<svg viewBox="0 0 100 100"><ellipse cx="32" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="68" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="50" cy="58" rx="26" ry="28" fill="#fbc02d"/><path d="M26 50 Q50 56 74 50 L75 58 Q50 64 25 58 Z" fill="#37474f"/><circle cx="42" cy="42" r="3.5" fill="#263238"/><circle cx="58" cy="42" r="3.5" fill="#263238"/></svg>`,
+            beetle: `<svg viewBox="0 0 100 100"><path d="M50 35 L50 14 Q50 6 42 6 M50 14 Q50 6 58 6 M50 20 L44 17 M50 20 L56 17" stroke="#4a148c" stroke-width="4.5" fill="none"/><ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c"/><circle cx="42" cy="36" r="3" fill="#ffca28"/><circle cx="58" cy="36" r="3" fill="#ffca28"/><ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a"/><line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3"/></svg>`
+        };
+
+        const specRoomCode = sessionStorage.getItem('ant_room') || '8492';
+        document.getElementById('lblRoomCode').innerText = specRoomCode;
+
+        let players = [];
+        const savedAllPlayers = sessionStorage.getItem('ant_all_players');
+        if (savedAllPlayers) {
+            players = JSON.parse(savedAllPlayers).map((p, idx) => ({
+                id: p.id || idx + 1, name: p.name, avatar: p.avatar, pos: p.pos || 0, score: p.score || 0, coins: p.coins || 0
+            }));
+        } else {
+            players = [
+                {id: 1, name: 'ทีมมดสายลุย', avatar: 'ant', pos: 0, score: 0, coins: 0},
+                {id: 2, name: 'ผึ้งน้อยไอที', avatar: 'bee', pos: 0, score: 0, coins: 0}
+            ];
+        }
+
+        let currentTurnIndex = 0;
+        let audioCtx = null;
+        let currentQuizData = null;
+        let isGamePaused = false;
+        let socket = null;
+        let broadcastChan = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        window.addEventListener('click', initAudio, {once: true});
+        window.addEventListener('touchstart', initAudio, {once: true});
+
+        function playCorrectSound() {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.1);
+                    osc.stop(audioCtx.currentTime + idx * 0.1 + 0.35);
+                });
+            } catch (e) { }
+        }
+
+        function playWrongSound() {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(90, audioCtx.currentTime + 0.4);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.45);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.45);
+            } catch (e) { }
+        }
+
+        function playTakeoverSound() {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const notes = [440, 554.37, 659.25, 880, 1108.73];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.25, audioCtx.currentTime + idx * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.12 + 0.5);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.12);
+                    osc.stop(audioCtx.currentTime + idx * 0.12 + 0.5);
+                });
+            } catch (e) { }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    document.getElementById('fullscreenIcon').innerText = '🗗';
+                    document.getElementById('fullscreenText').innerText = 'ออกจากเต็มจอ';
+                }).catch(err => console.log(err));
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        document.getElementById('fullscreenIcon').innerText = '🖥️';
+                        document.getElementById('fullscreenText').innerText = 'เต็มจอ';
+                    });
+                }
+            }
+        }
+
+        /* ---------------- ฟังก์ชันส่งคำสั่ง Broadcast & Socket แบบกระจายทุกเครื่อง ---------------- */
+        function emitGlobalSync(payload) {
+            payload.roomCode = specRoomCode;
+            // 1. ส่งผ่าน BroadcastChannel (สำหรับแท็บบนเครื่องเดียวกัน)
+            if (broadcastChan) {
+                try {broadcastChan.postMessage(payload);} catch (e) { }
+            }
+            // 2. ส่งผ่าน Socket.io (สำหรับทุกอุปกรณ์ เช่น มือถือ/iPad/เครื่องอื่น ๆ ในห้องเดียวกัน)
+            if (socket) {
+                socket.emit('game-sync', payload);
+            }
+        }
+
+        function toggleGamePause() {
+            isGamePaused = !isGamePaused;
+            const btn = document.getElementById('btnPauseGame');
+            const icon = document.getElementById('pauseIcon');
+            const text = document.getElementById('pauseText');
+
+            if (isGamePaused) {
+                btn.classList.add('is-paused');
+                icon.innerText = '▶️';
+                text.innerText = 'เล่นต่อ';
+                addFeed('⏸️ ผู้ควบคุมสั่ง <strong>พักเกมชั่วคราว</strong>');
+            } else {
+                btn.classList.remove('is-paused');
+                icon.innerText = '⏸️';
+                text.innerText = 'พักเกม';
+                addFeed('▶️ ผู้ควบคุมสั่ง <strong>เล่นเกมต่อ</strong>');
+            }
+
+            emitGlobalSync({
+                type: 'PAUSE_GAME',
+                isPaused: isGamePaused
+            });
+        }
+
+        function sendGlobalGoHome() {
+            if (!confirm('คุณต้องการนำทุกทีมออกจากเกมและกลับไปยังหน้าแรกพร้อมกันใช่หรือไม่?')) return;
+            emitGlobalSync({type: 'GLOBAL_GO_HOME'});
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 300);
+        }
+
+        function sendGlobalRestart() {
+            if (!confirm('คุณต้องการรีเซ็ตและให้ทุกทีมเริ่มเล่นใหม่ตั้งแต่ต้นใช่หรือไม่?')) return;
+            emitGlobalSync({type: 'GLOBAL_RESTART'});
+            setTimeout(() => {
+                location.reload();
+            }, 300);
+        }
+
+        // ผูก Event ให้รองรับทั้ง Click และ Touch บนอุปกรณ์พกพา
+        function bindButtonAction(btnId, actionFn) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            let touched = false;
+            btn.addEventListener('touchstart', (e) => {
+                touched = true;
+                e.preventDefault();
+                actionFn();
+            }, {passive: false});
+            btn.addEventListener('click', (e) => {
+                if (!touched) actionFn();
+                touched = false;
+            });
+        }
+
+        function initSpectator() {
+            renderPawns();
+            updateLeaderboard();
+            updateTurnStatus();
+            setupBroadcastListener();
+
+            // ผูก Event กับปุ่มควบคุมทั้งหมด
+            bindButtonAction('btnPauseGame', toggleGamePause);
+            bindButtonAction('btnFullscreenToggle', toggleFullscreen);
+            bindButtonAction('btnBottomRestart', sendGlobalRestart);
+            bindButtonAction('btnBottomHome', sendGlobalGoHome);
+            bindButtonAction('btnPodiumRestart', sendGlobalRestart);
+            bindButtonAction('btnPodiumHome', sendGlobalGoHome);
+        }
+
+        function renderPawns() {
+            const container = document.getElementById('pawnsContainer');
+            container.innerHTML = '';
+            players.forEach((p, index) => {
+                const coord = TILE_COORDS[p.pos] || TILE_COORDS[0];
+                const pawnEl = document.createElement('div');
+                pawnEl.className = 'pawn';
+                pawnEl.id = `spec-pawn-${p.id}`;
+                const offset = (index - 1) * 2;
+                pawnEl.style.left = `calc(${coord.x}% + ${offset}%)`;
+                pawnEl.style.top = `calc(${coord.y}% + ${offset}%)`;
+                pawnEl.innerHTML = `<div class="pawn-badge">${p.name}</div>${AVATAR_SVGS[p.avatar] || AVATAR_SVGS.ant}`;
+                container.appendChild(pawnEl);
+            });
+        }
+
+        function updateLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            list.innerHTML = '';
+            const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
+
+            sorted.forEach((p, idx) => {
+                const row = document.createElement('div');
+                const isActive = players[currentTurnIndex] && players[currentTurnIndex].id === p.id;
+                row.className = `spec-player-row ${isActive ? 'active' : ''}`;
+                let rankBadgeClass = '';
+                if (idx === 0) rankBadgeClass = 'rank-gold';
+                if (idx === 1) rankBadgeClass = 'rank-silver';
+                if (idx === 2) rankBadgeClass = 'rank-bronze';
+
+                row.innerHTML = `
+                  <div class="spec-player-left">
+                    <span class="spec-rank-num ${rankBadgeClass}">#${idx + 1}</span>
+                    <div class="spec-avatar-icon">${AVATAR_SVGS[p.avatar]}</div>
+                    <div>
+                      <div class="spec-name-tag">${p.name}</div>
+                      <div class="spec-pos-tag">ช่องที่ ${p.pos} / 50</div>
+                    </div>
+                  </div>
+                  <div class="spec-score-tag">
+                    <div class="spec-points">⭐ ${p.score}</div>
+                    <div class="spec-coins">🪙 ${p.coins}</div>
+                  </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function updateTurnStatus(extraText = 'กำลังเตรียมเดินหมาก...') {
+            if (players.length === 0) return;
+            const current = players[currentTurnIndex];
+            document.getElementById('lblCurrentTeam').innerText = current ? current.name : '-';
+            document.getElementById('lblActionStatus').innerText = extraText;
+        }
+
+        function addFeed(message) {
+            const feed = document.getElementById('liveFeed');
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.innerHTML = message;
+            feed.prepend(item);
+        }
+
+        function setupBroadcastListener() {
+            if ('BroadcastChannel' in window) {
+                broadcastChan = new BroadcastChannel('ant_explorer_game_sync');
+                broadcastChan.onmessage = (event) => handleSyncEvent(event.data);
+            }
+
+            if (typeof io === 'function') {
+                socket = io();
+                socket.emit('join-room', {roomCode: specRoomCode, isHost: false, player: null});
+                socket.on('game-sync', (data) => handleSyncEvent(data));
+                socket.on('game-start', (data) => {
+                    if (data && data.players) {
+                        players = data.players.map((p, idx) => ({
+                            id: p.id || idx + 1, name: p.name, avatar: p.avatar,
+                            pos: p.pos || 0, score: p.score || 0, coins: p.coins || 0
+                        }));
+                        renderPawns(); updateLeaderboard(); updateTurnStatus();
+                    }
+                });
+            }
+        }
+
+        function handleSyncEvent(data) {
+            if (!data) return;
+
+            if (data.playersState) players = data.playersState;
+
+            if (data.type === 'SYNC_LOG') {
+                addFeed(`📝 ${data.msg}`);
+            }
+            else if (data.type === 'ROLL_DICE') {
+                const diceModal = document.getElementById('diceModal');
+                const diceCube = document.getElementById('diceCube');
+                const diceBanner = document.getElementById('diceBanner');
+                diceModal.style.display = 'flex';
+                diceBanner.style.display = 'none';
+                diceCube.className = 'dice-cube dice-rolling-anim';
+                setTimeout(() => {
+                    diceCube.className = 'dice-cube';
+                    const diceRotations = {
+                        1: 'rotateX(0deg) rotateY(0deg)',
+                        2: 'rotateX(0deg) rotateY(-90deg)',
+                        3: 'rotateX(0deg) rotateY(-180deg)',
+                        4: 'rotateX(0deg) rotateY(90deg)',
+                        5: 'rotateX(-90deg) rotateY(0deg)',
+                        6: 'rotateX(90deg) rotateY(0deg)'
+                    };
+
+                    diceCube.style.transform = diceRotations[data.steps] || diceRotations[1];
+                    diceBanner.innerText = `ได้ ${data.steps} แต้ม! 🎲`;
+                    diceBanner.style.display = 'block';
+                    updateTurnStatus(`🎲 ทอยได้ ${data.steps} แต้ม! กำลังเดิน...`);
+                    addFeed(`🎲 <strong>${data.teamName}</strong> ทอยได้ <strong>${data.steps}</strong> แต้ม`);
+                    setTimeout(() => diceModal.style.display = 'none', 1400);
+                }, 1200);
+            } else if (data.type === 'ROLL_TIMEOUT' || data.type === 'UPDATE_POS') {
+                renderPawns(); updateLeaderboard();
+            } else if (data.type === 'SHOW_QUIZ') {
+                showQuizOnScreen(data.quiz, data.boxType, data.options);
+            } else if (data.type === 'QUIZ_RESULT') {
+                const userSelectedText = data.selectedOption || (data.choice !== undefined && currentQuizData && currentQuizData.options ? currentQuizData.options[data.choice] : null);
+                showResultOnScreen(data.isCorrect, data.rewardScore, userSelectedText);
+            } else if (data.type === 'NEXT_TURN') {
+                currentTurnIndex = data.nextTurn;
+                updateTurnStatus();
+                updateLeaderboard();
+            } else if (data.type === 'WINNER') {
+                triggerPodiumScene();
+            }
+        }
+
+        function showQuizOnScreen(quiz, boxType, options) {
+            currentQuizData = {quiz, boxType, options};
+            const modal = document.getElementById('specQuizModal');
+            const team = players[currentTurnIndex];
+            const cardContent = document.getElementById('specModalCardContent');
+
+            let badgeClass = 'box-green';
+            let badgeText = '🟩 กล่องเขียว';
+            if (boxType === 'yellow') {badgeClass = 'box-yellow'; badgeText = '🟨 กล่องเหลือง';}
+            if (boxType === 'orange') {badgeClass = 'box-orange'; badgeText = '🟧 กล่องส้ม';}
+
+            cardContent.innerHTML = `
+                <div class="spec-modal-header">
+                    <span class="box-theme-badge ${badgeClass}">${badgeText}</span>
+                    <span class="spec-team-badge">ทีมผู้ตอบ: ${team ? team.name : '-'}</span>
+                </div>
+                <div class="spec-question-box">${quiz.q}</div>
+                <div class="spec-options-grid">
+                    ${options.map((opt, idx) => `
+                        <div class="spec-opt-item">
+                            <span style="background: rgba(0,0,0,0.08); width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight:800;">${String.fromCharCode(65 + idx)}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            modal.style.display = 'flex';
+            addFeed(`❓ <strong>${team ? team.name : 'ผู้เล่น'}</strong> เปิดกล่องคำถาม`);
+        }
+
+        function showResultOnScreen(isCorrect, rewardScore, selectedOption = null) {
+            const modal = document.getElementById('specQuizModal');
+            const cardContent = document.getElementById('specModalCardContent');
+            const team = players[currentTurnIndex];
+            const teamNameStr = team ? team.name : 'ผู้ตอบ';
+
+            if (isCorrect) {
+                playCorrectSound();
+                addFeed(`✅ <strong>${teamNameStr}</strong> ตอบถูกต้อง (+${rewardScore || 0} แต้ม)`);
+            } else {
+                playWrongSound();
+                addFeed(`❌ <strong>${teamNameStr}</strong> ตอบไม่ถูกต้อง`);
+            }
+
+            const quizInfo = currentQuizData ? currentQuizData.quiz : null;
+            const correctAnswerText = quizInfo ? (quizInfo.a || (quizInfo.ans !== undefined && currentQuizData.options ? currentQuizData.options[quizInfo.ans] : '-')) : '-';
+            const tipText = quizInfo ? (quizInfo.tip || quizInfo.explain || 'เรียนรู้เรื่องการใช้งานเทคโนโลยีอย่างปลอดภัยและรู้เท่าทันภัยไซเบอร์') : 'เรียนรู้เรื่องการใช้งานเทคโนโลยีอย่างปลอดภัยและรู้เท่าทันภัยไซเบอร์';
+            const userChoiceText = selectedOption ? selectedOption : (isCorrect ? correctAnswerText : 'ไม่ตอบในเวลา / หมดเวลา');
+
+            cardContent.innerHTML = `
+                <div style="margin-bottom: 12px;">
+                    <span class="spec-team-badge" style="font-size: 1.25rem; padding: 10px 24px; background: #fff3e0; border-color: #ff9800; color: #e65100;">
+                        🎯 ทีมผู้ตอบ: <strong>${teamNameStr}</strong>
+                    </span>
+                </div>
+
+                <div style="font-size: 3.5rem; margin-bottom: 4px;">${isCorrect ? '🎉' : '❌'}</div>
+                <h2 style="font-size: 2rem; font-weight: 900; color: ${isCorrect ? '#27ae60' : '#c0392b'}; margin-bottom: 15px;">
+                    ${isCorrect ? 'ตอบถูกต้อง!' : 'ตอบไม่ถูกต้อง!'}
+                </h2>
+
+                <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap;">
+                    <div style="background: #eef5fc; border: 2px solid #74b9ff; padding: 8px 18px; border-radius: 14px; font-weight: 700; color: #0984e3; font-size: 1.05rem;">
+                        📌 ตัวเลือกที่ตอบ: <span style="color: #2d3436;">${userChoiceText}</span>
+                    </div>
+                    <div style="background: #fff9e6; border: 2px solid #ffeaa7; padding: 8px 18px; border-radius: 14px; font-weight: 800; color: #d35400; font-size: 1.05rem;">
+                        ⭐ แต้มที่ได้รับ: <span style="color: #d63031;">+${isCorrect ? (rewardScore || 0) : 0} แต้ม</span>
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 18px 22px; border-radius: 18px; text-align: left; margin-bottom: 20px; border-left: 6px solid ${isCorrect ? '#2ecc71' : '#e74c3c'}; font-size: 1.1rem; line-height: 1.6; color: #2d3436;">
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #0984e3; margin-bottom: 6px;">
+                        ✅ เฉลยคำตอบที่ถูกต้อง: <span style="color: #27ae60;">${correctAnswerText}</span>
+                    </div>
+                    <div style="font-size: 1.02rem; color: #4b6584;">
+                        <strong>💡 เกร็ดความรู้เพิ่มเติม:</strong><br>
+                        ${tipText}
+                    </div>
+                </div>
+
+                <button class="btn-close-spec-modal" onclick="closeSpecModal()">ปิดหน้าต่าง (รับทราบ)</button>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closeSpecModal() {
+            document.getElementById('specQuizModal').style.display = 'none';
+            renderPawns();
+            updateLeaderboard();
+        }
+
+        function triggerTakeoverPopup(team) {
+            playTakeoverSound();
+            const popup = document.getElementById('takeoverPopup');
+            document.getElementById('takeoverAvatar').innerHTML = AVATAR_SVGS[team.avatar];
+            document.getElementById('takeoverTeamName').innerText = team.name;
+            popup.style.display = 'flex';
+            setTimeout(() => popup.style.display = 'none', 2800);
+        }
+
+        function triggerPodiumScene() {
+            const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
+            const p1 = sorted[0];
+            const p2 = sorted[1] || {name: '-', avatar: 'ant', score: 0, coins: 0};
+            const p3 = sorted[2] || {name: '-', avatar: 'bee', score: 0, coins: 0};
+
+            document.getElementById('avatarRank1').innerHTML = AVATAR_SVGS[p1.avatar];
+            document.getElementById('nameRank1').innerText = p1.name;
+            document.getElementById('scoreRank1').innerText = `⭐ ${p1.score} | 🪙 ${p1.coins}`;
+
+            document.getElementById('avatarRank2').innerHTML = AVATAR_SVGS[p2.avatar];
+            document.getElementById('nameRank2').innerText = p2.name;
+            document.getElementById('scoreRank2').innerText = `⭐ ${p2.score} | 🪙 ${p2.coins}`;
+
+            document.getElementById('avatarRank3').innerHTML = AVATAR_SVGS[p3.avatar];
+            document.getElementById('nameRank3').innerText = p3.name;
+            document.getElementById('scoreRank3').innerText = `⭐ ${p3.score} | 🪙 ${p3.coins}`;
+
+            const runnerUpBoard = document.getElementById('runnerUpBoard');
+            const runnerUpGrid = document.getElementById('runnerUpGrid');
+            runnerUpGrid.innerHTML = '';
+
+            if (sorted.length > 3) {
+                runnerUpBoard.style.display = 'block';
+                for (let i = 3; i < sorted.length; i++) {
+                    const rp = sorted[i];
+                    const div = document.createElement('div');
+                    div.className = 'runner-up-row';
+                    div.innerHTML = `<span>#${i + 1} ${rp.name}</span><span style="color: #ffeaa7;">⭐ ${rp.score} | 🪙 ${rp.coins}</span>`;
+                    runnerUpGrid.appendChild(div);
+                }
+            } else {
+                runnerUpBoard.style.display = 'none';
+            }
+
+            document.getElementById('podiumModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('podiumRank3').classList.add('show-podium'), 600);
+            setTimeout(() => document.getElementById('podiumRank2').classList.add('show-podium'), 1600);
+            setTimeout(() => {
+                document.getElementById('podiumRank1').classList.add('show-podium');
+                startFireworks();
+            }, 2600);
+        }
+
+        function startFireworks() {
+            const canvas = document.getElementById('fireworksCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let particles = [];
+            function createFirework(x, y) {
+                const colors = ['#f1c40f', '#e74c3c', '#2ecc71', '#3498db', '#e67e22', '#9b59b6'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                for (let i = 0; i < 70; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 6 + 2;
+                    particles.push({x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, alpha: 1, color, radius: Math.random() * 3 + 2});
+                }
+            }
+            function loop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (Math.random() < 0.08) createFirework(Math.random() * canvas.width * 0.8 + canvas.width * 0.1, Math.random() * canvas.height * 0.5 + canvas.height * 0.1);
+                particles.forEach((p, index) => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.alpha -= 0.015;
+                    ctx.save(); ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                    if (p.alpha <= 0) particles.splice(index, 1);
+                });
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        initSpectator();
+    </script>
+</body>
+
+</html>
