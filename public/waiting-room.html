@@ -225,7 +225,6 @@
             }
         }
 
-        /* ปรับขนาดกรอบรหัสห้องให้พอดี Compact ขึ้น */
         .room-code-box {
             margin: 4px 0;
             background: #fff8e1;
@@ -254,7 +253,6 @@
             margin: 1px 0;
         }
 
-        /* ปรับขนาด QR Code เพิ่มขนาดให้ชัดเจนและสวยงาม */
         .qr-wrapper {
             margin: 6px auto 8px auto;
             background: #ffffff;
@@ -266,6 +264,7 @@
             flex-direction: column;
             align-items: center;
             transition: transform 0.2s;
+            cursor: pointer;
         }
 
         .qr-wrapper:hover {
@@ -398,7 +397,6 @@
             transform: translateY(-2px);
         }
 
-        /* ฝั่งขวา: รายชื่อทีม 10 สล็อต & คอนโทรล */
         .right-players-panel {
             flex: 1.65;
             display: flex;
@@ -436,7 +434,6 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
             margin-bottom: 18px;
-            /* เพิ่มระยะห่างให้แยกจากปุ่มแต่งตัว */
         }
 
         .player-card {
@@ -516,7 +513,6 @@
             padding: 0 4px;
         }
 
-        /* ติ๊กถูกสีเขียวสำหรับทีมที่กดเตรียมพร้อม */
         .ready-check-badge {
             position: absolute;
             top: -8px;
@@ -537,7 +533,6 @@
             animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* ข้อความแจ้งสถานะเด้งขึ้นมาข้างๆ / ด้านล่างการ์ดทีม */
         .team-ready-toast {
             position: absolute;
             bottom: -22px;
@@ -556,7 +551,6 @@
             animation: popIn 0.25s ease;
         }
 
-        /* เอฟเฟกต์ช่องรอเพื่อน - หมุน/กระพริบช้าๆ ด้านบน */
         .player-card.empty-slot {
             border: 2.5px dashed #b2bec3;
             background: rgba(245, 246, 250, 0.55);
@@ -607,7 +601,6 @@
             }
         }
 
-        /* เพิ่ม Margin ระยะห่างปุ่มแต่งตัว ให้ห่างจากช่องรอเพื่อน และเกร็ดความรู้ */
         .btn-open-wardrobe {
             width: 100%;
             padding: 12px 20px;
@@ -626,7 +619,6 @@
             transition: all 0.2s;
             margin-top: 10px;
             margin-bottom: 18px;
-            /* ระยะห่างกับเกร็ดความรู้ด้านล่าง */
         }
 
         .btn-open-wardrobe:hover {
@@ -635,7 +627,6 @@
             background: linear-gradient(135deg, #a569bd 0%, #9b59b6 100%);
         }
 
-        /* การ์ดเกร็ดความรู้ */
         .lobby-tip-card {
             background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
             border: 2px dashed #81c784;
@@ -1000,6 +991,81 @@
             transform: scale(1.02);
         }
 
+        /* ---------------- Modal แสดง QR Code เต็มหน้าจอ ---------------- */
+        .qr-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2500;
+            padding: 20px;
+        }
+
+        .qr-modal-card {
+            background: #ffffff;
+            border-radius: 36px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            border: 5px solid #ffb300;
+            max-width: 90vw;
+            width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .qr-modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #795548;
+        }
+
+        .qr-modal-code {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #d84315;
+            background: #fff8e1;
+            padding: 6px 24px;
+            border-radius: 20px;
+            border: 3px dashed #ffb300;
+            width: 100%;
+        }
+
+        .qr-modal-img {
+            width: 280px;
+            height: 280px;
+            border-radius: 16px;
+            border: 3px solid #ffe082;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-close-qr-modal {
+            background: #ff7675;
+            color: #ffffff;
+            border: none;
+            padding: 12px 36px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(255, 118, 117, 0.4);
+            transition: all 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn-close-qr-modal:hover {
+            background: #d63031;
+            transform: scale(1.05);
+        }
+
         /* ---------------- ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ (แสดงกลางหน้าจอ) ---------------- */
         .join-popup-overlay {
             position: fixed;
@@ -1218,6 +1284,15 @@
                 height: 110px;
             }
 
+            .qr-modal-img {
+                width: 220px;
+                height: 220px;
+            }
+
+            .qr-modal-code {
+                font-size: 2.2rem;
+            }
+
             .right-players-panel {
                 width: 100%;
             }
@@ -1333,9 +1408,9 @@
                 <span class="room-code-label">รหัสห้องสำรวจ (PIN)</span>
                 <div class="room-code-display" id="displayRoomCode">----</div>
 
-                <div class="qr-wrapper">
+                <div class="qr-wrapper" onclick="openQrModal()" title="คลิกเพื่อขยายเต็มหน้าจอ">
                     <img id="roomQrCodeImg" class="qr-img" src="" alt="QR Code สแกนเข้าห้อง">
-                    <span class="qr-caption">📷 สแกนเข้าห้องทันที</span>
+                    <span class="qr-caption">📷 คลิกเพื่อขยาย QR Code</span>
                 </div>
 
                 <button class="btn-copy-code" id="btnCopyCode" onclick="copyRoomCode()">📋 คัดลอกรหัสห้อง</button>
@@ -1573,6 +1648,17 @@
         </div>
     </div>
 
+    <!-- Modal QR Code เต็มหน้าจอ -->
+    <div class="qr-modal-overlay" id="qrModal">
+        <div class="qr-modal-card">
+            <div class="qr-modal-title">รหัสห้องสำรวจ PIN</div>
+            <div class="qr-modal-code" id="modalRoomCode">----</div>
+            <div class="qr-modal-title">📷 สแกน QR Code เข้าสู่ห้อง</div>
+            <img id="modalQrImg" class="qr-modal-img" src="" alt="QR Code สแกนเข้าห้อง ใหญ่">
+            <button class="btn-close-qr-modal" onclick="closeQrModal()">✖ ปิดหน้าต่าง</button>
+        </div>
+    </div>
+
     <!-- Container ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ (กลางหน้าจอ) -->
     <div id="joinPopupContainer"></div>
 
@@ -1645,6 +1731,20 @@
         let players = [];
         const MAX_SLOTS = 10;
         let broadcastChan = null;
+
+        /* ---------------- ระบบ Modal แสดง QR Code เต็มหน้าจอ ---------------- */
+        function openQrModal() {
+            const joinUrl = `${window.location.origin}/index.html?room=${currentRoomCode}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(joinUrl)}`;
+
+            document.getElementById('modalRoomCode').innerText = currentRoomCode;
+            document.getElementById('modalQrImg').src = qrApiUrl;
+            document.getElementById('qrModal').style.display = 'flex';
+        }
+
+        function closeQrModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
 
         /* ---------------- ระบบห้องแต่งตัว (Wardrobe) ---------------- */
         let tempSelectedCostumes = parseCostumes(myCurrentCostume);
@@ -1805,7 +1905,7 @@
                 const newPlayers = data.players || [];
                 if (newPlayers.length > players.length && players.length > 0) {
                     const addedPlayer = newPlayers[newPlayers.length - 1];
-                    showJoinCenterPopup(addedPlayer); // เรียกป๊อปอัปกลางหน้าจอเมื่อมีสมาชิกใหม่
+                    showJoinCenterPopup(addedPlayer);
                 }
 
                 newPlayers.forEach(np => {
@@ -2138,9 +2238,8 @@
                         sessionStorage.setItem('ant_all_players', JSON.stringify(players));
                         if (isHostClient && socket) {
                             socket.emit('start-game', {roomCode: currentRoomCode, players});
-                        } else {
-                            window.location.href = 'board.html';
                         }
+                        window.location.href = 'board.html';
                     }, 800);
                 }
             }, 1000);
