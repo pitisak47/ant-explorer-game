@@ -1,0 +1,2535 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="mod.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RERU มดนักสำรวจ - กระดานเกมตะลุยแดนดิจิทัล ป.4</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: radial-gradient(circle at 20% 20%, #1e3c72 0%, #2a5298 50%, #0f2027 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 70px 15px 20px 15px;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .ambient-light {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+            animation: floatLight 12s infinite alternate ease-in-out;
+        }
+
+        .light-1 {
+            width: 450px;
+            height: 450px;
+            background: #00cec9;
+            top: -50px;
+            left: 10%;
+        }
+
+        .light-2 {
+            width: 500px;
+            height: 500px;
+            background: #6c5ce7;
+            bottom: -100px;
+            right: 5%;
+            animation-duration: 16s;
+        }
+
+        .light-3 {
+            width: 350px;
+            height: 350px;
+            background: #2ecc71;
+            top: 40%;
+            right: 35%;
+            animation-duration: 10s;
+        }
+
+        @keyframes floatLight {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-70px) scale(1.15) rotate(40deg);
+            }
+        }
+
+        .edu-global-badge {
+            position: fixed;
+            top: 14px;
+            left: 16px;
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid #2ecc71;
+            padding: 6px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #1b5e20;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        /* โลโก้สาขาวิชาวงกลม */
+        .edu-badge-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            border: 1.5px solid #2ecc71;
+        }
+
+        .top-right-controls {
+            position: fixed;
+            top: 14px;
+            right: 16px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .btn-global-exit {
+            background: rgba(231, 76, 60, 0.94);
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+            transition: all 0.2s;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-global-exit:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .game-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: row;
+            gap: 18px;
+            width: 100%;
+            max-width: 1440px;
+            height: 88vh;
+            max-height: 860px;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 28px;
+            padding: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+            border: 4px solid #fff;
+        }
+
+        .board-section {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #c8e6c9;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid #81c784;
+            min-height: 300px;
+        }
+
+        .board-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 1000px;
+            aspect-ratio: 1000 / 680;
+        }
+
+        .board-bg-img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+            border-radius: 18px;
+        }
+
+        .pawn {
+            position: absolute;
+            width: 58px;
+            height: 58px;
+            transform: translate(-50%, -50%);
+            transition: left 0.4s ease-in-out, top 0.4s ease-in-out;
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+        }
+
+        .pawn-badge {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4757;
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            border: 1.5px solid #fff;
+        }
+
+        .pawn svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .sidebar-section {
+            width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .header-panel {
+            background: #e8f5e9;
+            padding: 12px 14px;
+            border-radius: 18px;
+            text-align: center;
+            border: 2px solid #a5d6a7;
+        }
+
+        .top-controls-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .room-tag {
+            font-size: 0.95rem;
+            color: #2e7d32;
+            font-weight: 800;
+        }
+
+        .turn-indicator {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #d84315;
+            margin-top: 2px;
+        }
+
+        .turn-timer-wrap {
+            margin-top: 6px;
+            background: #fff;
+            border: 2px solid #ff7675;
+            border-radius: 12px;
+            padding: 3px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #d63031;
+        }
+
+        .timer-warning {
+            animation: pulseTimer 0.6s infinite alternate;
+        }
+
+        @keyframes pulseTimer {
+            from {
+                transform: scale(1);
+                color: #d63031;
+            }
+
+            to {
+                transform: scale(1.08);
+                color: #c0392b;
+            }
+        }
+
+        .leaderboard-panel {
+            flex: 1;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .leaderboard-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #37474f;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed #eceff1;
+            padding-bottom: 6px;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 14px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            transition: all 0.25s;
+        }
+
+        .player-row.active-turn {
+            background: #fff8e1;
+            border-color: #ffa000;
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(255, 160, 0, 0.2);
+        }
+
+        .player-info-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .player-rank {
+            font-weight: 900;
+            font-size: 1.05rem;
+            color: #9e9e9e;
+            width: 22px;
+        }
+
+        .rank-1 {
+            color: #f1c40f;
+        }
+
+        .rank-2 {
+            color: #95a5a6;
+        }
+
+        .rank-3 {
+            color: #cd7f32;
+        }
+
+        .mini-avatar {
+            width: 36px;
+            height: 36px;
+        }
+
+        .name-pos {
+            text-align: left;
+        }
+
+        .p-name {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #2d3436;
+            max-width: 105px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .p-pos {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+
+        .player-stats {
+            text-align: right;
+        }
+
+        .stat-score {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #e67e22;
+        }
+
+        .stat-coins {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #f39c12;
+        }
+
+        .controls-panel {
+            background: #fff3e0;
+            border-radius: 18px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid #ffe0b2;
+        }
+
+        .powerup-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .btn-powerup {
+            flex: 1;
+            padding: 7px 4px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            border-radius: 10px;
+            border: 2px solid #ffb74d;
+            background: #fff;
+            color: #e67e22;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-powerup:hover:not(:disabled) {
+            background: #ffe0b2;
+        }
+
+        .btn-powerup:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            border-color: #ccc;
+            color: #999;
+        }
+
+        .btn-roll {
+            width: 100%;
+            padding: 15px;
+            background: #ff9f1a;
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 5px 0 #d35400;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-roll:hover:not(:disabled) {
+            background: #e58e10;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #d35400;
+        }
+
+        .btn-roll:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #d35400;
+        }
+
+        .btn-roll:disabled {
+            background: #bdc3c7;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.75;
+        }
+
+        .action-log-drawer {
+            position: fixed;
+            left: -320px;
+            top: 90px;
+            width: 290px;
+            height: 60vh;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 0 18px 18px 0;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.25);
+            z-index: 99;
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-log-drawer.open {
+            left: 0;
+        }
+
+        .log-toggle-btn {
+            position: absolute;
+            right: -38px;
+            top: 20px;
+            background: #0984e3;
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 0 10px 10px 0;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 3px 0 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .log-content {
+            padding: 12px;
+            overflow-y: auto;
+            flex: 1;
+            font-size: 0.82rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .log-entry {
+            background: #f1f2f6;
+            padding: 7px 10px;
+            border-radius: 8px;
+            border-left: 4px solid #0984e3;
+        }
+
+        /* 3D DICE SYSTEM */
+        .dice-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            perspective: 1200px;
+        }
+
+        .dice-cube {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: #ffffff;
+            border: 6px solid #e2e8f0;
+            border-radius: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            font-weight: 900;
+            color: #e74c3c;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.12), 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .face-1 {
+            transform: rotateY(0deg) translateZ(90px);
+        }
+
+        .face-2 {
+            transform: rotateY(90deg) translateZ(90px);
+        }
+
+        .face-3 {
+            transform: rotateY(180deg) translateZ(90px);
+        }
+
+        .face-4 {
+            transform: rotateY(-90deg) translateZ(90px);
+        }
+
+        .face-5 {
+            transform: rotateX(90deg) translateZ(90px);
+        }
+
+        .face-6 {
+            transform: rotateX(-90deg) translateZ(90px);
+        }
+
+        .dice-rolling-anim {
+            animation: spinDiceSmooth 1.1s infinite linear;
+        }
+
+        @keyframes spinDiceSmooth {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+            }
+
+            100% {
+                transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg);
+            }
+        }
+
+        .dice-result-banner {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-top: 35px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            display: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            padding: 14px;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            max-width: 860px;
+            width: 96%;
+            border-radius: 26px;
+            padding: 24px 26px;
+            text-align: center;
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.45);
+            border: 4px solid #fff;
+            animation: popIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .quiz-active-team-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #fff8e1;
+            border: 3px solid #ffb300;
+            border-radius: 18px;
+            padding: 8px 16px;
+            margin-bottom: 14px;
+        }
+
+        .quiz-active-team-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .quiz-active-team-name {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #d84315;
+        }
+
+        .modal-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .box-theme-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .box-green {
+            background: #2ecc71;
+        }
+
+        .box-yellow {
+            background: #f39c12;
+        }
+
+        .box-orange {
+            background: #e67e22;
+        }
+
+        .modal-timer-badge {
+            background: #ffeaa7;
+            color: #d63031;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 1.15rem;
+            border: 2px solid #fdcb6e;
+        }
+
+        .cards-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin: 16px 0 10px;
+        }
+
+        .secret-card {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            border: 3px solid #fff;
+            border-radius: 18px;
+            height: 140px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 2.5rem;
+            box-shadow: 0 8px 18px rgba(108, 92, 231, 0.3);
+            transition: all 0.2s;
+        }
+
+        .secret-card:hover:not(.locked-card) {
+            transform: translateY(-6px) scale(1.03);
+            border-color: #ffeaa7;
+        }
+
+        .secret-card.locked-card {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .secret-card span {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .quiz-view {
+            display: none;
+            text-align: left;
+        }
+
+        .quiz-question {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #2d3436;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            background: #f8f9fa;
+            padding: 16px 20px;
+            border-radius: 16px;
+            border-left: 6px solid #0984e3;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn-option {
+            background: #f1f2f6;
+            border: 2px solid #dfe4ea;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #2f3542;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            background: #ffeaa7;
+            border-color: #fdcb6e;
+            transform: translateX(4px);
+        }
+
+        .btn-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        .detail-feedback-box {
+            text-align: center;
+        }
+
+        .detail-feedback-icon {
+            font-size: 3.5rem;
+            margin-bottom: 8px;
+        }
+
+        .detail-feedback-title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .detail-feedback-desc {
+            font-size: 1.1rem;
+            background: #f1f2f6;
+            padding: 16px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            color: #2d3436;
+            line-height: 1.5;
+            border-left: 5px solid #0984e3;
+            text-align: left;
+        }
+
+        .btn-next {
+            background: #0984e3;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .boss-icon {
+            font-size: 4.5rem;
+            animation: shakeWrong 0.5s infinite alternate;
+        }
+
+        .takeover-popup {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2500;
+        }
+
+        .takeover-card {
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            border: 5px solid #fff;
+            border-radius: 32px;
+            padding: 35px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(241, 196, 15, 0.6);
+            animation: zoomInBounce 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #fff;
+            max-width: 580px;
+            width: 90%;
+        }
+
+        .takeover-crown {
+            font-size: 4rem;
+            animation: bounceCrown 1s infinite alternate;
+        }
+
+        @keyframes bounceCrown {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-12px);
+            }
+        }
+
+        .takeover-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            margin: 6px 0;
+        }
+
+        .takeover-hero-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin: 12px auto;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            width: fit-content;
+        }
+
+        .takeover-hero-avatar {
+            width: 48px;
+            height: 48px;
+        }
+
+        .takeover-team {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #2c3e50;
+        }
+
+        .podium-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 15, 29, 0.96);
+            backdrop-filter: blur(14px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 25px 14px;
+        }
+
+        #fireworksCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .podium-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .podium-title {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #f1c40f;
+            text-shadow: 0 4px 20px rgba(241, 196, 15, 0.6);
+            margin-bottom: 18px;
+        }
+
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 14px;
+            height: 310px;
+            margin-bottom: 22px;
+        }
+
+        .podium-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 180px;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .podium-col.show-podium {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .podium-hero-avatar {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+        }
+
+        .podium-team-name {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .podium-score-info {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffeaa7;
+            margin-bottom: 8px;
+        }
+
+        .podium-pillar {
+            width: 100%;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 10px;
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-bottom: none;
+        }
+
+        .pillar-1 {
+            height: 190px;
+            background: linear-gradient(180deg, #f1c40f 0%, #d4ac0d 100%);
+        }
+
+        .pillar-2 {
+            height: 140px;
+            background: linear-gradient(180deg, #bdc3c7 0%, #95a5a6 100%);
+        }
+
+        .pillar-3 {
+            height: 110px;
+            background: linear-gradient(180deg, #e67e22 0%, #d35400 100%);
+        }
+
+        .runner-up-board {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            display: none;
+        }
+
+        .runner-up-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #00cec9;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .runner-up-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 8px;
+        }
+
+        .runner-up-row {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .end-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-end {
+            padding: 14px 45px;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-home {
+            background: #e67e22;
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(230, 126, 34, 0.45);
+        }
+
+        .btn-home:hover {
+            background: #d35400;
+            transform: scale(1.06);
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes zoomInBounce {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shakeWrong {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-12px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(12px);
+            }
+        }
+
+        /* ================= RESPONSIVE MOBILE STYLES ================= */
+        @media (max-width: 992px) {
+            body {
+                padding: 65px 10px 16px 10px;
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+                display: block;
+            }
+
+            .edu-global-badge {
+                top: 10px;
+                left: 10px;
+                padding: 5px 12px;
+                font-size: 0.78rem;
+                gap: 6px;
+            }
+
+            .top-right-controls {
+                top: 10px;
+                right: 10px;
+            }
+
+            .btn-global-exit {
+                padding: 5px 12px;
+                font-size: 0.78rem;
+            }
+
+            .game-wrapper {
+                flex-direction: column;
+                height: auto;
+                max-height: none;
+                border-radius: 22px;
+                padding: 12px;
+                gap: 14px;
+            }
+
+            .board-section {
+                width: 100%;
+                min-height: auto;
+                border-radius: 16px;
+            }
+
+            .sidebar-section {
+                width: 100%;
+                gap: 10px;
+            }
+
+            .leaderboard-panel {
+                max-height: 220px;
+                min-height: 160px;
+            }
+
+            .pawn {
+                width: 44px;
+                height: 44px;
+            }
+
+            .pawn-badge {
+                font-size: 0.7rem;
+                padding: 1px 6px;
+                top: -14px;
+            }
+
+            .cards-selection-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .secret-card {
+                height: 110px;
+                font-size: 2rem;
+            }
+
+            .secret-card span {
+                font-size: 0.95rem;
+            }
+
+            .modal-content {
+                padding: 18px 16px;
+                border-radius: 20px;
+            }
+
+            .quiz-question {
+                font-size: 1.05rem;
+                padding: 12px 14px;
+            }
+
+            .btn-option {
+                font-size: 0.95rem;
+                padding: 10px 14px;
+            }
+
+            .podium-container {
+                height: 250px;
+                gap: 8px;
+            }
+
+            .podium-col {
+                width: 105px;
+            }
+
+            .podium-hero-avatar {
+                width: 50px;
+                height: 50px;
+            }
+
+            .podium-team-name {
+                font-size: 0.85rem;
+                max-width: 95px;
+            }
+
+            .podium-pillar {
+                font-size: 1.8rem;
+            }
+
+            .pillar-1 {
+                height: 150px;
+            }
+
+            .pillar-2 {
+                height: 110px;
+            }
+
+            .pillar-3 {
+                height: 85px;
+            }
+
+            .end-controls {
+                gap: 8px;
+            }
+
+            .btn-end {
+                padding: 12px 30px;
+                font-size: 1.05rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
+    <div class="ambient-light light-3"></div>
+
+    <!-- ป้ายสถาบันมุมซ้ายบนนอกกรอบเกม (เปลี่ยนไอคอนเป็นรูปภาพโลโก้วงกลม) -->
+    <div class="edu-global-badge">
+        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo">
+        <span>สาขาวิชาคอมพิวเตอร์ศึกษา RERU</span>
+    </div>
+
+    <div class="top-right-controls">
+        <button class="btn-global-exit" onclick="handleExitCurrentTeam()"><span>🚪</span><span>ออกจากเกม</span></button>
+    </div>
+
+    <div class="action-log-drawer" id="actionLogDrawer">
+        <button class="log-toggle-btn" onclick="toggleLog()">📜</button>
+        <div style="padding: 15px 15px 0; font-weight: bold; color: #2c3e50;">ประวัติการเล่น</div>
+        <div class="log-content" id="logContent"></div>
+    </div>
+
+    <div class="game-wrapper">
+        <div class="board-section">
+            <div class="board-container" id="boardMap">
+                <img src="board-map.jpg" alt="กระดานมดนักสำรวจ" class="board-bg-img">
+                <div id="pawnsContainer"></div>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="header-panel">
+                <div class="top-controls-bar">
+                    <div class="room-tag">🚩 รหัสห้อง: <span id="lblRoom">8844</span></div>
+                </div>
+                <div class="turn-indicator" id="lblTurn">ตาทีม: -</div>
+                <div class="turn-timer-wrap" id="turnTimerWrap">⏳ เวลาทอยเต๋า: <span id="turnCountdown">10</span>s</div>
+            </div>
+
+            <div class="leaderboard-panel">
+                <div class="leaderboard-title">
+                    <span>🏆 อันดับทีมสำรวจ</span>
+                    <span style="font-size: 0.82rem; color: #78909c;">คะแนน / เหรียญ</span>
+                </div>
+                <div id="playersRankList"></div>
+            </div>
+
+            <div class="controls-panel">
+                <div style="font-size:0.82rem; font-weight: bold; color:#e67e22; margin-bottom:5px; text-align:left;">✨
+                    ไอเทมตัวช่วย:</div>
+                <div class="powerup-row">
+                    <button class="btn-powerup" id="btnPwShield" onclick="usePowerup('shield')">🛡️ โล่ (1)</button>
+                    <button class="btn-powerup" id="btnPwHalf" onclick="usePowerup('half')">🔍 50/50 (1)</button>
+                    <button class="btn-powerup" id="btnPwDouble" onclick="usePowerup('double')">🪙 x2 (1)</button>
+                </div>
+                <button class="btn-roll" id="btnRollDice" onclick="triggerDiceRoll()"><span>🎲 ทอยลูกเต๋า
+                        3D</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dice-overlay" id="diceModal">
+        <div class="dice-cube dice-rolling-anim" id="diceCube">
+            <div class="dice-face face-1">1</div>
+            <div class="dice-face face-2">2</div>
+            <div class="dice-face face-3">3</div>
+            <div class="dice-face face-4">4</div>
+            <div class="dice-face face-5">5</div>
+            <div class="dice-face face-6">6</div>
+        </div>
+        <div class="dice-result-banner" id="diceBanner">ได้ 5 แต้ม!</div>
+    </div>
+
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal-content">
+            <div class="quiz-active-team-bar">
+                <div class="quiz-active-team-avatar" id="quizModalTeamAvatar"></div>
+                <div class="quiz-active-team-name" id="quizModalTeamName">ตาทีม: -</div>
+            </div>
+
+            <div id="cardSelectPhase">
+                <div class="modal-top-bar">
+                    <div class="box-theme-badge" id="boxThemeTag">🟩 กล่องสีเขียว</div>
+                    <div class="modal-timer-badge">⏳ เลือกการ์ด: <span id="cardSelectCountdown">10</span>s</div>
+                </div>
+                <h2 style="color: #2d3436; font-size: 1.5rem; margin-bottom: 6px;">📦 พบกล่องปริศนาเทคโนโลยี!</h2>
+                <p style="color: #636e72; font-size: 1rem;" id="cardSelectDesc">โปรดเลือกซองการ์ดภารกิจ 1 ใน 4 ใบ</p>
+                <div class="cards-selection-grid">
+                    <div class="secret-card" id="card-btn-1" onclick="handleCardClick(1)">🎴<span>ใบที่ 1</span></div>
+                    <div class="secret-card" id="card-btn-2" onclick="handleCardClick(2)">🎴<span>ใบที่ 2</span></div>
+                    <div class="secret-card" id="card-btn-3" onclick="handleCardClick(3)">🎴<span>ใบที่ 3</span></div>
+                    <div class="secret-card" id="card-btn-4" onclick="handleCardClick(4)">🎴<span>ใบที่ 4</span></div>
+                </div>
+            </div>
+
+            <div class="quiz-view" id="quizQuestionPhase">
+                <div class="modal-top-bar">
+                    <div class="box-theme-badge" id="quizBoxTag">🟩 กล่องสีเขียว</div>
+                    <div class="modal-timer-badge">⏳ ตอบคำถาม: <span id="quizCountdown">30</span>s</div>
+                </div>
+                <div class="quiz-question" id="quizText">โจทย์คำถาม...</div>
+                <div class="options-grid" id="optionsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedbackModal">
+        <div class="modal-content" style="max-width: 560px;">
+            <div class="detail-feedback-box">
+                <div class="detail-feedback-icon" id="fbIcon">🎉</div>
+                <div class="detail-feedback-title" id="fbTitle" style="color: #27ae60;">ถูกต้อง! (+20 แต้ม)</div>
+                <div class="detail-feedback-desc" id="fbDesc">คำตอบถูกต้อง</div>
+                <button class="btn-next" onclick="closeFeedback()">เข้าใจแล้ว (ทำต่อ)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="bossModal">
+        <div class="modal-content">
+            <div class="boss-icon">👾</div>
+            <h2 style="color: #d63031; font-size: 1.8rem; margin-bottom: 8px;">ไวรัสตัวร้ายปรากฏตัว!</h2>
+            <p style="font-size: 1rem; color: #2d3436; margin-bottom: 16px;">ภารกิจร่วมมือ: <strong
+                    style="color:#0984e3" id="bossTeamName">-</strong> เป็นผู้นำตอบโจทย์เพื่อปกป้องคะแนนของทุกคน!</p>
+            <div class="quiz-question" id="bossQuizText">คำถามบอส...</div>
+            <div class="options-grid" id="bossOptionsContainer"></div>
+        </div>
+    </div>
+
+    <div class="takeover-popup" id="takeoverPopup">
+        <div class="takeover-card">
+            <div class="takeover-crown">👑</div>
+            <div class="takeover-title">แซงขึ้นสู่อันดับที่ 1!</div>
+            <div class="takeover-hero-box">
+                <div class="takeover-hero-avatar" id="takeoverAvatar"></div>
+                <div class="takeover-team" id="takeoverTeamName">-</div>
+            </div>
+            <div style="font-size: 1.15rem; font-weight: 700;">🔥 พลิกเกมสำเร็จ ขึ้นนำจ่าฝูงแล้ว! 🔥</div>
+        </div>
+    </div>
+
+    <div class="podium-modal" id="podiumModal">
+        <canvas id="fireworksCanvas"></canvas>
+        <div class="podium-inner">
+            <div class="podium-title">🎉 สรุปผลการผจญภัยมดนักสำรวจ 🏆</div>
+            <div class="podium-container">
+                <div class="podium-col" id="podiumRank2">
+                    <div class="podium-hero-avatar" id="avatarRank2"></div>
+                    <div class="podium-team-name" id="nameRank2">-</div>
+                    <div class="podium-score-info" id="scoreRank2">-</div>
+                    <div class="podium-pillar pillar-2">2</div>
+                </div>
+                <div class="podium-col" id="podiumRank1">
+                    <div style="font-size: 2rem; margin-bottom: -5px;">👑</div>
+                    <div class="podium-hero-avatar" id="avatarRank1"></div>
+                    <div class="podium-team-name" id="nameRank1">-</div>
+                    <div class="podium-score-info" id="scoreRank1">-</div>
+                    <div class="podium-pillar pillar-1">1</div>
+                </div>
+                <div class="podium-col" id="podiumRank3">
+                    <div class="podium-hero-avatar" id="avatarRank3"></div>
+                    <div class="podium-team-name" id="nameRank3">-</div>
+                    <div class="podium-score-info" id="scoreRank3">-</div>
+                    <div class="podium-pillar pillar-3">3</div>
+                </div>
+            </div>
+            <div class="runner-up-board" id="runnerUpBoard">
+                <div class="runner-up-title">🎖️ อันดับทีมสำรวจอื่น ๆ:</div>
+                <div class="runner-up-grid" id="runnerUpGrid"></div>
+            </div>
+            <div class="end-controls">
+                <button class="btn-end btn-home" onclick="goHome()">🏠 หน้าแรก</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="debriefModal">
+        <div class="modal-content" style="text-align: left; max-width: 750px;">
+            <h2 style="color: #0984e3; font-size: 1.8rem; margin-bottom: 14px; text-align: center;">📖
+                สรุปสิ่งที่ได้เรียนรู้วันนี้</h2>
+            <div
+                style="background: #f1f2f6; padding: 18px; border-radius: 16px; font-size: 1.05rem; line-height: 1.6; color: #2d3436;">
+                <p><strong>1. การปกป้องข้อมูลส่วนตัว:</strong> รหัสผ่าน, เลขบัตรประชาชน, และที่อยู่ เป็นข้อมูลสำคัญ
+                    ห้ามเปิดเผยเด็ดขาด</p><br>
+                <p><strong>2. การรับมือ Cyberbullying:</strong> หากถูกกลั่นแกล้ง ไม่ตอบโต้ด้วยความรุนแรง
+                    ให้เก็บหลักฐานและแจ้งผู้ใหญ่ทันที</p><br>
+                <p><strong>3. การคิดก่อนแชร์:</strong> ตรวจสอบแหล่งที่มาก่อนแชร์ทุกครั้ง เพื่อป้องกันภัยจาก Fake News
+                </p>
+            </div>
+            <div style="text-align: center; margin-top: 18px;">
+                <button class="btn-next"
+                    onclick="document.getElementById('debriefModal').style.display='none'">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const gameBroadcast = ('BroadcastChannel' in window) ? new BroadcastChannel('ant_explorer_game_sync') : null;
+
+        /* ---------------- การเชื่อมต่อเซิร์ฟเวอร์เรียลไทม์ ---------------- */
+        const netRoomCode = sessionStorage.getItem('ant_room') || '8492';
+        const netIsHost = sessionStorage.getItem('ant_role') === 'host';
+        const socket = io();
+
+        socket.emit('join-room', {
+            roomCode: netRoomCode,
+            isHost: netIsHost,
+            player: {
+                name: sessionStorage.getItem('ant_group') || 'ทีมมดสายลุย',
+                avatar: sessionStorage.getItem('ant_avatar_id') || 'ant',
+                outfit: sessionStorage.getItem('ant_outfit') || 'default',
+                isHost: netIsHost
+            }
+        });
+
+        function broadcast(type, payload = {}) {
+            if (gameBroadcast) gameBroadcast.postMessage({type, ...payload, playersState: players});
+            socket.emit('game-sync', {
+                roomCode: netRoomCode,
+                type,
+                ...payload,
+                playersState: players,
+                currentTurnIndex
+            });
+        }
+
+        /* Web Audio API */
+        let audioCtx = null;
+        let isMusicPlaying = true;
+        let bgmInterval = null;
+
+        function getAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+
+        function playBGMNote(freq, startTime, duration) {
+            if (!isMusicPlaying || !audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.035, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(startTime);
+            osc.stop(startTime + duration);
+        }
+
+        function playMusicLoop() {
+            if (!isMusicPlaying) return;
+            getAudioContext();
+            const melody = [
+                {f: 523.25, d: 0.3}, {f: 659.25, d: 0.3}, {f: 783.99, d: 0.3}, {f: 1046.50, d: 0.5},
+                {f: 880.00, d: 0.3}, {f: 783.99, d: 0.3}, {f: 659.25, d: 0.5},
+                {f: 587.33, d: 0.3}, {f: 659.25, d: 0.3}, {f: 698.46, d: 0.3}, {f: 783.99, d: 0.5},
+                {f: 659.25, d: 0.3}, {f: 587.33, d: 0.3}, {f: 523.25, d: 0.6}
+            ];
+
+            let now = audioCtx.currentTime;
+            melody.forEach(note => {
+                playBGMNote(note.f, now, note.d);
+                now += note.d * 0.95;
+            });
+        }
+
+        function startBGMAutoplay() {
+            isMusicPlaying = true;
+            const unlockAudio = () => {
+                getAudioContext();
+                playMusicLoop();
+                if (!bgmInterval) bgmInterval = setInterval(playMusicLoop, 6000);
+            };
+            window.addEventListener('click', unlockAudio, {once: true});
+            window.addEventListener('touchstart', unlockAudio, {once: true});
+            window.addEventListener('keydown', unlockAudio, {once: true});
+        }
+
+        function playStepSound() {
+            try {
+                const ctx = getAudioContext();
+                let osc = ctx.createOscillator(); let gain = ctx.createGain();
+                osc.frequency.setValueAtTime(400, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
+                osc.connect(gain); gain.connect(ctx.destination);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                osc.start(); osc.stop(ctx.currentTime + 0.1);
+            } catch (e) { }
+        }
+
+        function playSlideSound() {
+            try {
+                const ctx = getAudioContext();
+                let osc = ctx.createOscillator(); let gain = ctx.createGain();
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.5);
+                osc.connect(gain); gain.connect(ctx.destination);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                osc.start(); osc.stop(ctx.currentTime + 0.5);
+            } catch (e) { }
+        }
+
+        function playRollSound() {
+            try {
+                const ctx = getAudioContext();
+                let osc = ctx.createOscillator(); let gain = ctx.createGain();
+                osc.type = 'square'; osc.frequency.setValueAtTime(100, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(50, ctx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.3);
+            } catch (e) { }
+        }
+
+        function playCorrectSound() {
+            try {
+                const ctx = getAudioContext();
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'triangle'; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.35);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + idx * 0.1); osc.stop(ctx.currentTime + idx * 0.1 + 0.35);
+                });
+            } catch (e) { }
+        }
+
+        function playWrongSound() {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(160, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.4);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.45);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.45);
+            } catch (e) { }
+        }
+
+        function playBossSound() {
+            try {
+                const ctx = getAudioContext();
+                let osc = ctx.createOscillator(); let gain = ctx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(40, ctx.currentTime + 1.0);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 1.0);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 1.0);
+            } catch (e) { }
+        }
+
+        function playTakeoverSound() {
+            try {
+                const ctx = getAudioContext();
+                const notes = [440, 554.37, 659.25, 880, 1108.73];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.12 + 0.5);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + idx * 0.12); osc.stop(ctx.currentTime + idx * 0.12 + 0.5);
+                });
+            } catch (e) { }
+        }
+
+        const TILE_COORDS = [
+            {x: 12, y: 7}, {x: 19, y: 14}, {x: 19, y: 22}, {x: 25, y: 22},
+            {x: 11, y: 35}, {x: 8, y: 47}, {x: 8, y: 60}, {x: 8, y: 74},
+            {x: 8, y: 84}, {x: 18, y: 92}, {x: 26, y: 88}, {x: 34, y: 92},
+            {x: 44, y: 92}, {x: 52, y: 87}, {x: 52, y: 74}, {x: 47, y: 66},
+            {x: 38, y: 66}, {x: 30, y: 66}, {x: 22, y: 62}, {x: 21, y: 55},
+            {x: 25, y: 46}, {x: 32, y: 42}, {x: 40, y: 46}, {x: 48, y: 46},
+            {x: 57, y: 45}, {x: 61, y: 54}, {x: 62, y: 64}, {x: 62, y: 79},
+            {x: 65, y: 91}, {x: 74, y: 91}, {x: 75, y: 76}, {x: 75, y: 60},
+            {x: 75, y: 50}, {x: 75, y: 38}, {x: 68, y: 28}, {x: 59, y: 31},
+            {x: 50, y: 31}, {x: 41, y: 30}, {x: 34, y: 23}, {x: 36, y: 11},
+            {x: 47, y: 9}, {x: 57, y: 9}, {x: 68, y: 9}, {x: 75, y: 9},
+            {x: 84, y: 9}, {x: 93, y: 9}, {x: 96, y: 21}, {x: 96, y: 34},
+            {x: 89, y: 42}, {x: 85, y: 54}, {x: 86, y: 72}
+        ];
+
+        const BOX_TILES = {
+            2: 'green', 3: 'green', 18: 'green', 21: 'green', 26: 'green', 34: 'green', 40: 'green', 44: 'green', 47: 'green',
+            8: 'yellow', 14: 'yellow', 20: 'yellow', 28: 'yellow', 36: 'yellow', 39: 'yellow', 49: 'yellow',
+            5: 'orange', 10: 'orange', 15: 'orange', 24: 'orange', 31: 'orange', 37: 'orange', 42: 'orange', 46: 'orange'
+        };
+        const LADDERS = {16: 22, 35: 41};
+        const TRAP_HOLES = {17: 11, 33: 25};
+
+        const QUESTION_BANK = {
+            green: {
+                1: [
+                    {q: "ข้อมูลประเภทใดต่อไปนี้ จัดเป็น 'ข้อมูลส่วนตัว' ที่ไม่ควรบอกคนแปลกหน้า?", options: ["รหัสผ่านบัญชีผู้ใช้", "ชื่อการ์ตูนที่ชอบ", "สีของกระเป๋านักเรียน", "วิชาเรียนที่ชอบ"], correctText: "รหัสผ่านบัญชีผู้ใช้", tip: "รหัสผ่านและบัตรประชาชนเป็นข้อมูลส่วนตัวสำคัญ ห้ามเปิดเผยเด็ดขาด"},
+                    {q: "สิ่งใดคือตัวอย่างของข้อมูลส่วนตัวที่คนร้ายอาจนำไปแอบอ้างทำธุรกรรมได้?", options: ["เลขประจำตัวประชาชน 13 หลัก", "ชื่อสัตว์เลี้ยงตัวแรก", "เกมที่ชอบเล่น", "อาหารจานโปรด"], correctText: "เลขประจำตัวประชาชน 13 หลัก", tip: "เลขบัตรประชาชน 13 หลักเป็นข้อมูลสำคัญสูงสุด"},
+                    {q: "เมื่อสมัครใช้งานแอปพลิเคชัน สิ่งที่ไม่ควรเปิดเผยในชื่อผู้ใช้ (Username) คืออะไร?", options: ["ชื่อเล่นทั่วไป", "ชื่อ-นามสกุลจริงและเลขบัตรประชาชน", "ชื่อการ์ตูน", "ตัวอักษรผสมตัวเลข"], correctText: "ชื่อ-นามสกุลจริงและเลขบัตรประชาชน", tip: "ไม่ควรตั้ง Username ด้วยชื่อ-นามสกุลจริงพร้อมเลขบัตร"}
+                ],
+                2: [
+                    {q: "การตั้งรหัสผ่าน (Password) ที่ปลอดภัยและรัดกุม ควรมีลักษณะอย่างไร?", options: ["ใช้เบอร์โทรศัพท์ตัวเอง", "ใช้วันเดือนปีเกิด", "มีความยาวพอเหมาะและผสมตัวอักษรกับตัวเลข", "ใช้คำว่า 123456"], correctText: "มีความยาวพอเหมาะและผสมตัวอักษรกับตัวเลข", tip: "รหัสผ่านที่ดีควรคาดเดายาก และไม่ควรเป็นวันเกิดหรือเบอร์โทรศัพท์"},
+                    {q: "เมื่อใช้งานเครื่องคอมพิวเตอร์ที่โรงเรียนเสร็จแล้ว สิ่งแรกที่ควรทำคือ?", options: ["ปิดหน้าจอทันที", "กดออกจากระบบ (Log out) ทุกบัญชี", "ปล่อยทิ้งไว้ให้เพื่อนใช้ต่อ", "ถอดปลั๊กไฟออก"], correctText: "กดออกจากระบบ (Log out) ทุกบัญชี", tip: "ต้อง Log out ทุกครั้งเพื่อไม่ให้คนอื่นเข้าถึงข้อมูลเรา"},
+                    {q: "การเปลี่ยนรหัสผ่านควรทำบ่อยแค่ไหนเพื่อความปลอดภัยที่ดี?", options: ["ไม่เคยเปลี่ยนเลย", "เปลี่ยนทุก 2-3 เดือน หรือเมื่อสงสัยว่ารหัสหลุด", "เปลี่ยนทุกๆ 5 ปี", "เปลี่ยนวันละ 3 รอบ"], correctText: "เปลี่ยนทุก 2-3 เดือน หรือเมื่อสงสัยว่ารหัสหลุด", tip: "การเปลี่ยนรหัสเป็นประจำช่วยลดความเสี่ยงถูกแฮก"}
+                ],
+                3: [
+                    {q: "หากเว็บไซต์หนึ่งขอให้กรอกที่อยู่บ้านเพื่อชิงโชค ควรทำอย่างไร?", options: ["รีบกรอกทันทีเพื่อลุ้นรางวัล", "ปรึกษาคุณครูหรือผู้ปกครองก่อนกรอก", "กรอกที่อยู่ของเพื่อนแทน", "ชวนเพื่อนทั้งห้องมากรอก"], correctText: "ปรึกษาคุณครูหรือผู้ปกครองก่อนกรอก", tip: "การให้ที่อยู่บ้านแก่เว็บแปลกหน้ามีความเสี่ยงสูง ต้องปรึกษาผู้ใหญ่"},
+                    {q: "ข้อใดเป็นการเคารพสิทธิส่วนบุคคลของเพื่อนบนโลกออนไลน์?", options: ["แอบเปิดดูแชตของเพื่อน", "ขออนุญาตเพื่อนก่อนถ่ายรูปหรือโพสต์รูปเพื่อน", "เอารูปตลกๆ ของเพื่อนไปโพสต์ล้อเลียน", "แอบเอาการบ้านเพื่อนมาส่ง"], correctText: "ขออนุญาตเพื่อนก่อนถ่ายรูปหรือโพสต์รูปเพื่อน", tip: "ต้องขอความยินยอมก่อนนำภาพผู้อื่นไปเผยแพร่เสมอ"},
+                    {q: "การถ่ายทอดสด (Live) กิจวัตรประจำวันในบ้าน ต้องระมัดระวังสิ่งใดมากที่สุด?", options: ["สัญญาณเน็ตหลุด", "ไม่ให้เห็นที่อยู่ ทรัพย์สินมีค่า หรือของใช้ส่วนตัว", "แสงสว่างไม่พอ", "ไม่มีคนดู"], correctText: "ไม่ให้เห็นที่อยู่ ทรัพย์สินมีค่า หรือของใช้ส่วนตัว", tip: "การไลฟ์อาจเผลอเปิดเผยพิกัดบ้านและของมีค่าแก่ผู้ไม่หวังดี"}
+                ],
+                4: [
+                    {q: "หากได้รับข้อความบอกว่า 'คุณได้รับทุนการศึกษา 1 ล้านบาท' ควรทำอย่างไร?", options: ["คลิกลิงก์ทันที", "ลบข้อความทิ้งหรือไม่คลิกลิงก์ พร้อมแจ้งผู้ปกครอง", "ส่งต่อให้เพื่อนทุกคน", "กรอกเลขบัญชีธนาคารเพื่อรับเงิน"], correctText: "ลบข้อความทิ้งหรือไม่คลิกลิงก์ พร้อมแจ้งผู้ปกครอง", tip: "นี่คือข้อความหลอกลวง (Phishing) อย่าคลิกลิงก์เด็ดขาด"},
+                    {q: "สัญลักษณ์รูปกุญแจล็อคสีเขียวหรือ 'https://' หน้าชื่อเว็บไซต์ บ่งบอกถึงอะไร?", options: ["เว็บไซต์นี้เป็นเว็บเกม", "เว็บไซต์นี้มีการเข้ารหัสความปลอดภัยของข้อมูล", "เว็บไซต์นี้ฟรีไม่มีค่าใช้จ่าย", "เว็บไซต์นี้ไม่มีไวรัสแน่นอน"], correctText: "เว็บไซต์นี้มีการเข้ารหัสความปลอดภัยของข้อมูล", tip: "https บ่งบอกถึงการส่งข้อมูลแบบเข้ารหัสปลอดภัย"},
+                    {q: "ข้อใดเป็นวิธีป้องกันไวรัสคอมพิวเตอร์ที่ดีที่สุด?", options: ["ดาวน์โหลดเกมเถื่อนจากเว็บแปลกๆ", "ติดตั้งและอัปเดตโปรแกรมสแกนไวรัสสม่ำเสมอ", "เปิดไฟล์แนบที่ไม่รู้จักทุกไฟล์", "ไม่ปิดคอมพิวเตอร์เลย"], correctText: "ติดตั้งและอัปเดตโปรแกรมสแกนไวรัสสม่ำเสมอ", tip: "ติดตั้งโปรแกรมแอนติไวรัสและไม่เปิดไฟล์น่าสงสัย"}
+                ]
+            },
+            yellow: {
+                1: [
+                    {q: "หากพบข้อความว่า 'แจกเงินฟรี 5,000 บาท เพียงกดลิงก์นี้' ควรทำอย่างไร?", options: ["รีบกดทันทีเพราะกลัวเสียสิทธิ์", "ส่งต่อให้เพื่อนทุกคนในห้อง", "ไม่กดลิงก์ และแจ้งคุณครูหรือผู้ปกครองช่วยตรวจสอบ", "กรอกข้อมูลส่วนตัวเพื่อยืนยัน"], correctText: "ไม่กดลิงก์ และแจ้งคุณครูหรือผู้ปกครองช่วยตรวจสอบ", tip: "ลิงก์แจกเงินฟรีมักเป็นลิงก์หลอกลวง (Phishing) ห้ามคลิกเด็ดขาด"},
+                    {q: "เมื่อเพื่อนร่วมชั้นพิมพ์ล้อเลียนหรือใช้คำหยาบคายใส่ผู้อื่นในแชต พฤติกรรมนี้เรียกว่าอะไร?", options: ["การกลั่นแกล้งบนโลกไซเบอร์ (Cyberbullying)", "การแบ่งปันความรู้", "การแสดงความคิดเห็นที่ถูกต้อง", "การสร้างความสนุกสนาน"], correctText: "การกลั่นแกล้งบนโลกไซเบอร์ (Cyberbullying)", tip: "การใช้คำหยาบหรือล้อเลียนในโซเชียลเป็นการกลั่นแกล้งทางไซเบอร์ที่ผิดกติกา"},
+                    {q: "หากเราเป็นเหยื่อของการถูก Cyberbullying สิ่งแรกที่ควรทำคือข้อใด?", options: ["พิมพ์ด่ากลับด้วยถ้อยคำรุนแรงกว่าเดิม", "เก็บหลักฐาน (แคปหน้าจอ) แล้วบอกครูหรือผู้ปกครอง", "ลบแอปแล้วหนีออกจากบ้าน", "ไปแกล้งคนอื่นต่อ"], correctText: "เก็บหลักฐาน (แคปหน้าจอ) แล้วบอกครูหรือผู้ปกครอง", tip: "เก็บหลักฐานการพิมพ์แกล้งและแจ้งผู้ใหญ่ทันที ไม่ตอบโต้ด้วยความรุนแรง"}
+                ],
+                2: [
+                    {q: "การนำภาพวาดของคนอื่นมาโพสต์ลงโปรไฟล์ตัวเองโดยไม่ใส่เครดิต ถือเป็นอย่างไร?", options: ["เป็นการชื่นชมผลงาน", "เป็นการละเมิดลิขสิทธิ์และทรัพย์สินทางปัญญา", "ไม่ผิดเพราะอยู่ในอินเทอร์เน็ต", "ทำได้ทุกคน"], correctText: "เป็นการละเมิดลิขสิทธิ์และทรัพย์สินทางปัญญา", tip: "ผลงานสร้างสรรค์มีลิขสิทธิ์คุ้มครอง ต้องให้เกียรติและใส่เครดิตเจ้าของผลงาน"},
+                    {q: "คำว่า 'Digital Footprint' (รอยเท้าดิจิทัล) หมายถึงอะไร?", options: ["รอยเท้าเวลาเดินบนแป้นพิมพ์", "ร่องรอยและประวัติการกระทำทั้งหมดที่เราทำไว้บนโลกออนไลน์", "ขนาดของหน้าจอโทรศัพท์", "โปรแกรมลบไฟล์ขยะ"], correctText: "ร่องรอยและประวัติการกระทำทั้งหมดที่เราทำไว้บนโลกออนไลน์", tip: "ทุกสิ่งที่เราโพสต์ ค้นหา หรือพิมพ์ จะทิ้งร่องรอยไว้เสมอและลบออกยาก"},
+                    {q: "การส่งต่อข่าวสารเกี่ยวกับโรคร้ายแรงที่ไม่มีหน่วยงานทางการรับรอง ส่งผลเสียอย่างไร?", options: ["ทำให้คนอื่นชมว่ารู้ข่าวไว", "สร้างความตื่นตระหนกและส่งต่อข่าวปลอม (Fake News)", "ช่วยให้แพทย์ทำงานง่ายขึ้น", "ไม่มีผลเสียใดๆ"], correctText: "สร้างความตื่นตระหนกและส่งต่อข่าวปลอม (Fake News)", tip: "การส่งต่อข้อมูลเท็จสร้างความวุ่นวายและอาจมีความผิดตามกฎหมาย"}
+                ],
+                3: [
+                    {q: "ก่อนที่จะคลิก 'แชร์' โพสต์ข่าวหรือคลิปวิดีโอ ควรยึดหลักข้อใดดีที่สุด?", options: ["แชร์ทันทีเพราะเห็นยอดแชร์เยอะ", "คิด วิเคราะห์ ตรวจสอบแหล่งที่มาก่อนแชร์เสมอ", "แชร์เฉพาะเรื่องที่น่าตกใจ", "แต่งเรื่องเพิ่มเติมให้ตื่นเต้น"], correctText: "คิด วิเคราะห์ ตรวจสอบแหล่งที่มาก่อนแชร์เสมอ", tip: "หลักการ 'คิด เช็ก ชัวร์' ช่วยหยุดยั้งการแพร่กระจายของข่าวปลอม"},
+                    {q: "หากเพื่อนขอยืมโทรศัพท์ไปเข้าแอปธนาคารหรือบัญชีส่วนตัว ควรปฏิบัติอย่างไร?", options: ["ให้ยืมโดยไม่สนใจอะไร", "ดูแลและอยู่ด้วยขณะเพื่อนใช้งาน เพื่อความปลอดภัยทั้งสองฝ่าย", "บอกรหัสผ่านทั้งหมดให้เพื่อน", "เอาของเพื่อนมาใช้แลกกัน"], correctText: "ดูแลและอยู่ด้วยขณะเพื่อนใช้งาน เพื่อความปลอดภัยทั้งสองฝ่าย", tip: "การเปิดเผยข้อมูลการเงินมีความเสี่ยง ควรอยู่ช่วยดูแลใกล้ชิด"},
+                    {q: "ข้อใดคือการสร้าง 'ความฉลาดทางดิจิทัล' (DQ) ที่ถูกต้องของนักเรียน ป.4?", options: ["เล่นเกมติดต่อกันเกินวันละ 8 ชั่วโมง", "รู้จักแบ่งเวลาใช้งานหน้าจอและรักษามารยาทในการสื่อสาร", "โพสต์ด่าคนที่ไม่ชอบหน้า", "แอบดูประวัติการค้นหาของพ่อแม่"], correctText: "รู้จักแบ่งเวลาใช้งานหน้าจอและรักษามารยาทในการสื่อสาร", tip: "การแบ่งเวลาหน้าจอ (Screen Time) มีความสำคัญต่อสุขภาพและการเรียนรู้"}
+                ],
+                4: [
+                    {q: "เมื่อพบเห็นโพสต์เชิญชวนเล่นการพนันออนไลน์ในแอปวิดีโอสั้น ควรทำอย่างไร?", options: ["ลองเล่นดูเผื่อได้เงิน", "กดรายงาน (Report) บัญชีนั้น และไม่คลิกลิงก์ใดๆ", "แชร์ต่อให้เพื่อนลองเล่น", "พิมพ์ชวนเพื่อนไปเล่นด้วยกัน"], correctText: "กดรายงาน (Report) บัญชีนั้น และไม่คลิกลิงก์ใดๆ", tip: "การพนันออนไลน์ผิดกฎหมายและหลอกลวง ให้กด Report ทันที"},
+                    {q: "การตั้งค่าความเป็นส่วนตัวในโซเชียลให้เป็น 'เฉพาะเพื่อน' มีประโยชน์อย่างไร?", options: ["ทำให้ไม่มีใครเห็นโพสต์เลย", "ป้องกันคนแปลกหน้าเข้ามาดูข้อมูลส่วนตัวและรูปภาพของเรา", "ทำให้เล่นเกมชนะบ่อยขึ้น", "ทำให้ยอดไลก์พุ่งสูง"], correctText: "ป้องกันคนแปลกหน้าเข้ามาดูข้อมูลส่วนตัวและรูปภาพของเรา", tip: "ช่วยจำกัดให้เฉพาะคนที่ไว้ใจได้มองเห็นข้อมูลของเรา"},
+                    {q: "หากเพื่อนส่งคลิปที่มีเนื้อหารุนแรงมาให้ในกลุ่มแชต ควรปฏิบัติอย่างไร?", options: ["ส่งต่อไปกลุ่มอื่นๆ ทันที", "เตือนเพื่อนว่าไม่ควรส่งต่อ และแจ้งผู้ปกครองหรือครู", "เปิดวนซ้ำหลายๆ รอบ", "บันทึกลลงเครื่องเก็บไว้"], correctText: "เตือนเพื่อนว่าไม่ควรส่งต่อ และแจ้งผู้ปกครองหรือครู", tip: "ไม่ส่งต่อคลิปรุนแรงและช่วยเตือนเพื่อนเพื่อความปลอดภัยของทุกคน"}
+                ]
+            },
+            orange: {
+                1: [
+                    {q: "หากคนแปลกหน้าในเกมทักมาขอให้ถ่ายรูปบัตรประชาชนแลกไอเทม ควรทำอย่างไร?", options: ["ถ่ายรูปส่งทันทีเพราะอยากได้ของ", "ปฏิเสธทันที ไม่ส่งข้อมูล และรีบแจ้งผู้ปกครอง", "ส่งบัตรของเพื่อนไปแทน", "ต่อรองขอไอเทมเพิ่ม"], correctText: "ปฏิเสธทันที ไม่ส่งข้อมูล และรีบแจ้งผู้ปกครอง", tip: "บัตรประชาชนอาจถูกนำไปใช้ก่ออาชญากรรมทางออนไลน์ได้ ต้องปฏิเสธทันที"},
+                    {q: "มีคนในเน็ตบอกว่าจะพาไปซื้อขนมฟรี โดยนัดพบกันตามลำพัง ควรทำอย่างไร?", options: ["แอบไปคนเดียวไม่ต้องบอกใคร", "ปฏิเสธทันที และบอกพ่อแม่หรือครูอย่างละเอียด", "ชวนน้องตัวเล็กๆ ไปด้วย", "รีบวิ่งไปพบทันที"], correctText: "ปฏิเสธทันที และบอกพ่อแม่หรือครูอย่างละเอียด", tip: "การนัดพบคนในอินเทอร์เน็ตตามลำพังอันตรายมาก ห้ามไปเด็ดขาด"},
+                    {q: "การถูกข่มขู่ทางออนไลน์ว่า 'ถ้าไม่โอนเงินให้ จะเอารูปไปประจาน' ควรแก้ไขอย่างไร?", options: ["โอนเงินให้ทันทีเพราะกลัว", "ไม่โอนเงิน แคปหน้าจอหลักฐาน และรีบบอกผู้ปกครองหรือตำรวจ", "ลบบัญชีทิ้งแล้วเก็บเป็นความลับคนเดียว", "แอบขโมยเงินพ่อแม่มาให้"], correctText: "ไม่โอนเงิน แคปหน้าจอหลักฐาน และรีบบอกผู้ปกครองหรือตำรวจ", tip: "นี่คือการกรรโชกทรัพย์ (Extortion) ห้ามโอนเงิน ให้แจ้งตำรวจทันที"}
+                ],
+                2: [
+                    {q: "หากมีเพื่อนชวนโหลดโปรแกรมโกงเกมที่ต้องปิดแอนติไวรัส ควรสันนิษฐานว่า?", options: ["เป็นโปรแกรมที่ดีมาก", "โปรแกรมนั้นมีมัลแวร์หรือไวรัสแฝงตัวมาขโมยข้อมูล", "โปรแกรมนั้นปลอดภัย 100%", "แอนติไวรัสเสีย"], correctText: "โปรแกรมนั้นมีมัลแวร์หรือไวรัสแฝงตัวมาขโมยข้อมูล", tip: "โปรแกรมโกงเกมมักมีโทรจันหรือไวรัสฝังมาดักจับรหัสผ่าน"},
+                    {q: "การใช้บัญชีของผู้อื่นโพสต์ข้อความด่าทอผู้อื่น มีความผิดตาม พ.ร.บ.คอมพิวเตอร์ หรือไม่?", options: ["ไม่ผิดถ้าแกล้งกันเล่นๆ", "ผิดกฎหมาย และมีโทษทั้งจำคุกและปรับ", "ผิดเฉพาะคนโดนด่า", "ผิดถ้าอายุเกิน 20 ปีเท่านั้น"], correctText: "ผิดกฎหมาย และมีโทษทั้งจำคุกและปรับ", tip: "การเข้าถึงระบบโดยมิชอบและใส่ร้ายผู้อื่นมีความผิดตามกฎหมายคอมพิวเตอร์"},
+                    {q: "เมื่อพบเห็นรูปภาพของเพื่อนถูกตัดต่อล้อเลียนจนเพื่อนร้องไห้ เราควรทำอย่างไร?", options: ["ช่วยแชร์และหัวเราะตามเพื่อน", "ให้กำลังใจเพื่อน แจ้งคุณครู และช่วยรายงานลบโพสต์นั้น", "ยืนดูเฉยๆ ไม่ยุ่ง", "ตัดต่อรูปเพื่อนคนอื่นมาแก้แค้น"], correctText: "ให้กำลังใจเพื่อน แจ้งคุณครู และช่วยรายงานลบโพสต์นั้น", tip: "เป็นพลเมืองดิจิทัลที่ดี (Upstander) โดยการช่วยเหลือผู้ถูกกระทำ"}
+                ],
+                3: [
+                    {q: "หากหน้าจอขึ้นว่า 'ไฟล์ของคุณถูกเข้ารหัส ต้องจ่ายเงินเพื่อปลดล็อค' เรียกว่าอะไร?", options: ["มัลแวร์เรียกค่าไถ่ (Ransomware)", "โปรแกรมทำความสะอาดเครื่อง", "เกมทดสอบไหวพริบ", "ระบบอัปเดตวินโดวส์"], correctText: "มัลแวร์เรียกค่าไถ่ (Ransomware)", tip: "Ransomware คือมัลแวร์อันตรายที่ขโมยและล็อคไฟล์เพื่อกรรโชกเงิน"},
+                    {q: "การเชื่อมต่อ Wi-Fi สาธารณะที่ไม่มีรหัสผ่าน มีความเสี่ยงข้อใดมากที่สุด?", options: ["เน็ตช้าเกินไป", "แฮกเกอร์อาจดักจับข้อมูลรหัสผ่านที่เราพิมพ์ได้", "โทรศัพท์แบตเตอรี่หมดไว", "ไม่มีความเสี่ยงใดๆ"], correctText: "แฮกเกอร์อาจดักจับข้อมูลรหัสผ่านที่เราพิมพ์ได้", tip: "ไม่ควรทำธุรกรรมทางการเงินหรือเข้าสู่ระบบผ่าน Free Wi-Fi ที่ไม่ปลอดภัย"},
+                    {q: "หากมีคนอ้างว่าเป็นตำรวจโทรมาบอกให้โอนเงินไปตรวจสอบ เรียกว่าแก๊งอะไร?", options: ["แก๊งคอลเซ็นเตอร์ (Call Center Scam)", "ตำรวจสายสืบพิเศษ", "เจ้าหน้าที่ฝ่ายเทคโนโลยี", "บริการช่วยเหลือด่วน"], correctText: "แก๊งคอลเซ็นเตอร์ (Call Center Scam)", tip: "เจ้าหน้าที่รัฐจริงจะไม่มีการโทรบอกให้โอนเงินเพื่อตรวจสอบเด็ดขาด"}
+                ],
+                4: [
+                    {q: "การโพสต์บ่นว่า 'อยากเผาโรงเรียนทิ้งจังเลย' แม้จะพิมพ์เล่นๆ ส่งผลกระทบอย่างไร?", options: ["ทุกคนจะเข้าใจว่าเป็นมุกตลก", "สร้างความตื่นตระหนก และอาจถูกดำเนินคดีข้อหาก่อภัยคุกคาม", "ทำให้ได้เกรดดีขึ้น", "ไม่มีใครสนใจ"], correctText: "สร้างความตื่นตระหนก และอาจถูกดำเนินคดีข้อหาก่อภัยคุกคาม", tip: "ข้อความข่มขู่หรือสร้างความหวาดกลัวบนโซเชียลมีผลทางกฎหมายจริงจัง"},
+                    {q: "การนำคลิปวิดีโอของคนอื่นมาลงในช่องของตนเองเพื่อหารายได้ ถือเป็นการกระทำใด?", options: ["การช่วยโปรโมทผลงาน", "การละเมิดลิขสิทธิ์ทางพาณิชย์", "การสร้างความบันเทิงฟรี", "ทำได้ถูกต้องตามสิทธิ"], correctText: "การละเมิดลิขสิทธิ์ทางพาณิชย์", tip: "การใช้ผลงานผู้อื่นหารายได้โดยไม่ได้รับอนุญาตเป็นการละเมิดลิขสิทธิ์"},
+                    {q: "สิ่งใดคือคุณลักษณะสำคัญที่สุดของการเป็น 'พลเมืองดิจิทัลที่มีคุณภาพ'?", options: ["พิมพ์คีย์บอร์ดได้เร็วที่สุด", "มีความรับผิดชอบ ปลอดภัย และเคารพผู้อื่นบนโลกออนไลน์", "เล่นเกมออนไลน์เก่งที่สุดในโรงเรียน", "มีผู้ติดตามมากที่สุด"], correctText: "มีความรับผิดชอบ ปลอดภัย และเคารพผู้อื่นบนโลกออนไลน์", tip: "หัวใจของพลเมืองดิจิทัลคือความปลอดภัย ความรับผิดชอบ และการมีคุณธรรม"}
+                ]
+            }
+        };
+
+        const AVATAR_BASE_SVGS = {
+            ant: `<circle cx="50" cy="32" r="17" fill="#e74c3c"/><circle cx="44" cy="30" r="3.5" fill="#2c3e50"/><circle cx="56" cy="30" r="3.5" fill="#2c3e50"/><ellipse cx="50" cy="54" rx="12" ry="10" fill="#c0392b"/><ellipse cx="50" cy="76" rx="18" ry="16" fill="#e74c3c"/><path d="M39 52 Q22 48 18 60" stroke="#a93226" stroke-width="4" fill="none"/><path d="M61 52 Q78 48 82 60" stroke="#a93226" stroke-width="4" fill="none"/>`,
+            bee: `<ellipse cx="32" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="68" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="50" cy="58" rx="26" ry="28" fill="#fbc02d"/><path d="M26 50 Q50 56 74 50 L75 58 Q50 64 25 58 Z" fill="#37474f"/><circle cx="42" cy="42" r="3.5" fill="#263238"/><circle cx="58" cy="42" r="3.5" fill="#263238"/>`,
+            beetle: `<path d="M50 35 L50 14 Q50 6 42 6 M50 14 Q50 6 58 6 M50 20 L44 17 M50 20 L56 17" stroke="#4a148c" stroke-width="4.5" fill="none"/><ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c"/><circle cx="42" cy="36" r="3" fill="#ffca28"/><circle cx="58" cy="36" r="3" fill="#ffca28"/><ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a"/><line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3"/>`
+        };
+
+        const OUTFIT_OVERLAYS = {
+            explorer: `<path d="M 25 18 Q 50 10 75 18 L 82 22 Q 50 18 18 22 Z" fill="#d35400"/><path d="M 32 18 Q 50 8 68 18 L 65 10 Q 50 4 35 10 Z" fill="#e67e22"/>`,
+            cyber: `<path d="M 35 26 L 65 26 L 62 34 L 38 34 Z" fill="#00cec9" opacity="0.85"/><line x1="30" y1="30" x2="70" y2="30" stroke="#81ecec" stroke-width="3"/>`,
+            party: `<path d="M 50 5 L 62 25 L 38 25 Z" fill="#e84393"/><circle cx="50" cy="5" r="4" fill="#fdcb6e"/>`,
+            royal: `<path d="M 36 22 L 36 12 L 43 18 L 50 10 L 57 18 L 64 12 L 64 22 Z" fill="#f1c40f" stroke="#d4ac0d" stroke-width="1.5"/><circle cx="50" cy="10" r="2" fill="#e74c3c"/>`,
+            default: ``
+        };
+
+        function getAvatarSVG(avatarId, outfitId = 'default') {
+            const base = AVATAR_BASE_SVGS[avatarId] || AVATAR_BASE_SVGS.ant;
+            const outfit = OUTFIT_OVERLAYS[outfitId] || OUTFIT_OVERLAYS.default;
+            return `<svg viewBox="0 0 100 100">${base}${outfit}</svg>`;
+        }
+
+        const myClientGroupName = sessionStorage.getItem('ant_group') || 'ทีมมดสายลุย';
+        let players = [];
+        let actionLog = [];
+
+        function parsePlayerData() {
+            const rawPlayers = sessionStorage.getItem('ant_all_players');
+            const savedGroupName = sessionStorage.getItem('ant_group') || 'ทีมมดสายลุย';
+            const savedAvatar = sessionStorage.getItem('ant_avatar_id') || 'ant';
+            const savedOutfit = sessionStorage.getItem('ant_outfit') || 'default';
+
+            if (rawPlayers) {
+                try {
+                    const parsed = JSON.parse(rawPlayers);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        players = parsed.map((p, idx) => ({
+                            id: p.id || (idx + 1),
+                            name: p.name || `ทีมที่ ${idx + 1}`,
+                            avatar: p.avatar || (idx % 3 === 0 ? 'ant' : idx % 3 === 1 ? 'bee' : 'beetle'),
+                            outfit: p.outfit || (p.name === savedGroupName ? savedOutfit : 'default'),
+                            pos: p.pos !== undefined ? p.pos : 0,
+                            score: p.score !== undefined ? p.score : 0,
+                            coins: p.coins !== undefined ? p.coins : 0,
+                            powerups: p.powerups || {shield: 1, half: 1, double: 1, activeShield: false},
+                            multiplier: p.multiplier || 1
+                        }));
+                        return;
+                    }
+                } catch (e) {
+                    console.error("SessionStorage Parse Error:", e);
+                }
+            }
+
+            players = [
+                {id: 1, name: savedGroupName, avatar: savedAvatar, outfit: savedOutfit, pos: 0, score: 0, coins: 0, powerups: {shield: 1, half: 1, double: 1, activeShield: false}, multiplier: 1},
+                {id: 2, name: 'ผึ้งน้อยไอที', avatar: 'bee', outfit: 'explorer', pos: 0, score: 0, coins: 0, powerups: {shield: 1, half: 1, double: 1, activeShield: false}, multiplier: 1},
+                {id: 3, name: 'ด้วงเกราะทอง', avatar: 'beetle', outfit: 'cyber', pos: 0, score: 0, coins: 0, powerups: {shield: 1, half: 1, double: 1, activeShield: false}, multiplier: 1}
+            ];
+        }
+
+        parsePlayerData();
+
+        let currentTurnIndex = 0;
+        let isRolling = false;
+        let isGamePaused = false;
+        let activeBoxType = 'green';
+        let currentQuizData = null;
+        let currentShuffledOptions = [];
+
+        let turnTimer = null;
+        let cardSelectTimer = null;
+        let quizTimer = null;
+
+        let currentTurnTimeLeft = 10;
+        let currentCardTimeLeft = 10;
+        let currentQuizTimeLeft = 30;
+
+        document.getElementById('lblRoom').innerText = sessionStorage.getItem('ant_room') || '8492';
+
+        function initGame() {
+            renderPawns();
+            updateLeaderboard();
+            startBGMAutoplay();
+            startTurn();
+        }
+
+        function isCurrentTurnMyTeam() {
+            if (!players[currentTurnIndex]) return false;
+            return players[currentTurnIndex].name.trim() === myClientGroupName.trim();
+        }
+
+        function toggleLog() {
+            document.getElementById('actionLogDrawer').classList.toggle('open');
+        }
+
+        function addLog(msg, fromRemote = false) {
+            const time = new Date().toLocaleTimeString('th-TH', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'});
+            actionLog.unshift(`[${time}] ${msg}`);
+            if (actionLog.length > 30) actionLog.pop();
+            const logContent = document.getElementById('logContent');
+            logContent.innerHTML = actionLog.map(l => `<div class="log-entry">${l}</div>`).join('');
+            if (!fromRemote) broadcast('SYNC_LOG', {msg});
+        }
+
+        function renderPowerups() {
+            if (!players[currentTurnIndex]) return;
+            const p = players[currentTurnIndex];
+            const isMyTurn = isCurrentTurnMyTeam();
+
+            const btnShield = document.getElementById('btnPwShield');
+            const btnHalf = document.getElementById('btnPwHalf');
+            const btnDouble = document.getElementById('btnPwDouble');
+
+            btnShield.innerText = `🛡️ โล่ (${p.powerups.shield})`;
+            btnHalf.innerText = `🔍 50/50 (${p.powerups.half})`;
+            btnDouble.innerText = `🪙 x2 (${p.powerups.double})`;
+
+            btnShield.disabled = !isMyTurn || p.powerups.shield <= 0 || p.powerups.activeShield || isGamePaused;
+            btnHalf.disabled = true;
+            btnDouble.disabled = true;
+        }
+
+        function usePowerup(type) {
+            if (!isCurrentTurnMyTeam() || isGamePaused) return;
+            const p = players[currentTurnIndex];
+            if (type === 'shield' && p.powerups.shield > 0 && !p.powerups.activeShield) {
+                p.powerups.shield--;
+                p.powerups.activeShield = true;
+                addLog(`${p.name} ใช้งาน 🛡️ โล่ป้องกัน`);
+                alert('เปิดใช้งานโล่ป้องกันหลุมพรางในรอบนี้!');
+                renderPowerups();
+            } else if (type === 'half' && p.powerups.half > 0) {
+                p.powerups.half--;
+                addLog(`${p.name} ใช้งาน 🔍 50/50 ตัดตัวเลือก`);
+                applyFiftyFifty();
+                document.getElementById('btnPwHalf').disabled = true;
+            } else if (type === 'double' && p.powerups.double > 0) {
+                p.powerups.double--;
+                p.multiplier = 2;
+                addLog(`${p.name} ใช้งาน 🪙 x2 เหรียญ`);
+                alert('เปิดใช้งานเหรียญ x2 หากตอบถูกในข้อนี้!');
+                document.getElementById('btnPwDouble').disabled = true;
+            }
+        }
+
+        function applyFiftyFifty() {
+            const correctText = currentQuizData.correctText;
+            const wrongBtns = [];
+            const opts = document.querySelectorAll('#optionsContainer .btn-option');
+            opts.forEach((btn) => {
+                const text = btn.innerText.substring(3).trim();
+                if (text !== correctText && !btn.disabled) wrongBtns.push(btn);
+            });
+            wrongBtns.sort(() => Math.random() - 0.5);
+            if (wrongBtns[0]) wrongBtns[0].disabled = true;
+            if (wrongBtns[1]) wrongBtns[1].disabled = true;
+        }
+
+        function handleExitCurrentTeam() {
+            if (!confirm(`คุณต้องการออกจากเกมและกลับสู่หน้าหลักใช่หรือไม่?`)) return;
+
+            const myIndex = players.findIndex(p => p.name.trim() === myClientGroupName.trim());
+            if (myIndex !== -1) {
+                players.splice(myIndex, 1);
+            }
+
+            clearInterval(turnTimer);
+            clearInterval(cardSelectTimer);
+            clearInterval(quizTimer);
+            if (bgmInterval) clearInterval(bgmInterval);
+
+            broadcast('TEAM_LEFT', {
+                leftTeamName: myClientGroupName,
+                remainingPlayers: players,
+                nextTurn: currentTurnIndex >= players.length ? 0 : currentTurnIndex
+            });
+
+            if (socket) {
+                socket.emit('leave-room', {roomCode: netRoomCode});
+            }
+
+            window.location.href = 'index.html';
+        }
+
+        function goHome() {
+            clearInterval(turnTimer);
+            clearInterval(cardSelectTimer);
+            clearInterval(quizTimer);
+            if (bgmInterval) clearInterval(bgmInterval);
+
+            if (socket) {
+                socket.emit('leave-room', {roomCode: netRoomCode});
+            }
+
+            window.location.href = 'index.html';
+        }
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startTurn() {
+            clearInterval(turnTimer);
+            updateTurnIndicator();
+            renderPowerups();
+            if (players[currentTurnIndex]) {
+                players[currentTurnIndex].multiplier = 1;
+            }
+
+            const isMyTurn = isCurrentTurnMyTeam();
+            const rollBtn = document.getElementById('btnRollDice');
+
+            if (isMyTurn && !isGamePaused) {
+                rollBtn.disabled = false;
+                rollBtn.innerHTML = '<span>🎲 ทอยลูกเต๋า 3D</span>';
+            } else {
+                rollBtn.disabled = true;
+                rollBtn.innerHTML = isGamePaused ? '<span>⏸️ เกมหยุดชั่วคราว</span>' : `<span>⏳ รอตาทีม ${players[currentTurnIndex].name}...</span>`;
+            }
+
+            isRolling = false;
+            currentTurnTimeLeft = 10;
+            const countEl = document.getElementById('turnCountdown');
+            const wrapEl = document.getElementById('turnTimerWrap');
+            countEl.innerText = currentTurnTimeLeft;
+            wrapEl.classList.remove('timer-warning');
+
+            turnTimer = setInterval(() => {
+                if (isGamePaused) return;
+                currentTurnTimeLeft--;
+                countEl.innerText = currentTurnTimeLeft;
+                if (currentTurnTimeLeft <= 3) wrapEl.classList.add('timer-warning');
+                if (currentTurnTimeLeft <= 0) {
+                    clearInterval(turnTimer);
+                    if (isMyTurn) triggerDiceRoll(true);
+                }
+            }, 1000);
+        }
+
+        function triggerDiceRoll(isAutoRoll = false) {
+            if (isRolling || players.length === 0 || isGamePaused) return;
+            if (!isAutoRoll && !isCurrentTurnMyTeam()) return;
+
+            isRolling = true;
+            clearInterval(turnTimer);
+            document.getElementById('btnRollDice').disabled = true;
+
+            playRollSound();
+
+            const diceModal = document.getElementById('diceModal');
+            const diceCube = document.getElementById('diceCube');
+            const diceBanner = document.getElementById('diceBanner');
+
+            diceModal.style.display = 'flex';
+            diceBanner.style.display = 'none';
+            diceCube.className = 'dice-cube dice-rolling-anim';
+
+            const rollResult = Math.floor(1 + Math.random() * 6);
+            addLog(`${players[currentTurnIndex].name} ทอยลูกเต๋าได้ ${rollResult}`);
+
+            setTimeout(() => {
+                diceCube.className = 'dice-cube';
+
+                const targetRotations = {
+                    1: 'rotateX(0deg) rotateY(0deg)',
+                    2: 'rotateX(0deg) rotateY(-90deg)',
+                    3: 'rotateX(0deg) rotateY(-180deg)',
+                    4: 'rotateX(0deg) rotateY(90deg)',
+                    5: 'rotateX(-90deg) rotateY(0deg)',
+                    6: 'rotateX(90deg) rotateY(0deg)'
+                };
+
+                diceCube.style.transform = targetRotations[rollResult];
+                diceBanner.innerText = `ได้ ${rollResult} แต้ม! 🎲 ${isAutoRoll ? '(สุ่ม)' : ''}`;
+                diceBanner.style.display = 'block';
+
+                broadcast('ROLL_DICE', {steps: rollResult, teamName: players[currentTurnIndex].name});
+
+                setTimeout(() => {
+                    diceModal.style.display = 'none';
+                    movePlayerStepByStep(rollResult);
+                }, 1400);
+            }, 1200);
+        }
+
+        function movePlayerStepByStep(steps) {
+            const player = players[currentTurnIndex];
+            let currentStep = 0;
+
+            const walkInterval = setInterval(() => {
+                if (isGamePaused) return;
+
+                currentStep++;
+                player.pos++;
+                playStepSound();
+
+                if (player.pos >= 50) {
+                    player.pos = 50;
+                    clearInterval(walkInterval);
+                    renderPawns(); updateLeaderboard();
+                    broadcast('UPDATE_POS', {pos: 50});
+                    setTimeout(() => declareWinner(player), 500);
+                    return;
+                }
+
+                renderPawns(); updateLeaderboard();
+                broadcast('UPDATE_POS', {pos: player.pos});
+
+                if (currentStep >= steps) {
+                    clearInterval(walkInterval);
+                    setTimeout(() => handleTileLanded(player.pos), 400);
+                }
+            }, 350);
+        }
+
+        function handleTileLanded(tileNum) {
+            const player = players[currentTurnIndex];
+
+            if (tileNum === 25 || tileNum === 45) {
+                triggerBossCoop();
+                return;
+            }
+
+            if (LADDERS[tileNum]) {
+                const climbTo = LADDERS[tileNum];
+                playSlideSound();
+                alert(`🪜 ว้าว! ${player.name} ตกช่องบันได ไต่ขึ้นไปช่อง ${climbTo}!`);
+                addLog(`${player.name} ไต่บันไดจาก ${tileNum} ไป ${climbTo}`);
+                player.pos = climbTo;
+                renderPawns(); updateLeaderboard();
+                broadcast('UPDATE_POS', {pos: climbTo});
+                endTurn();
+                return;
+            }
+
+            if (TRAP_HOLES[tileNum]) {
+                if (player.powerups && player.powerups.activeShield) {
+                    alert(`🛡️ โล่ป้องกันทำงาน! ${player.name} รอดพ้นจากการลื่นไถล!`);
+                    addLog(`${player.name} ใช้โล่ป้องกันหลุมพรางที่ช่อง ${tileNum}`);
+                    player.powerups.activeShield = false;
+                    endTurn();
+                    return;
+                }
+
+                const fallBackTo = TRAP_HOLES[tileNum];
+                playSlideSound();
+                alert(`🕳️ อุ๊ย! ${player.name} ตกหลุมดิน ลื่นถอยหลังไปช่อง ${fallBackTo}!`);
+                addLog(`${player.name} ตกหลุมถอยหลังไปช่อง ${fallBackTo}`);
+                player.pos = fallBackTo;
+                renderPawns(); updateLeaderboard();
+                broadcast('UPDATE_POS', {pos: fallBackTo});
+                endTurn();
+                return;
+            }
+
+            if (BOX_TILES[tileNum]) {
+                activeBoxType = BOX_TILES[tileNum];
+                openQuizCardsModal(activeBoxType);
+                return;
+            }
+
+            endTurn();
+        }
+
+        function triggerBossCoop() {
+            playBossSound();
+            const player = players[currentTurnIndex];
+            const modal = document.getElementById('bossModal');
+            document.getElementById('bossTeamName').innerText = player.name;
+
+            currentQuizData = QUESTION_BANK['orange'][1][0];
+            currentShuffledOptions = shuffleArray(currentQuizData.options);
+
+            document.getElementById('bossQuizText').innerText = currentQuizData.q;
+            const optContainer = document.getElementById('bossOptionsContainer');
+            optContainer.innerHTML = '';
+
+            const isMyTurn = isCurrentTurnMyTeam();
+
+            currentShuffledOptions.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.innerHTML = `<span style="background: #2d3436; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight:800;">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+
+                if (!isMyTurn) {
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => checkBossAnswer(optText);
+                }
+                optContainer.appendChild(btn);
+            });
+
+            modal.style.display = 'flex';
+            addLog(`👾 พบ Boss ไวรัสตัวร้ายที่ช่อง ${player.pos} นำการตอบโดย ${player.name}`);
+            broadcast('SHOW_BOSS', {quiz: currentQuizData, options: currentShuffledOptions, team: player.name});
+        }
+
+        function checkBossAnswer(chosenText) {
+            document.querySelectorAll('#bossOptionsContainer .btn-option').forEach(b => b.disabled = true);
+            let isCorrect = (chosenText === currentQuizData.correctText);
+
+            if (isCorrect) {
+                playCorrectSound();
+                alert('🎉 ยอดเยี่ยมมาก! ช่วยกันกำจัดไวรัสสำเร็จ ทุกทีมรับไปเลย +20 แต้ม!');
+                players.forEach(p => p.score += 20);
+                addLog(`ทุกทีมกำจัดไวรัสสำเร็จ (+20 แต้ม)`);
+            } else {
+                playWrongSound();
+                alert(`❌ ยังไม่ถูก! ทุกทีมโดนไวรัสโจมตี หัก -10 แต้ม\n(เฉลย: ${currentQuizData.correctText})`);
+                players.forEach(p => p.score = Math.max(0, p.score - 10));
+                addLog(`ทุกทีมพ่ายแพ้บอสไวรัส (-10 แต้ม)`);
+            }
+
+            renderPawns(); updateLeaderboard();
+            broadcast('BOSS_RESULT', {isCorrect});
+
+            document.getElementById('bossModal').style.display = 'none';
+            endTurn();
+        }
+
+        function openQuizCardsModal(boxType) {
+            clearInterval(cardSelectTimer);
+            const modal = document.getElementById('quizModal');
+            const cardPhase = document.getElementById('cardSelectPhase');
+            const quizPhase = document.getElementById('quizQuestionPhase');
+            const activePlayer = players[currentTurnIndex];
+            const isMyTurn = isCurrentTurnMyTeam();
+
+            document.getElementById('quizModalTeamAvatar').innerHTML = getAvatarSVG(activePlayer.avatar, activePlayer.outfit);
+            document.getElementById('quizModalTeamName').innerText = `ตาทีม: ${activePlayer.name}`;
+
+            if (isMyTurn) {
+                document.getElementById('cardSelectDesc').innerText = 'โปรดเลือกซองการ์ดภารกิจ 1 ใน 4 ใบ เพื่อเปิดโจทย์คำถาม';
+            } else {
+                document.getElementById('cardSelectDesc').innerText = `⏳ กำลังรอให้ทีม "${activePlayer.name}" เป็นผู้เลือกซองการ์ด...`;
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                const cardBtn = document.getElementById(`card-btn-${i}`);
+                if (isMyTurn) cardBtn.classList.remove('locked-card');
+                else cardBtn.classList.add('locked-card');
+            }
+
+            cardPhase.style.display = 'block';
+            quizPhase.style.display = 'none';
+
+            const boxTag = document.getElementById('boxThemeTag');
+            if (boxType === 'green') {
+                boxTag.className = 'box-theme-badge box-green';
+                boxTag.innerText = '🟩 กล่องเขียว (+10 แต้ม)';
+            } else if (boxType === 'yellow') {
+                boxTag.className = 'box-theme-badge box-yellow';
+                boxTag.innerText = '🟨 กล่องเหลือง (+20 แต้ม & 1 เหรียญ)';
+            } else {
+                boxTag.className = 'box-theme-badge box-orange';
+                boxTag.innerText = '🟧 กล่องส้ม (+30 แต้ม & 2 เหรียญ)';
+            }
+
+            modal.style.display = 'flex';
+            currentCardTimeLeft = 10;
+            document.getElementById('cardSelectCountdown').innerText = currentCardTimeLeft;
+
+            cardSelectTimer = setInterval(() => {
+                if (isGamePaused) return;
+                currentCardTimeLeft--;
+                document.getElementById('cardSelectCountdown').innerText = currentCardTimeLeft;
+                if (currentCardTimeLeft <= 0) {
+                    clearInterval(cardSelectTimer);
+                    openChosenCard(Math.floor(1 + Math.random() * 4), true);
+                }
+            }, 1000);
+        }
+
+        function handleCardClick(cardIndex) {
+            if (!isCurrentTurnMyTeam() || isGamePaused) return;
+            openChosenCard(cardIndex);
+        }
+
+        function openChosenCard(cardIndex, isAutoSelected = false) {
+            clearInterval(cardSelectTimer);
+            document.getElementById('cardSelectPhase').style.display = 'none';
+            document.getElementById('quizQuestionPhase').style.display = 'block';
+
+            const quizBoxTag = document.getElementById('quizBoxTag');
+            quizBoxTag.className = `box-theme-badge box-${activeBoxType}`;
+            quizBoxTag.innerText = `เปิดซองใบที่ ${cardIndex}${isAutoSelected ? ' (สุ่ม)' : ''}`;
+
+            currentQuizData = QUESTION_BANK[activeBoxType][cardIndex][Math.floor(Math.random() * 3)];
+            currentShuffledOptions = shuffleArray(currentQuizData.options);
+
+            document.getElementById('quizText').innerText = currentQuizData.q;
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            const isMyTurn = isCurrentTurnMyTeam();
+            const p = players[currentTurnIndex];
+
+            if (isMyTurn && p.powerups && !isGamePaused) {
+                if (p.powerups.half > 0) document.getElementById('btnPwHalf').disabled = false;
+                if (p.powerups.double > 0) document.getElementById('btnPwDouble').disabled = false;
+            }
+
+            currentShuffledOptions.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.innerHTML = `<span style="background: #2d3436; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight:800;">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+
+                if (!isMyTurn) {
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => checkAnswer(optText);
+                }
+                optionsContainer.appendChild(btn);
+            });
+
+            broadcast('SHOW_QUIZ', {quiz: currentQuizData, boxType: activeBoxType, options: currentShuffledOptions});
+            startQuizTimer();
+        }
+
+        function startQuizTimer() {
+            clearInterval(quizTimer);
+            currentQuizTimeLeft = 30;
+            document.getElementById('quizCountdown').innerText = currentQuizTimeLeft;
+
+            quizTimer = setInterval(() => {
+                if (isGamePaused) return;
+                currentQuizTimeLeft--;
+                document.getElementById('quizCountdown').innerText = currentQuizTimeLeft;
+                if (currentQuizTimeLeft <= 0) {
+                    clearInterval(quizTimer);
+                    handleQuizTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleQuizTimeout() {
+            document.querySelectorAll('#optionsContainer .btn-option').forEach(b => b.disabled = true);
+            playWrongSound();
+            const player = players[currentTurnIndex];
+            let penaltyMsg = '';
+
+            if (activeBoxType === 'green') penaltyMsg = 'ไม่เสียคะแนน';
+            else if (activeBoxType === 'yellow') {player.score = Math.max(0, player.score - 5); penaltyMsg = 'โดนหัก -5 คะแนน';}
+            else {player.score = Math.max(0, player.score - 10); player.pos = Math.max(0, player.pos - 2); penaltyMsg = 'โดนหัก -10 คะแนน และถอยหลัง 2 ช่อง!';}
+
+            renderPawns(); updateLeaderboard();
+            broadcast('QUIZ_RESULT', {isCorrect: false, rewardScore: 0});
+            addLog(`${player.name} หมดเวลาตอบคำถาม (${penaltyMsg})`);
+
+            document.getElementById('quizModal').style.display = 'none';
+            showDetailedFeedback(false, penaltyMsg);
+        }
+
+        function checkAnswer(chosenText) {
+            if (!isCurrentTurnMyTeam() || isGamePaused) return;
+            clearInterval(quizTimer);
+            document.querySelectorAll('#optionsContainer .btn-option').forEach(b => b.disabled = true);
+            document.getElementById('btnPwHalf').disabled = true;
+            document.getElementById('btnPwDouble').disabled = true;
+
+            const player = players[currentTurnIndex];
+            const prevLeader = getTopPlayer();
+
+            let isCorrect = (chosenText === currentQuizData.correctText);
+            let rewardScore = 0;
+            let msg = '';
+
+            if (isCorrect) {
+                playCorrectSound();
+                if (activeBoxType === 'green') {rewardScore = 10; player.score += 10; msg = '+10 คะแนน';}
+                else if (activeBoxType === 'yellow') {rewardScore = 20; player.score += 20; player.coins += (1 * player.multiplier); msg = `+20 คะแนน / +${1 * player.multiplier} เหรียญ`;}
+                else {rewardScore = 30; player.score += 30; player.coins += (2 * player.multiplier); msg = `+30 คะแนน / +${2 * player.multiplier} เหรียญ`;}
+                addLog(`✅ ${player.name} ตอบถูก รับ ${msg}`);
+            } else {
+                playWrongSound();
+                if (activeBoxType === 'green') {msg = 'ไม่เสียคะแนน';}
+                else if (activeBoxType === 'yellow') {player.score = Math.max(0, player.score - 5); msg = 'โดนหัก -5 คะแนน';}
+                else {player.score = Math.max(0, player.score - 10); player.pos = Math.max(0, player.pos - 2); msg = 'โดนหัก -10 คะแนน และถอยหลัง 2 ช่อง!';}
+                addLog(`❌ ${player.name} ตอบผิด (${msg})`);
+            }
+
+            renderPawns(); updateLeaderboard();
+            broadcast('QUIZ_RESULT', {isCorrect, rewardScore});
+            document.getElementById('quizModal').style.display = 'none';
+
+            showDetailedFeedback(isCorrect, msg, prevLeader, player);
+        }
+
+        function showDetailedFeedback(isCorrect, msg, prevLeader = null, player = null) {
+            const fbModal = document.getElementById('feedbackModal');
+            const icon = document.getElementById('fbIcon');
+            const title = document.getElementById('fbTitle');
+            const desc = document.getElementById('fbDesc');
+
+            if (isCorrect) {
+                icon.innerText = '🎉';
+                title.innerText = `ถูกต้อง! (${msg})`;
+                title.style.color = '#27ae60';
+                desc.innerHTML = `<strong>คำตอบถูกต้อง!</strong><br><br><strong>เกร็ดความรู้:</strong> ${currentQuizData.tip}`;
+            } else {
+                icon.innerText = '❌';
+                title.innerText = `ยังไม่ถูกต้อง (${msg})`;
+                title.style.color = '#d63031';
+                desc.innerHTML = `<strong>เฉลย:</strong> ${currentQuizData.correctText}<br><br><strong>เกร็ดความรู้:</strong> ${currentQuizData.tip}`;
+            }
+
+            fbModal.style.display = 'flex';
+
+            window.closeFeedback = function () {
+                fbModal.style.display = 'none';
+                const newLeader = getTopPlayer();
+                const hasTakenOver = (isCorrect && prevLeader && newLeader && prevLeader.id !== newLeader.id && newLeader.id === player.id);
+
+                if (hasTakenOver) triggerTakeoverCelebration(newLeader);
+                else endTurn();
+            };
+        }
+
+        function getTopPlayer() {
+            if (players.length === 0) return null;
+            return [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10))[0];
+        }
+
+        function triggerTakeoverCelebration(team) {
+            playTakeoverSound();
+            const popup = document.getElementById('takeoverPopup');
+            document.getElementById('takeoverAvatar').innerHTML = getAvatarSVG(team.avatar, team.outfit);
+            document.getElementById('takeoverTeamName').innerText = team.name;
+            popup.style.display = 'flex';
+            addLog(`👑 ${team.name} แซงขึ้นเป็นอันดับ 1!`);
+
+            setTimeout(() => {popup.style.display = 'none'; endTurn();}, 2800);
+        }
+
+        function endTurn() {
+            clearInterval(turnTimer); clearInterval(cardSelectTimer); clearInterval(quizTimer);
+            if (players[currentTurnIndex] && players[currentTurnIndex].powerups) {
+                players[currentTurnIndex].powerups.activeShield = false;
+            }
+
+            currentTurnIndex = (currentTurnIndex + 1) % players.length;
+            startTurn();
+            updateLeaderboard();
+            broadcast('NEXT_TURN', {nextTurn: currentTurnIndex});
+        }
+
+        function renderPawns() {
+            const container = document.getElementById('pawnsContainer');
+            container.innerHTML = '';
+
+            players.forEach((p, index) => {
+                const coord = TILE_COORDS[p.pos] || TILE_COORDS[0];
+                const pawnEl = document.createElement('div');
+                pawnEl.className = 'pawn';
+                pawnEl.id = `pawn-${p.id}`;
+
+                const offset = (index - 1) * 2.5;
+                pawnEl.style.left = `calc(${coord.x}% + ${offset}%)`;
+                pawnEl.style.top = `calc(${coord.y}% + ${offset}%)`;
+
+                pawnEl.innerHTML = `
+                    <div class="pawn-badge">${p.name}</div>
+                    ${getAvatarSVG(p.avatar, p.outfit)}
+                `;
+                container.appendChild(pawnEl);
+            });
+        }
+
+        function updateLeaderboard() {
+            const list = document.getElementById('playersRankList');
+            list.innerHTML = '';
+
+            const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
+
+            sorted.forEach((p, idx) => {
+                const row = document.createElement('div');
+                row.className = `player-row ${players[currentTurnIndex] && players[currentTurnIndex].id === p.id ? 'active-turn' : ''}`;
+
+                let rankClass = '';
+                if (idx === 0) rankClass = 'rank-1';
+                if (idx === 1) rankClass = 'rank-2';
+                if (idx === 2) rankClass = 'rank-3';
+
+                row.innerHTML = `
+                    <div class="player-info-left">
+                        <span class="player-rank ${rankClass}">#${idx + 1}</span>
+                        <div class="mini-avatar">${getAvatarSVG(p.avatar, p.outfit)}</div>
+                        <div class="name-pos">
+                            <div class="p-name">${p.name}</div>
+                            <div class="p-pos">ช่องที่: ${p.pos} / 50</div>
+                        </div>
+                    </div>
+                    <div class="player-stats">
+                        <div class="stat-score">⭐ ${p.score}</div>
+                        <div class="stat-coins">🪙 ${p.coins}</div>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function updateTurnIndicator() {
+            if (players.length === 0) return;
+            const current = players[currentTurnIndex];
+            const isMyTurn = isCurrentTurnMyTeam();
+            document.getElementById('lblTurn').innerText = `ตาทีม: ${current.name} ${isMyTurn ? '(ตาคุณ!)' : ''}`;
+        }
+
+        function declareWinner(winner, fromRemote = false) {
+            clearInterval(turnTimer); clearInterval(cardSelectTimer); clearInterval(quizTimer);
+            if (!fromRemote) {
+                broadcast('WINNER', {winnerName: winner.name, score: winner.score, coins: winner.coins});
+                addLog(`🎉 ${winner.name} เข้าเส้นชัยเป็นคนแรก!`);
+            }
+
+            const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
+            const p1 = sorted[0]; const p2 = sorted[1] || {name: '-', avatar: 'ant', outfit: 'default', score: 0, coins: 0}; const p3 = sorted[2] || {name: '-', avatar: 'bee', outfit: 'default', score: 0, coins: 0};
+
+            document.getElementById('avatarRank1').innerHTML = getAvatarSVG(p1.avatar, p1.outfit);
+            document.getElementById('nameRank1').innerText = p1.name;
+            document.getElementById('scoreRank1').innerText = `⭐ ${p1.score} | 🪙 ${p1.coins}`;
+
+            document.getElementById('avatarRank2').innerHTML = getAvatarSVG(p2.avatar, p2.outfit);
+            document.getElementById('nameRank2').innerText = p2.name;
+            document.getElementById('scoreRank2').innerText = `⭐ ${p2.score} | 🪙 ${p2.coins}`;
+
+            document.getElementById('avatarRank3').innerHTML = getAvatarSVG(p3.avatar, p3.outfit);
+            document.getElementById('nameRank3').innerText = p3.name;
+            document.getElementById('scoreRank3').innerText = `⭐ ${p3.score} | 🪙 ${p3.coins}`;
+
+            const runnerUpBoard = document.getElementById('runnerUpBoard');
+            const runnerUpGrid = document.getElementById('runnerUpGrid');
+            runnerUpGrid.innerHTML = '';
+
+            if (sorted.length > 3) {
+                runnerUpBoard.style.display = 'block';
+                for (let i = 3; i < sorted.length; i++) {
+                    const rp = sorted[i];
+                    const div = document.createElement('div');
+                    div.className = 'runner-up-row';
+                    div.innerHTML = `<span>#${i + 1} ${rp.name}</span><span style="color: #ffeaa7;">⭐ ${rp.score} | 🪙 ${rp.coins}</span>`;
+                    runnerUpGrid.appendChild(div);
+                }
+            } else runnerUpBoard.style.display = 'none';
+
+            document.getElementById('podiumModal').style.display = 'flex';
+            setTimeout(() => {document.getElementById('podiumRank3').classList.add('show-podium');}, 600);
+            setTimeout(() => {document.getElementById('podiumRank2').classList.add('show-podium');}, 1600);
+            setTimeout(() => {document.getElementById('podiumRank1').classList.add('show-podium'); startFireworks();}, 2600);
+        }
+
+        /* ---------------- รับข้อมูลซิงค์จากทีม/อุปกรณ์อื่นในห้องเดียวกัน ---------------- */
+        function handleRemoteSync(data) {
+            if (!data) return;
+            if (data.playersState) players = data.playersState;
+            if (typeof data.currentTurnIndex === 'number') currentTurnIndex = data.currentTurnIndex;
+
+            switch (data.type) {
+                case 'GLOBAL_GO_HOME':
+                    clearInterval(turnTimer);
+                    clearInterval(cardSelectTimer);
+                    clearInterval(quizTimer);
+                    if (bgmInterval) clearInterval(bgmInterval);
+                    alert('ผู้ควบคุมได้สิ้นสุดการแข่งขันและนำทุกคนกลับสู่หน้าแรก');
+                    window.location.href = 'index.html';
+                    break;
+
+                case 'GLOBAL_RESTART':
+                    clearInterval(turnTimer);
+                    clearInterval(cardSelectTimer);
+                    clearInterval(quizTimer);
+                    if (bgmInterval) clearInterval(bgmInterval);
+                    alert('ผู้ควบคุมสั่งเริ่มต้นเกมใหม่อีกครั้ง');
+                    location.reload();
+                    break;
+
+                case 'PAUSE_GAME':
+                    isGamePaused = !!data.isPaused;
+                    const rollBtn = document.getElementById('btnRollDice');
+                    if (isGamePaused) {
+                        if (rollBtn) {
+                            rollBtn.disabled = true;
+                            rollBtn.innerHTML = '<span>⏸️ เกมหยุดชั่วคราว</span>';
+                        }
+                    } else {
+                        if (isCurrentTurnMyTeam() && rollBtn) {
+                            rollBtn.disabled = false;
+                            rollBtn.innerHTML = '<span>🎲 ทอยลูกเต๋า 3D</span>';
+                        }
+                    }
+                    break;
+
+                case 'TEAM_LEFT':
+                    addLog(`🚪 ทีม "${data.leftTeamName}" ได้ออกจากเกมไปแล้ว`);
+                    renderPawns();
+                    updateLeaderboard();
+                    break;
+            }
+        }
+
+        window.onload = initGame;
+    </script>
+</body>
+
+</html>

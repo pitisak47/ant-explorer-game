@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="mod.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RERU บอร์ดเกมส์ มดนักสำรวจ </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Prompt:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #ff9f1a;
+            --primary-hover: #e58e10;
+            --leaf-green: #2ecc71;
+            --leaf-dark: #27ae60;
+            --earth-brown: #5d4037;
+            --bg-gradient: radial-gradient(circle at center, #78e08f 0%, #38ada9 55%, #079992 100%);
+            --card-bg: rgba(255, 255, 255, 0.96);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', 'Mitr', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: var(--bg-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 85px 20px 40px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .edu-global-badge {
+            position: fixed;
+            top: 18px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 3px solid #2ecc71;
+            padding: 8px 22px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1b5e20;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .edu-badge-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            border: 1.5px solid #2ecc71;
+        }
+
+        .bg-decor {
+            position: fixed;
+            font-size: 3.5rem;
+            opacity: 0.25;
+            pointer-events: none;
+            animation: floatLeaves 7s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+
+        .leaf-1 {
+            top: 12%;
+            left: 4%;
+            animation-duration: 6s;
+        }
+
+        .leaf-2 {
+            top: 80%;
+            left: 6%;
+            animation-duration: 8s;
+        }
+
+        .leaf-3 {
+            top: 15%;
+            right: 4%;
+            animation-duration: 7s;
+        }
+
+        .leaf-4 {
+            bottom: 10%;
+            right: 6%;
+            animation-duration: 9s;
+        }
+
+        .leaf-5 {
+            top: 46%;
+            left: 1%;
+            font-size: 2.5rem;
+        }
+
+        .leaf-6 {
+            top: 50%;
+            right: 2%;
+            font-size: 2.5rem;
+        }
+
+        @keyframes floatLeaves {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-30px) rotate(20deg) scale(1.12);
+            }
+
+            100% {
+                transform: translateY(18px) rotate(-15deg) scale(0.92);
+            }
+        }
+
+        .landscape-card {
+            position: relative;
+            z-index: 10;
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            width: 100%;
+            max-width: 1240px;
+            min-height: 560px;
+            border-radius: 40px;
+            padding: 35px 40px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35), 0 0 0 12px rgba(255, 255, 255, 0.4);
+            border: 5px solid #fff;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .left-hero-panel {
+            flex: 1.05;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(145deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 32px;
+            padding: 35px 25px;
+            border: 3px solid #a5d6a7;
+            box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.6), 0 12px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .hero-badge-wrap {
+            margin-bottom: 5px;
+        }
+
+        .ant-badge-big {
+            display: inline-block;
+            animation: heroBounce 2.4s infinite ease-in-out;
+        }
+
+        .ant-badge-big img {
+            width: 230px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.22));
+        }
+
+        @keyframes heroBounce {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-12px) rotate(2deg) scale(1.04);
+            }
+        }
+
+        .hero-game-subtitle {
+            font-size: 1.25rem;
+            color: #4e342e;
+            font-weight: 700;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .hero-preview-box {
+            margin-top: 20px;
+            background: #ffffff;
+            border: 3px dashed #81c784;
+            border-radius: 24px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero-preview-avatar {
+            width: 48px;
+            height: 48px;
+        }
+
+        .hero-preview-text {
+            text-align: left;
+        }
+
+        .hero-preview-text small {
+            font-size: 0.85rem;
+            color: #795548;
+            font-weight: 600;
+            display: block;
+        }
+
+        .hero-preview-text strong {
+            font-size: 1.15rem;
+            color: #2e7d32;
+            font-weight: 800;
+        }
+
+        .right-form-panel {
+            flex: 1.35;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+
+        .tab-container {
+            display: flex;
+            background: #eef2f5;
+            border-radius: 50px;
+            padding: 6px;
+            margin-bottom: 22px;
+            gap: 8px;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #558b2f;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: var(--leaf-green);
+            color: white;
+            box-shadow: 0 6px 16px rgba(46, 204, 113, 0.38);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.18rem;
+            font-weight: 800;
+            color: #3e2723;
+            margin-bottom: 8px;
+            margin-left: 4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            pointer-events: none;
+        }
+
+        .game-input {
+            width: 100%;
+            padding: 16px 20px 16px 58px;
+            border: 3px solid #dfe6e9;
+            border-radius: 22px;
+            font-size: 1.25rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: #fafafa;
+            color: #2d3436;
+            font-weight: 700;
+        }
+
+        .game-input:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 5px rgba(255, 159, 26, 0.25);
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 4px;
+        }
+
+        .avatar-card {
+            background: #ffffff;
+            border: 3px solid #e0e0e0;
+            border-radius: 24px;
+            padding: 12px 8px 10px 8px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .avatar-card:hover {
+            transform: translateY(-6px);
+            border-color: #ffb74d;
+            background: #fffdf9;
+        }
+
+        .avatar-card.selected {
+            border: 4px solid var(--primary-color);
+            background: #fff8e1;
+            transform: translateY(-6px) scale(1.04);
+            box-shadow: 0 12px 24px rgba(255, 159, 26, 0.35);
+        }
+
+        .avatar-img-wrap {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 6px auto;
+            border-radius: 50%;
+            background: #f1f8e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .avatar-card.selected .avatar-img-wrap {
+            transform: scale(1.1);
+            background: #ffe082;
+        }
+
+        .avatar-svg {
+            width: 56px;
+            height: 56px;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.12));
+        }
+
+        .avatar-name {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #3e2723;
+        }
+
+        .avatar-badge-check {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+            font-weight: 900;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .avatar-card.selected .avatar-badge-check {
+            display: flex;
+        }
+
+        .generated-room-box {
+            background: #fff8e1;
+            border: 3px dashed #ffb300;
+            border-radius: 20px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-code-display {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #d84315;
+        }
+
+        .refresh-code-btn {
+            background: #ffb300;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 14px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .refresh-code-btn:hover {
+            background: #ffa000;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 1.55rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #d35400, 0 14px 28px rgba(255, 159, 26, 0.45);
+            transition: all 0.15s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #d35400, 0 18px 30px rgba(255, 159, 26, 0.5);
+        }
+
+        .btn-submit:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #d35400;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ================= ส่วนเสริมด้านล่าง ================= */
+        .bottom-knowledge-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1240px;
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .section-header-badge {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 16px 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 4px solid #fff;
+        }
+
+        .section-header-badge h2 {
+            font-size: 1.85rem;
+            color: #1b5e20;
+            font-weight: 900;
+        }
+
+        .section-header-badge p {
+            font-size: 1.1rem;
+            color: #558b2f;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .tips-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .tip-box {
+            background: #fff;
+            border-radius: 28px;
+            padding: 24px;
+            border: 3px solid #dfe6e9;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.25s;
+        }
+
+        .tip-box:hover {
+            transform: translateY(-6px);
+        }
+
+        .tip-icon-header {
+            font-size: 2.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tip-box-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #2d3436;
+        }
+
+        .tip-box-desc {
+            font-size: 1.05rem;
+            color: #4b6584;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .tip-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            width: fit-content;
+        }
+
+        .tip-tag-green {
+            background: #e8f8f5;
+            color: #27ae60;
+            border: 1.5px solid #2ecc71;
+        }
+
+        .tip-tag-yellow {
+            background: #fffde7;
+            color: #f39c12;
+            border: 1.5px solid #f1c40f;
+        }
+
+        .tip-tag-orange {
+            background: #fff3e0;
+            color: #e67e22;
+            border: 1.5px solid #e67e22;
+        }
+
+        .practice-quiz-card {
+            background: #fff;
+            border-radius: 36px;
+            padding: 35px 40px;
+            border: 4px solid #fff;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            position: relative;
+        }
+
+        .practice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #eceff1;
+            padding-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .practice-title {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: #d84315;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quiz-status-pill {
+            background: #fff8e1;
+            color: #d84315;
+            border: 2px solid #ffb300;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            white-space: nowrap;
+        }
+
+        .quiz-progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: #edf2f7;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: -4px;
+        }
+
+        .quiz-progress-bar-fill {
+            height: 100%;
+            width: 5%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            border-radius: 10px;
+            transition: width 0.35s ease;
+        }
+
+        .practice-start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 25px 20px;
+            gap: 14px;
+        }
+
+        .practice-start-badge {
+            display: inline-block;
+            animation: heroBounce 2.4s infinite ease-in-out;
+        }
+
+        .practice-start-badge img {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff9f1a;
+            box-shadow: 0 8px 20px rgba(255, 159, 26, 0.3);
+            display: block;
+        }
+
+        .practice-start-btn {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-size: 1.35rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .practice-start-btn:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 12px 26px rgba(46, 204, 113, 0.5);
+        }
+
+        .practice-question-text {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #2d3436;
+            background: #f8f9fa;
+            padding: 20px 24px;
+            border-radius: 20px;
+            border-left: 6px solid #0984e3;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .practice-options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .btn-practice-opt {
+            background: #f1f2f6;
+            border: 2.5px solid #dfe4ea;
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2f3542;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.2s;
+            text-align: left;
+            word-break: break-word;
+        }
+
+        .btn-practice-opt:hover:not(:disabled) {
+            background: #ffeaa7;
+            border-color: #fdcb6e;
+            transform: translateY(-2px);
+        }
+
+        .btn-practice-opt.correct {
+            background: #e8f8f5 !important;
+            border-color: #2ecc71 !important;
+            color: #27ae60 !important;
+        }
+
+        .btn-practice-opt.wrong {
+            background: #ffebee !important;
+            border-color: #ff7675 !important;
+            color: #d63031 !important;
+        }
+
+        .btn-practice-opt:disabled {
+            cursor: default;
+        }
+
+        .practice-feedback-box {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px 24px;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #2d3436;
+            animation: popIn 0.3s ease;
+            word-break: break-word;
+        }
+
+        .practice-feedback-box.show {
+            display: block;
+        }
+
+        .btn-next-quiz {
+            background: #0984e3;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            box-shadow: 0 4px 12px rgba(9, 132, 227, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-next-quiz:hover {
+            background: #0773c5;
+            transform: scale(1.04);
+        }
+
+        .quiz-summary-card {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            animation: popIn 0.3s ease;
+        }
+
+        .quiz-summary-card.show {
+            display: flex;
+        }
+
+        .summary-score-badge {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #d84315;
+            background: #fff8e1;
+            border: 4px solid #ffb300;
+            border-radius: 50%;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(255, 179, 0, 0.3);
+            margin: 10px auto;
+        }
+
+        .how-to-play-card {
+            background: #fff;
+            border-radius: 36px;
+            padding: 35px 40px;
+            border: 4px solid #fff;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .htp-title-wrap {
+            text-align: center;
+            border-bottom: 2px dashed #eceff1;
+            padding-bottom: 16px;
+        }
+
+        .htp-title-wrap h3 {
+            font-size: 1.85rem;
+            font-weight: 900;
+            color: #2d3436;
+        }
+
+        .htp-title-wrap p {
+            font-size: 1.05rem;
+            color: #718096;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .board-map-preview-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+            border: 5px solid #2ecc71;
+            background: #27ae60;
+        }
+
+        .board-map-preview-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .board-map-preview-wrap:hover .board-map-preview-img {
+            transform: scale(1.02);
+        }
+
+        .board-map-caption {
+            position: absolute;
+            bottom: 12px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            backdrop-filter: blur(6px);
+        }
+
+        .htp-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .htp-step-item {
+            background: #f8f9fa;
+            border: 2.5px solid #e9ecef;
+            border-radius: 22px;
+            padding: 20px 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s;
+        }
+
+        .htp-step-item:hover {
+            transform: translateY(-4px);
+            border-color: #ff9f1a;
+            background: #fffdf9;
+        }
+
+        .htp-step-num {
+            width: 38px;
+            height: 38px;
+            background: var(--primary-color);
+            color: white;
+            font-weight: 900;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 10px rgba(255, 159, 26, 0.35);
+        }
+
+        .htp-step-icon {
+            font-size: 2.5rem;
+            margin: 4px 0;
+        }
+
+        .htp-step-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #2d3436;
+        }
+
+        .htp-step-desc {
+            font-size: 0.92rem;
+            color: #636e72;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .board-legend-card {
+            background: #f9fbfd;
+            border-radius: 26px;
+            padding: 22px 26px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .legend-item {
+            background: #fff;
+            border: 2px solid #edf2f7;
+            border-radius: 18px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .legend-item-icon {
+            font-size: 2.2rem;
+        }
+
+        .legend-item-title {
+            font-size: 0.98rem;
+            font-weight: 900;
+            color: #2d3436;
+        }
+
+        .legend-item-desc {
+            font-size: 0.82rem;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ================= RESPONSIVE DESIGN ================= */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .landscape-card {
+                padding: 28px 24px;
+                gap: 24px;
+            }
+
+            .left-hero-panel {
+                padding: 25px 18px;
+            }
+
+            .ant-badge-big img {
+                width: 180px;
+            }
+
+            .tips-cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+            }
+
+            .practice-quiz-card {
+                padding: 26px 28px;
+                border-radius: 30px;
+            }
+
+            .practice-title {
+                font-size: 1.3rem;
+            }
+
+            .quiz-status-pill {
+                font-size: 0.95rem;
+                padding: 5px 14px;
+            }
+
+            .practice-question-text {
+                font-size: 1.2rem;
+                padding: 18px 20px;
+            }
+
+            .practice-options-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .btn-practice-opt {
+                font-size: 1.05rem;
+                padding: 14px 16px;
+            }
+
+            .practice-start-btn {
+                font-size: 1.25rem;
+                padding: 14px 38px;
+            }
+
+            .htp-steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+
+            .legend-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding: 70px 12px 30px 12px;
+                align-items: flex-start;
+                min-height: 100vh;
+                height: auto;
+            }
+
+            .edu-global-badge {
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 6px 14px;
+                font-size: 0.78rem;
+                gap: 8px;
+                width: calc(100% - 24px);
+                justify-content: center;
+                white-space: nowrap;
+                border-width: 2px;
+            }
+
+            .edu-badge-logo {
+                width: 26px;
+                height: 26px;
+            }
+
+            .landscape-card {
+                flex-direction: column;
+                padding: 20px 16px;
+                gap: 18px;
+                border-radius: 28px;
+                margin-top: 5px;
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(255, 255, 255, 0.3);
+                border: 3px solid #fff;
+            }
+
+            .left-hero-panel {
+                width: 100%;
+                padding: 18px 14px;
+                border-radius: 24px;
+            }
+
+            .ant-badge-big img {
+                width: 140px;
+            }
+
+            .hero-game-subtitle {
+                font-size: 0.95rem;
+                margin-top: 6px;
+            }
+
+            .hero-preview-box {
+                margin-top: 12px;
+                padding: 8px 16px;
+                border-radius: 18px;
+                gap: 10px;
+            }
+
+            .hero-preview-avatar {
+                width: 36px;
+                height: 36px;
+            }
+
+            .hero-preview-text small {
+                font-size: 0.75rem;
+            }
+
+            .hero-preview-text strong {
+                font-size: 0.95rem;
+            }
+
+            .right-form-panel {
+                width: 100%;
+            }
+
+            .tab-container {
+                margin-bottom: 16px;
+                padding: 4px;
+            }
+
+            .tab-btn {
+                padding: 10px 14px;
+                font-size: 1.05rem;
+            }
+
+            .form-group {
+                margin-bottom: 14px;
+            }
+
+            .form-group label {
+                font-size: 1rem;
+                margin-bottom: 6px;
+            }
+
+            .input-icon {
+                left: 14px;
+                font-size: 1.25rem;
+            }
+
+            .game-input {
+                padding: 12px 16px 12px 48px;
+                font-size: 1.05rem;
+                border-radius: 16px;
+            }
+
+            .avatar-grid {
+                gap: 8px;
+            }
+
+            .avatar-card {
+                padding: 8px 4px;
+                border-radius: 18px;
+            }
+
+            .avatar-img-wrap {
+                width: 52px;
+                height: 52px;
+                margin-bottom: 4px;
+            }
+
+            .avatar-svg {
+                width: 40px;
+                height: 40px;
+            }
+
+            .avatar-name {
+                font-size: 0.82rem;
+            }
+
+            .avatar-badge-check {
+                width: 22px;
+                height: 22px;
+                font-size: 12px;
+                top: -5px;
+                right: -5px;
+            }
+
+            .generated-room-box {
+                padding: 10px 14px;
+                border-radius: 16px;
+            }
+
+            .room-code-display {
+                font-size: 1.6rem;
+                letter-spacing: 4px;
+            }
+
+            .refresh-code-btn {
+                padding: 8px 14px;
+                font-size: 0.9rem;
+                border-radius: 12px;
+            }
+
+            .btn-submit {
+                padding: 14px;
+                font-size: 1.25rem;
+                border-radius: 18px;
+                margin-top: 8px;
+            }
+
+            .bottom-knowledge-container {
+                margin-top: 25px;
+                gap: 20px;
+            }
+
+            .section-header-badge {
+                padding: 12px 16px;
+                border-radius: 22px;
+            }
+
+            .section-header-badge h2 {
+                font-size: 1.35rem;
+            }
+
+            .section-header-badge p {
+                font-size: 0.9rem;
+            }
+
+            .tips-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .practice-quiz-card {
+                padding: 20px 14px;
+                border-radius: 24px;
+                gap: 14px;
+            }
+
+            .practice-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+                padding-bottom: 10px;
+            }
+
+            .practice-title {
+                font-size: 1.1rem;
+            }
+
+            .quiz-status-pill {
+                font-size: 0.85rem;
+                padding: 4px 12px;
+            }
+
+            .practice-start-screen {
+                padding: 15px 6px;
+                gap: 10px;
+            }
+
+            .practice-start-badge img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .practice-start-screen h3 {
+                font-size: 1.3rem;
+            }
+
+            .practice-start-screen p {
+                font-size: 0.95rem;
+            }
+
+            .practice-start-btn {
+                font-size: 1.15rem;
+                padding: 12px 30px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .practice-question-text {
+                font-size: 1.05rem;
+                padding: 14px 16px;
+                border-radius: 16px;
+                line-height: 1.5;
+            }
+
+            .practice-options-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .btn-practice-opt {
+                font-size: 0.95rem;
+                padding: 12px 14px;
+                border-radius: 14px;
+                line-height: 1.4;
+            }
+
+            .practice-feedback-box {
+                font-size: 0.95rem;
+                padding: 14px 16px;
+                border-radius: 16px;
+            }
+
+            .btn-next-quiz {
+                font-size: 1rem;
+                padding: 10px 24px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .summary-score-badge {
+                width: 110px;
+                height: 110px;
+                font-size: 3rem;
+            }
+
+            #summaryScoreText {
+                font-size: 1.15rem !important;
+            }
+
+            #summaryRemarkText {
+                font-size: 0.95rem !important;
+            }
+
+            .how-to-play-card {
+                padding: 22px 16px;
+                border-radius: 24px;
+                gap: 20px;
+            }
+
+            .htp-title-wrap h3 {
+                font-size: 1.35rem;
+            }
+
+            .htp-title-wrap p {
+                font-size: 0.9rem;
+            }
+
+            .htp-steps-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .board-map-preview-wrap {
+                border-radius: 18px;
+                border-width: 3px;
+            }
+
+            .legend-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ป้ายสถาบันมุมซ้ายบนนอกกรอบเกม -->
+    <div class="edu-global-badge">
+        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo"
+            onerror="this.style.display='none'">
+        <span>สาขาวิชาคอมพิวเตอร์ศึกษา RERU</span>
+    </div>
+
+    <!-- องค์ประกอบฉากหลังธรรมชาติลอยไหว -->
+    <div class="bg-decor leaf-1">🍃</div>
+    <div class="bg-decor leaf-2">🌱</div>
+    <div class="bg-decor leaf-3">🍄</div>
+    <div class="bg-decor leaf-4">🌾</div>
+    <div class="bg-decor leaf-5">🌿</div>
+    <div class="bg-decor leaf-6">🌸</div>
+
+    <!-- กล่องเกมหลัก (Landscape Game Card) -->
+    <div class="landscape-card">
+
+        <!-- ฝั่งซ้าย: โลโก้ & ภาพรวมตัวเกม -->
+        <div class="left-hero-panel">
+            <div class="hero-badge-wrap">
+                <div class="ant-badge-big">
+                    <img src="mod.png" alt="บอร์ดเกม มดนักสำรวจ"
+                        onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=ant'">
+                </div>
+            </div>
+            <p class="hero-game-subtitle">ผจญภัยไขปริศนาเทคโนโลยี &amp; ร่วมพลังสามัคคี</p>
+
+            <div class="hero-preview-box">
+                <div class="hero-preview-avatar" id="heroPreviewAvatar"></div>
+                <div class="hero-preview-text">
+                    <small>มาสคอตคู่ใจที่เลือก</small>
+                    <strong id="heroPreviewName">มดจอมพลัง</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- ฝั่งขวา: ฟอร์มตั้งค่าเข้าห้อง & เลือกตัวละคร -->
+        <div class="right-form-panel">
+
+            <div class="tab-container">
+                <button type="button" class="tab-btn active" id="tabJoin"
+                    onclick="switchMode('join')">เข้าร่วมห้อง</button>
+                <button type="button" class="tab-btn" id="tabCreate"
+                    onclick="switchMode('create')">สร้างห้องใหม่</button>
+            </div>
+
+            <form id="gameForm" onsubmit="handleStartGame(event)" novalidate>
+
+                <!-- กรอกชื่อกลุ่ม -->
+                <div class="form-group">
+                    <label for="groupName">🏷️ ชื่อกลุ่ม / ชื่อทีมสำรวจ</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🚩</span>
+                        <input type="text" id="groupName" class="game-input" placeholder="เช่น ทีมมดแดงพลังไฟ"
+                            maxlength="25" autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- เลือกอวาตาร์ประจำกลุ่ม -->
+                <div class="form-group">
+                    <label>🎭 เลือกมาสคอตประจำกลุ่ม</label>
+                    <div class="avatar-grid">
+
+                        <!-- 1. มด -->
+                        <div class="avatar-card selected" id="avatar-ant" onclick="selectAvatar('ant')">
+                            <div class="avatar-badge-check">✓</div>
+                            <div class="avatar-img-wrap">
+                                <svg class="avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M 42 20 Q 30 5 18 12" stroke="#c0392b" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <circle cx="16" cy="12" r="3.5" fill="#e74c3c" />
+                                    <path d="M 58 20 Q 70 5 82 12" stroke="#c0392b" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <circle cx="84" cy="12" r="3.5" fill="#e74c3c" />
+                                    <circle cx="50" cy="30" r="18" fill="#e74c3c" />
+                                    <circle cx="44" cy="27" r="3.5" fill="#2c3e50" />
+                                    <circle cx="56" cy="27" r="3.5" fill="#2c3e50" />
+                                    <path d="M 45 35 Q 50 40 55 35" stroke="#2c3e50" stroke-width="2.5"
+                                        stroke-linecap="round" fill="none" />
+                                    <ellipse cx="50" cy="54" rx="12" ry="10" fill="#c0392b" />
+                                    <ellipse cx="50" cy="76" rx="18" ry="16" fill="#e74c3c" />
+                                    <path d="M 37 72 Q 50 78 63 72" stroke="#c0392b" stroke-width="3" fill="none" />
+                                    <path d="M 36 80 Q 50 86 64 80" stroke="#c0392b" stroke-width="3" fill="none" />
+                                    <path d="M 39 52 Q 22 48 18 60" stroke="#a93226" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <path d="M 61 52 Q 78 48 82 60" stroke="#a93226" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <path d="M 40 58 Q 20 62 16 76" stroke="#a93226" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <path d="M 60 58 Q 80 62 84 76" stroke="#a93226" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                </svg>
+                            </div>
+                            <div class="avatar-name">มดจอมพลัง</div>
+                        </div>
+
+                        <!-- 2. ผึ้ง -->
+                        <div class="avatar-card" id="avatar-bee" onclick="selectAvatar('bee')">
+                            <div class="avatar-badge-check">✓</div>
+                            <div class="avatar-img-wrap">
+                                <svg class="avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <ellipse cx="32" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"
+                                        transform="rotate(-25 32 30)" />
+                                    <ellipse cx="68" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"
+                                        transform="rotate(25 68 30)" />
+                                    <path d="M 44 26 Q 38 12 30 16" stroke="#37474f" stroke-width="3.5"
+                                        stroke-linecap="round" fill="none" />
+                                    <circle cx="29" cy="16" r="3" fill="#fbc02d" />
+                                    <path d="M 56 26 Q 62 12 70 16" stroke="#37474f" stroke-width="3.5"
+                                        stroke-linecap="round" fill="none" />
+                                    <circle cx="71" cy="16" r="3" fill="#fbc02d" />
+                                    <ellipse cx="50" cy="58" rx="26" ry="28" fill="#fbc02d" />
+                                    <path d="M 26 50 Q 50 56 74 50 L 75 58 Q 50 64 25 58 Z" fill="#37474f" />
+                                    <path d="M 28 68 Q 50 74 72 68 L 70 76 Q 50 82 30 76 Z" fill="#37474f" />
+                                    <polygon points="50,88 46,84 54,84" fill="#37474f" />
+                                    <circle cx="42" cy="42" r="3.5" fill="#263238" />
+                                    <circle cx="58" cy="42" r="3.5" fill="#263238" />
+                                    <path d="M 46 48 Q 50 52 54 48" stroke="#263238" stroke-width="2.5"
+                                        stroke-linecap="round" fill="none" />
+                                    <circle cx="36" cy="46" r="3" fill="#ff8a80" opacity="0.7" />
+                                    <circle cx="64" cy="46" r="3" fill="#ff8a80" opacity="0.7" />
+                                </svg>
+                            </div>
+                            <div class="avatar-name">ผึ้งน้อยว่องไว</div>
+                        </div>
+
+                        <!-- 3. ด้วง -->
+                        <div class="avatar-card" id="avatar-beetle" onclick="selectAvatar('beetle')">
+                            <div class="avatar-badge-check">✓</div>
+                            <div class="avatar-img-wrap">
+                                <svg class="avatar-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M 50 35 L 50 14 Q 50 6 42 6 M 50 14 Q 50 6 58 6 M 50 20 L 44 17 M 50 20 L 56 17"
+                                        stroke="#4a148c" stroke-width="4.5" stroke-linecap="round"
+                                        stroke-linejoin="round" fill="none" />
+                                    <path d="M 30 45 Q 12 40 10 52" stroke="#311b92" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <path d="M 70 45 Q 88 40 90 52" stroke="#311b92" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <path d="M 28 65 Q 12 68 12 80" stroke="#311b92" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <path d="M 72 65 Q 88 68 88 80" stroke="#311b92" stroke-width="4"
+                                        stroke-linecap="round" fill="none" />
+                                    <ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c" />
+                                    <circle cx="42" cy="36" r="3" fill="#ffca28" />
+                                    <circle cx="58" cy="36" r="3" fill="#ffca28" />
+                                    <ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a" />
+                                    <line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3" />
+                                    <path d="M 35 55 Q 32 70 42 78" stroke="#ba68c8" stroke-width="3"
+                                        stroke-linecap="round" fill="none" />
+                                </svg>
+                            </div>
+                            <div class="avatar-name">ด้วงจอมพลัง</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- โหมดใส่รหัสห้อง -->
+                <div id="joinSection" class="form-group">
+                    <label for="roomCodeInput">🔢 รหัสห้องสำรวจ (PIN 4-6 หลัก)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔑</span>
+                        <input type="text" id="roomCodeInput" class="game-input" placeholder="เช่น 4829" maxlength="6"
+                            inputmode="numeric">
+                    </div>
+                </div>
+
+                <!-- โหมดสร้างห้องสุ่มรหัส -->
+                <div id="createSection" class="hidden">
+                    <div class="form-group">
+                        <label>🔑 รหัสห้องของกลุ่มคุณ</label>
+                        <div class="generated-room-box">
+                            <div>
+                                <span
+                                    style="font-size: 0.85rem; color: #795548; display: block; font-weight: 700;">รหัสห้องที่เปิด:</span>
+                                <span id="displayRoomCode" class="room-code-display">----</span>
+                            </div>
+                            <button type="button" class="refresh-code-btn" onclick="generateRandomRoomCode()">สุ่มใหม่
+                                🔄</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ปุ่มเริ่มผจญภัย -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span>พร้อมออกสำรวจเลย!</span>
+                    <span>🚀</span>
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+
+    <!-- ================= ส่วนเสริมด้านล่าง ================= -->
+    <div class="bottom-knowledge-container">
+
+        <!-- หัวข้อโซนความรู้ -->
+        <div class="section-header-badge">
+            <h2>🧭 ฐานเตรียมความพร้อม มดนักสำรวจดิจิทัล</h2>
+            <p>อ่านทบทวนเกร็ดความรู้ ทดลองทำข้อสอบ และศึกษาวิธีการเล่นก่อนลงสนามจริง!</p>
+        </div>
+
+        <!-- การ์ด 3 เสาหลักความรู้ -->
+        <div class="tips-cards-grid">
+            <div class="tip-box">
+                <div class="tip-icon-header">
+                    <span>🔐</span>
+                    <span class="tip-tag tip-tag-green">ความปลอดภัยระดับ 1</span>
+                </div>
+                <h3 class="tip-box-title">รหัสผ่าน &amp; ข้อมูลส่วนตัว</h3>
+                <p class="tip-box-desc">
+                    เลขบัตรประชาชน 13 หลัก, ที่อยู่บ้าน, และรหัสผ่าน เป็นข้อมูลลับสุดยอด! ห้ามบอกคนแปลกหน้าในเกม
+                    และอย่าลืม Log out ทุกครั้งหลังเลิกใช้คอมพิวเตอร์ที่โรงเรียน
+                </p>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-icon-header">
+                    <span>🛡️</span>
+                    <span class="tip-tag tip-tag-yellow">มารยาทออนไลน์</span>
+                </div>
+                <h3 class="tip-box-title">หยุด Cyberbullying</h3>
+                <p class="tip-box-desc">
+                    ไม่พิมพ์คำหยาบ ไม่ล้อเลียนหรือแกล้งเพื่อนในแชต หากโดนแกล้ง ห้ามตอบโต้ด้วยความรุนแรง ให้
+                    <strong>"แคปจอเก็บหลักฐาน แล้วแจ้งคุณครูหรือผู้ปกครองทันที"</strong>
+                </p>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-icon-header">
+                    <span>🧐</span>
+                    <span class="tip-tag tip-tag-orange">รู้ทันสื่อดิจิทัล</span>
+                </div>
+                <h3 class="tip-box-title">คิดก่อนแชร์ (Fake News)</h3>
+                <p class="tip-box-desc">
+                    เจอลิงก์แจกเงินฟรี หรือข่าวที่น่าตกใจ อย่าเพิ่งกดแชร์! ยึดหลัก <em>"คิด เช็ก ชัวร์"</em>
+                    ตรวจสอบแหล่งข่าวทางการก่อนเสมอ เพื่อไม่ให้ตกเป็นเหยื่อมิจฉาชีพ
+                </p>
+            </div>
+        </div>
+
+        <!-- กล่องจำลองทำข้อสอบ 20 ข้อ -->
+        <div class="practice-quiz-card" id="practiceQuizCard">
+            <div class="practice-header">
+                <div class="practice-title">
+                    <span>📝 จำลองแบบทดสอบมดนักสำรวจ</span>
+                </div>
+                <div class="quiz-status-pill" id="practiceStatusPill">20 ข้อท้าทาย</div>
+            </div>
+
+            <!-- หน้าจอเริ่มต้นก่อนเริ่มทำแบบทดสอบ -->
+            <div class="practice-start-screen" id="practiceStartScreen">
+                <div class="practice-start-badge">
+                    <img src="mod.png" alt="รูปโปรไฟล์"
+                        onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=ant'">
+                </div>
+                <h3 style="font-size: 1.6rem; font-weight: 900; color: #2d3436;">พร้อมทดสอบความรู้ดิจิทัลหรือยัง?</h3>
+                <p style="font-size: 1.1rem; color: #636e72; max-width: 620px; line-height: 1.6;">
+                    แบบทดสอบจำลอง 20 ข้อ เพื่อเตรียมความพร้อมสู่สนามประลองจริง ตอบทีละข้อ มีเฉลยและเกร็ดความรู้ทันที
+                    พร้อมสรุปคะแนนหลังทำครบ!
+                </p>
+                <button class="practice-start-btn" onclick="startPracticeQuiz()">
+                    <span>เริ่มทำแบบทดสอบเลย!</span>
+                    <span>🚀</span>
+                </button>
+            </div>
+
+            <!-- กล่องแสดงข้อสอบแต่ละข้อ -->
+            <div id="practiceQuestionArea" style="display: none;">
+                <div class="quiz-progress-bar-bg" style="margin-bottom: 16px;">
+                    <div class="quiz-progress-bar-fill" id="practiceProgressBar"></div>
+                </div>
+                <div class="practice-question-text" id="practiceQuestionText">โจทย์คำถาม...</div>
+                <div class="practice-options-grid" id="practiceOptionsContainer"></div>
+                <div class="practice-feedback-box" id="practiceFeedbackBox"></div>
+            </div>
+
+            <!-- กล่องสรุปผลคะแนนเมื่อทำครบ 20 ข้อ -->
+            <div class="quiz-summary-card" id="practiceSummaryCard">
+                <div style="font-size: 3.5rem;">🏆</div>
+                <h3 style="font-size: 2rem; font-weight: 900; color: #2d3436;">การทดสอบเสร็จสมบูรณ์!</h3>
+                <p style="font-size: 1.15rem; color: #558b2f; font-weight: 700;">ยอดเยี่ยมมากเจ้ามดนักสำรวจ
+                    คุณได้ฝึกฝนทักษะดิจิทัลครบทั้ง 20 ข้อแล้ว</p>
+                <div class="summary-score-badge" id="summaryScoreNum">0</div>
+                <div style="font-size: 1.35rem; font-weight: 800; color: #795548;" id="summaryScoreText">คะแนนรวม: 0 /
+                    20 ข้อ (0%)</div>
+                <div style="font-size: 1.1rem; color: #4b6584; max-width: 600px; line-height: 1.6;"
+                    id="summaryRemarkText">พร้อมแล้วสำหรับสนามประลองจริง!</div>
+                <button class="btn-next-quiz" onclick="restartPracticeQuiz()">
+                    <span>🔄</span> <span>ทำแบบทดสอบใหม่อีกครั้ง</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- การ์ดแนะนำวิธีการเล่นบอร์ดเกม & แผนที่กระดาน -->
+        <div class="how-to-play-card">
+            <div class="htp-title-wrap">
+                <h3>🎲 กติกาและวิธีการเล่นบอร์ดเกม มดนักสำรวจ</h3>
+                <p>เรียนรู้วิธีการผจญภัย เดินหมากฝ่าด่านกล่องปริศนา และพิชิตเส้นชัยไปด้วยกัน!</p>
+            </div>
+
+            <div class="board-map-preview-wrap">
+                <img src="board-map.jpg" alt="แผนที่กระดานเกม มดนักสำรวจ" class="board-map-preview-img"
+                    onerror="this.src='https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=900&auto=format&fit=crop&q=60'">
+                <div class="board-map-caption">🗺️ แผนที่กระดานผจญภัย 50 ช่อง</div>
+            </div>
+
+            <div class="htp-steps-grid">
+                <div class="htp-step-item">
+                    <div class="htp-step-num">1</div>
+                    <div class="htp-step-icon">🎲</div>
+                    <div class="htp-step-title">ทอยลูกเต๋า 3D</div>
+                    <div class="htp-step-desc">เมื่อถึงตาทีมของคุณ ให้กดปุ่มทอยเต๋า ลูกเต๋าจะสุ่มแต้มเดิน 1-6 แต้ม
+                        (มีเวลาจำกัด 10 วินาที)</div>
+                </div>
+
+                <div class="htp-step-item">
+                    <div class="htp-step-num">2</div>
+                    <div class="htp-step-icon">🐜</div>
+                    <div class="htp-step-title">เดินหมากสำรวจ</div>
+                    <div class="htp-step-desc">ตัวละครมดจะเดินไปข้างหน้าตามแต้มที่ทอยได้
+                        ระวังหลุมพรางสีน้ำตาลที่จะทำให้ลื่นถอยหลัง!</div>
+                </div>
+
+                <div class="htp-step-item">
+                    <div class="htp-step-num">3</div>
+                    <div class="htp-step-icon">📦</div>
+                    <div class="htp-step-title">เปิดกล่องตอบคำถาม</div>
+                    <div class="htp-step-desc">เมื่อตกช่องกล่องปริศนา เลือกการ์ด 1 ใน 4 ใบ
+                        แล้วตอบโจทย์ความปลอดภัยไซเบอร์เพื่อสะสมแต้ม</div>
+                </div>
+
+                <div class="htp-step-item">
+                    <div class="htp-step-num">4</div>
+                    <div class="htp-step-icon">🏁</div>
+                    <div class="htp-step-title">พิชิตเส้นชัย</div>
+                    <div class="htp-step-desc">ทีมแรกที่ก้าวเข้าสู่ช่องที่ 50 จะเป็นผู้ชนะทันที และขึ้นสู่แท่นรับรางวัล
+                        Podium อันทรงเกียรติ!</div>
+                </div>
+            </div>
+
+            <div class="board-legend-card">
+                <h4 style="font-size: 1.15rem; font-weight: 900; color: #2d3436;">✨
+                    สัญลักษณ์พิเศษและไอเทมตัวช่วยบนกระดาน</h4>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🟩</span>
+                        <div>
+                            <div class="legend-item-title">กล่องเขียว (ง่าย)</div>
+                            <div class="legend-item-desc">+10 แต้ม (ตอบผิดไม่หักแต้ม)</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🟨</span>
+                        <div>
+                            <div class="legend-item-title">กล่องเหลือง (กลาง)</div>
+                            <div class="legend-item-desc">+20 แต้ม &amp; +1 เหรียญ (ผิด -5 แต้ม)</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🟧</span>
+                        <div>
+                            <div class="legend-item-title">กล่องส้ม (ท้าทาย)</div>
+                            <div class="legend-item-desc">+30 แต้ม &amp; +2 เหรียญ (ผิด ถอย 2 ช่อง)</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🪜</span>
+                        <div>
+                            <div class="legend-item-title">บันไดวิเศษ</div>
+                            <div class="legend-item-desc">ไต่ลัดขึ้นไปยังช่องที่สูงกว่าทันที</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🕳️</span>
+                        <div>
+                            <div class="legend-item-title">หลุมพรางดิน</div>
+                            <div class="legend-item-desc">ลื่นไถลตกลงไปยังช่องด้านล่าง</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🛡️</span>
+                        <div>
+                            <div class="legend-item-title">ไอเทม: โล่ป้องกัน</div>
+                            <div class="legend-item-desc">ป้องกันการลื่นตกหลุมพรางในรอบนั้น</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🔍</span>
+                        <div>
+                            <div class="legend-item-title">ไอเทม: 50/50</div>
+                            <div class="legend-item-desc">ตัดตัวเลือกที่ไม่ถูกต้องออก 2 ข้อ</div>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-item-icon">🪙</span>
+                        <div>
+                            <div class="legend-item-title">ไอเทม: x2 เหรียญ</div>
+                            <div class="legend-item-desc">รับเหรียญรางวัลเพิ่มเป็น 2 เท่า</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let currentMode = 'join';
+        let currentGeneratedCode = '';
+        let selectedAvatar = 'ant';
+
+        let socket = null;
+        if (typeof io === 'function') {
+            socket = io();
+        }
+
+        function emitWithTimeout(event, payload, timeoutMs = 4000) {
+            return new Promise((resolve) => {
+                if (!socket) return resolve({ok: true});
+                let done = false;
+                const timer = setTimeout(() => {
+                    if (!done) {done = true; resolve({ok: true, timedOut: true});}
+                }, timeoutMs);
+                try {
+                    socket.emit(event, payload, (res) => {
+                        if (!done) {done = true; clearTimeout(timer); resolve(res || {ok: true});}
+                    });
+                } catch (e) {
+                    if (!done) {done = true; clearTimeout(timer); resolve({ok: true});}
+                }
+            });
+        }
+
+        const AVATAR_SVGS = {
+            ant: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="32" r="17" fill="#e74c3c"/><circle cx="44" cy="30" r="3.5" fill="#2c3e50"/><circle cx="56" cy="30" r="3.5" fill="#2c3e50"/><ellipse cx="50" cy="54" rx="12" ry="10" fill="#c0392b"/><ellipse cx="50" cy="76" rx="18" ry="16" fill="#e74c3c"/><path d="M39 52 Q22 48 18 60" stroke="#a93226" stroke-width="4" fill="none"/><path d="M61 52 Q78 48 82 60" stroke="#a93226" stroke-width="4" fill="none"/></svg>`,
+            bee: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="68" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="50" cy="58" rx="26" ry="28" fill="#fbc02d"/><path d="M26 50 Q50 56 74 50 L75 58 Q50 64 25 58 Z" fill="#37474f"/><circle cx="42" cy="42" r="3.5" fill="#263238"/><circle cx="58" cy="42" r="3.5" fill="#263238"/></svg>`,
+            beetle: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 35 L50 14 Q50 6 42 6 M50 14 Q50 6 58 6 M50 20 L44 17 M50 20 L56 17" stroke="#4a148c" stroke-width="4.5" fill="none"/><ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c"/><circle cx="42" cy="36" r="3" fill="#ffca28"/><circle cx="58" cy="36" r="3" fill="#ffca28"/><ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a"/><line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3"/></svg>`
+        };
+
+        const AVATAR_NAMES = {
+            ant: 'มดจอมพลัง',
+            bee: 'ผึ้งน้อยว่องไว',
+            beetle: 'ด้วงจอมพลัง'
+        };
+
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let bgmInterval = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBGMNote(freq, startTime, duration) {
+            if (!isMusicPlaying || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0.04, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + duration);
+            } catch (e) { }
+        }
+
+        function playMusicLoop() {
+            if (!isMusicPlaying) return;
+            initAudio();
+            const melody = [
+                {f: 523.25, d: 0.3}, {f: 659.25, d: 0.3}, {f: 783.99, d: 0.3}, {f: 1046.50, d: 0.5},
+                {f: 880.00, d: 0.3}, {f: 783.99, d: 0.3}, {f: 659.25, d: 0.5},
+                {f: 587.33, d: 0.3}, {f: 659.25, d: 0.3}, {f: 698.46, d: 0.3}, {f: 783.99, d: 0.5},
+                {f: 659.25, d: 0.3}, {f: 587.33, d: 0.3}, {f: 523.25, d: 0.6}
+            ];
+
+            let now = audioCtx.currentTime;
+            melody.forEach(note => {
+                playBGMNote(note.f, now, note.d);
+                now += note.d * 0.95;
+            });
+        }
+
+        function startBGM() {
+            if (isMusicPlaying) return;
+            initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isMusicPlaying = true;
+            playMusicLoop();
+            bgmInterval = setInterval(playMusicLoop, 6000);
+        }
+
+        function triggerAutoPlay() {
+            startBGM();
+            window.removeEventListener('click', triggerAutoPlay);
+            window.removeEventListener('keydown', triggerAutoPlay);
+            window.removeEventListener('touchstart', triggerAutoPlay);
+        }
+
+        window.addEventListener('click', triggerAutoPlay);
+        window.addEventListener('keydown', triggerAutoPlay);
+        window.addEventListener('touchstart', triggerAutoPlay);
+
+        function updatePreview() {
+            document.getElementById('heroPreviewAvatar').innerHTML = AVATAR_SVGS[selectedAvatar];
+            document.getElementById('heroPreviewName').innerText = AVATAR_NAMES[selectedAvatar];
+        }
+
+        function selectAvatar(avatar) {
+            selectedAvatar = avatar;
+            document.querySelectorAll('.avatar-card').forEach(card => card.classList.remove('selected'));
+            const selectedCard = document.getElementById(`avatar-${avatar}`);
+            if (selectedCard) selectedCard.classList.add('selected');
+            updatePreview();
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const tabJoin = document.getElementById('tabJoin');
+            const tabCreate = document.getElementById('tabCreate');
+            const joinSection = document.getElementById('joinSection');
+            const createSection = document.getElementById('createSection');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (mode === 'join') {
+                tabJoin.classList.add('active');
+                tabCreate.classList.remove('active');
+                joinSection.classList.remove('hidden');
+                createSection.classList.add('hidden');
+                submitBtn.innerHTML = '<span>เข้าร่วมกลุ่มสำรวจ</span> <span>🚪</span>';
+            } else {
+                tabCreate.classList.add('active');
+                tabJoin.classList.remove('active');
+                joinSection.classList.add('hidden');
+                createSection.classList.remove('hidden');
+                submitBtn.innerHTML = '<span>เปิดห้องและรอเพื่อน!</span> <span>🏕️</span>';
+
+                if (!currentGeneratedCode) generateRandomRoomCode();
+            }
+        }
+
+        function generateRandomRoomCode() {
+            const randomCode = Math.floor(1000 + Math.random() * 9000).toString();
+            currentGeneratedCode = randomCode;
+            document.getElementById('displayRoomCode').innerText = randomCode;
+        }
+
+        async function handleStartGame(event) {
+            event.preventDefault();
+            const groupNameInput = document.getElementById('groupName');
+            const groupName = groupNameInput.value.trim();
+
+            if (!groupName) {
+                alert('กรุณากรอกชื่อกลุ่มก่อนเริ่มสำรวจครับ!');
+                groupNameInput.focus();
+                return;
+            }
+
+            let roomCode = '';
+            if (currentMode === 'join') {
+                const roomInput = document.getElementById('roomCodeInput');
+                roomCode = roomInput.value.trim();
+                if (!roomCode || roomCode.length < 4) {
+                    alert('กรุณากรอกรหัสห้อง (PIN 4-6 หลัก) ให้ถูกต้องครับ!');
+                    roomInput.focus();
+                    return;
+                }
+            } else {
+                roomCode = currentGeneratedCode;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+
+            if (currentMode === 'join') {
+                const res = await emitWithTimeout('check-room', {roomCode});
+                if (!res.ok) {
+                    submitBtn.disabled = false;
+                    if (res.reason === 'full') {
+                        alert('ห้องนี้เต็มแล้วครับ (10 กลุ่ม) ลองรหัสห้องอื่นดูนะครับ');
+                    } else {
+                        alert('ไม่พบห้องนี้ครับ กรุณาตรวจสอบรหัสห้องอีกครั้ง');
+                    }
+                    return;
+                }
+            } else {
+                const res = await emitWithTimeout('create-room', {roomCode});
+                if (!res.ok) {
+                    submitBtn.disabled = false;
+                    alert('รหัสห้องนี้มีคนใช้อยู่แล้ว กรุณาสุ่มรหัสห้องใหม่');
+                    generateRandomRoomCode();
+                    return;
+                }
+            }
+
+            sessionStorage.setItem('ant_group', groupName);
+            sessionStorage.setItem('ant_room', roomCode);
+            sessionStorage.setItem('ant_avatar_id', selectedAvatar);
+            sessionStorage.setItem('ant_role', currentMode === 'create' ? 'host' : 'player');
+
+            window.location.href = 'waiting-room.html';
+        }
+
+        /* ---------------- ดึงรหัสห้องจาก URL อัตโนมัติเมื่อสแกน QR Code ---------------- */
+        function checkUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomFromUrl = urlParams.get('room');
+
+            if (roomFromUrl) {
+                switchMode('join');
+                const roomInput = document.getElementById('roomCodeInput');
+                if (roomInput) {
+                    roomInput.value = roomFromUrl;
+                }
+                const groupInput = document.getElementById('groupName');
+                if (groupInput) {
+                    setTimeout(() => groupInput.focus(), 300);
+                }
+            }
+        }
+
+        /* ================= ฐานข้อมูลข้อสอบจำลอง 20 ข้อ ================= */
+        const PRACTICE_QUESTIONS = [
+            {
+                q: "1. ข้อมูลประเภทใดต่อไปนี้ จัดเป็น 'ข้อมูลส่วนตัว' ที่ไม่ควรบอกคนแปลกหน้าในเกม?",
+                opts: ["ชื่อการ์ตูนที่ชอบ", "รหัสผ่านบัญชีผู้ใช้", "สีของกระเป๋านักเรียน", "วิชาที่ชอบเรียน"],
+                ans: 1,
+                tip: "รหัสผ่านและข้อมูลบัญชีเป็นข้อมูลลับสำคัญสูงสุด ห้ามเปิดเผยแก่บุคคลอื่นเด็ดขาด"
+            },
+            {
+                q: "2. หากมีคนแปลกหน้าทักมาบอกว่า 'ขอเลขประจำตัวประชาชน 13 หลักเพื่อแลกไอเทมฟรี' ควรทำอย่างไร?",
+                opts: ["รีบส่งให้ทันทีเพราะอยากได้ของ", "ส่งเลขบัตรของเพื่อนไปแทน", "ปฏิเสธทันที ไม่ส่งข้อมูล และรีบบอกผู้ปกครอง", "ต่อรองขอไอเทมเพิ่มเป็น 2 เท่า"],
+                ans: 2,
+                tip: "เลขบัตรประชาชน 13 หลักอาจถูกมิจฉาชีพนำไปแอบอ้างทำธุรกรรมผิดกฎหมาย ห้ามส่งให้ใครเด็ดขาด"
+            },
+            {
+                q: "3. การตั้งรหัสผ่าน (Password) ที่รัดกุมและปลอดภัย ควรมีลักษณะอย่างไร?",
+                opts: ["ใช้วันเดือนปีเกิดของตนเอง", "ใช้ตัวเลขเรียงกัน 123456", "ใช้เบอร์โทรศัพท์มือถือ", "มีความยาวพอเหมาะและผสมตัวอักษรพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข"],
+                ans: 3,
+                tip: "รหัสผ่านที่ดีควรคาดเดาได้ยาก และไม่ควรใช้วันเกิดหรือเบอร์โทรศัพท์ที่คนใกล้ตัวรู้"
+            },
+            {
+                q: "4. เมื่อใช้งานเครื่องคอมพิวเตอร์ที่ห้องเรียนคอมพิวเตอร์เสร็จแล้ว สิ่งแรกที่ต้องทำคือ?",
+                opts: ["กดออกจากระบบ (Log out) ทุกบัญชีที่เข้าใช้", "ปิดหน้าจอคอมพิวเตอร์ทันที", "เปิดเกมทิ้งไว้ให้เพื่อนเล่นต่อ", "ถอดปลั๊กไฟออกทันที"],
+                ans: 0,
+                tip: "ต้อง Log out ออกจากระบบทุกครั้ง เพื่อป้องกันไม่ให้ผู้อื่นเข้าถึงข้อมูลส่วนตัวของเรา"
+            },
+            {
+                q: "5. พฤติกรรมใดบนโลกออนไลน์ถือว่าเป็นการกลั่นแกล้งบนโลกไซเบอร์ (Cyberbullying)?",
+                opts: ["การพิมพ์ชื่นชมผลงานวาดภาพของเพื่อน", "การพิมพ์ด่าทอ ล้อเลียน หรือใช้คำหยาบใส่เพื่อนในกลุ่มแชต", "การส่งต่อการบ้านให้เพื่อนดู", "การนัดเพื่อนทำการบ้านร่วมกัน"],
+                ans: 1,
+                tip: "การใช้คำหยาบ ประจาน หรือล้อเลียนผู้อื่นในโซเชียลเป็นการกระทำที่ผิดมารยาทและสร้างความเสียหาย"
+            },
+            {
+                q: "6. หากนักเรียนตกเป็นเหยื่อของการถูก Cyberbullying สิ่งที่ควรทำเป็นอันดับแรกคือข้อใด?",
+                opts: ["พิมพ์ด่าตอบโต้กลับไปด้วยถ้อยคำที่รุนแรงกว่า", "เก็บหลักฐาน (แคปหน้าจอ) แล้วแจ้งคุณครูหรือผู้ปกครองทันที", "ลบแอปทิ้งแล้วแอบร้องไห้คนเดียว", "ชวนเพื่อนไปดักตีคนที่แกล้ง"],
+                ans: 1,
+                tip: "ไม่ตอบโต้ด้วยความรุนแรง ให้เก็บหลักฐานภาพถ่ายหน้าจอไว้ และปรึกษาผู้ใหญ่ทันที"
+            },
+            {
+                q: "7. คำว่า 'Digital Footprint' (รอยเท้าดิจิทัล) หมายถึงสิ่งใด?",
+                opts: ["รอยเท้าเวลาเดินเหยียบบนแป้นพิมพ์", "ประวัติและร่องรอยการกระทำทั้งหมดที่เราทำไว้บนอินเทอร์เน็ต", "โปรแกรมสำหรับทำความสะอาดหน้าจอ", "ขนาดความกว้างของหน้าจอโทรศัพท์"],
+                ans: 1,
+                tip: "ทุกการโพสต์ ค้นหา หรือพิมพ์ จะถูกบันทึกเป็นร่องรอยดิจิทัลที่สามารถย้อนตรวจสอบได้เสมอ"
+            },
+            {
+                q: "8. ก่อนที่จะกดแชร์ (Share) ข่าวหรือคลิปวิดีโอบนโลกออนไลน์ ควรยึดหลักการใดดีที่สุด?",
+                opts: ["แชร์ทันทีเพราะเห็นคนแชร์เยอะมาก", "คิด เช็ก ชัวร์ ตรวจสอบแหล่งข่าวที่น่าเชื่อถือก่อนแชร์เสมอ", "แชร์เฉพาะข่าวที่ทำให้คนตกใจกลัว", "แต่งเรื่องเพิ่มเติมให้ดูน่าตื่นเต้น"],
+                ans: 1,
+                tip: "การตรวจสอบแหล่งข่าวช่วยป้องกันการแพร่กระจายของข่าวปลอม (Fake News)"
+            },
+            {
+                q: "9. หากได้รับข้อความ SMS แปลกปลอมระบุว่า 'ยินดีด้วย คุณได้รับทุนการศึกษา 100,000 บาท กดรับที่ลิงก์นี้' ควรทำอย่างไร?",
+                opts: ["กดลิงก์ทันทีเพราะกลัวเสียสิทธิ์", "ส่งต่อให้เพื่อนทุกคนในห้อง", "ไม่กดลิงก์ และแจ้งผู้ปกครองให้ช่วยตรวจสอบ", "กรอกเลขบัญชีธนาคารของพ่อแม่เพื่อรอรับเงิน"],
+                ans: 2,
+                tip: "ข้อความแจกเงินหรือแจกรางวัลฟรีมักเป็นลิงก์หลอกลวง (Phishing) ของมิจฉาชีพ ห้ามคลิกเด็ดขาด"
+            },
+            {
+                q: "10. สัญลักษณ์รูปแม่กุญแจล็อค หรือ 'https://' ด้านหน้าชื่อเว็บไซต์ บ่งบอกถึงอะไร?",
+                opts: ["เว็บไซต์นี้เล่นเกมได้ฟรี", "เว็บไซต์นี้ไม่มีวันปิดปรับปรุง", "เว็บไซต์นี้มีการเข้ารหัสส่งผ่านข้อมูลที่ปลอดภัย", "เว็บไซต์นี้ไม่มีภาพที่ไม่เหมาะสม"],
+                ans: 2,
+                tip: "https แสดงว่าเว็บไซต์มีการเข้ารหัสความปลอดภัยเพื่อป้องกันการดักขโมยข้อมูล"
+            },
+            {
+                q: "11. การนำรูปวาดของเพื่อนหรือภาพถ่ายของผู้อื่นไปโพสต์ลงอินเทอร์เน็ต ควรปฏิบัติอย่างไร?",
+                opts: ["โพสต์ได้ทันทีไม่ต้องขออนุญาต", "ขออนุญาตเจ้าของผลงานและใส่เครดิตที่มาอย่างถูกต้อง", "นำมาตัดต่อให้ตลกแล้วค่อยโพสต์", "แอบอ้างว่าตนเองเป็นคนวาด"],
+                ans: 1,
+                tip: "ต้องเคารพสิทธิส่วนบุคคลและลิขสิทธิ์ผลงานสร้างสรรค์ของผู้อื่นเสมอ"
+            },
+            {
+                q: "12. หากเพื่อนในห้องถูกคนแปลกหน้าข่มขู่ทางออนไลน์ เราในฐานะพลเมืองดิจิทัลที่ดี (Upstander) ควรทำอย่างไร?",
+                opts: ["ให้กำลังใจเพื่อน แนะนำให้แคปจอ และพาไปแจ้งคุณครู", "หัวเราะเยาะและช่วยแชร์โพสต์ประจาน", "แกล้งทำเป็นไม่รู้ไม่เห็น", "พิมพ์บอกให้เพื่อนยอมจ่ายเงินไป"],
+                ans: 0,
+                tip: "การยื่นมือเข้าช่วยเหลือผู้ถูกกระทำอย่างถูกต้อง คือหัวใจสำคัญของพลเมืองดิจิทัล"
+            },
+            {
+                q: "13. การเชื่อมต่อสัญญาณ Wi-Fi สาธารณะที่เปิดฟรีและไม่มีรหัสผ่าน มีความเสี่ยงเรื่องใดมากที่สุด?",
+                opts: ["อาจมีผู้ไม่หวังดีดักจับรหัสผ่านหรือข้อมูลที่เราพิมพ์ได้", "โทรศัพท์จะแบตเตอรี่หมดเร็วกว่าปกติ 2 เท่า", "สัญญาณอินเทอร์เน็ตจะแรงเกินไปจนเครื่องร้อน", "ไม่สามารถดาวน์โหลดภาพได้"],
+                ans: 0,
+                tip: "Free Wi-Fi ที่ไม่มีระบบป้องกัน อาจถูกแฮกเกอร์ดักจับข้อมูลรหัสผ่านและข้อมูลส่วนตัวได้"
+            },
+            {
+                q: "14. โปรแกรมโกงเกมที่ให้ดาวน์โหลดจากเว็บไซต์แปลกๆ มักมีสิ่งใดแอบแฝงมาด้วย?",
+                opts: ["ไอเทมลับของแท้จากผู้พัฒนา", "มัลแวร์หรือไวรัสคอมพิวเตอร์ที่แอบขโมยข้อมูล", "โปรแกรมช่วยประหยัดแบตเตอรี่", "แอนติไวรัสรุ่นใหม่ล่าสุด"],
+                ans: 1,
+                tip: "ไฟล์โกงเกมเถื่อนส่วนใหญ่มักแฝงไวรัส โทรจัน หรือสปายแวร์มาดักขโมยรหัสผ่าน"
+            },
+            {
+                q: "15. พฤติกรรมใดต่อไปนี้แสดงถึง 'การแบ่งเวลาหน้าจอ' (Screen Time) ที่เหมาะสม?",
+                opts: ["เล่นเกมต่อเนื่องทั้งวันทั้งคืนโดยไม่นอน", "กำหนดเวลาเล่นเกมไม่เกิน 1-2 ชั่วโมงต่อวัน และออกไปออกกำลังกาย", "เล่นเกมเฉพาะตอนที่คุณครูกำลังสอน", "แอบเล่นโทรศัพท์ใต้ผ้าห่มจนถึงเช้า"],
+                ans: 1,
+                tip: "การรักษาสมดุลระหว่างเวลาหน้าจอกับสุขภาพกายและสุขภาพจิตเป็นสิ่งสำคัญยิ่ง"
+            },
+            {
+                q: "16. มัลแวร์ประเภทใดที่เมื่อติดแล้วจะล็อกไฟล์ในคอมพิวเตอร์ แล้วขู่กรรโชกให้เหยื่อจ่ายเงินเพื่อปลดล็อก?",
+                opts: ["มัลแวร์เรียกค่าไถ่ (Ransomware)", "โปรแกรมวาดภาพดิจิทัล", "ระบบปรับปรุงอัตโนมัติ (Windows Update)", "โปรแกรมเล่นวิดีโอ"],
+                ans: 0,
+                tip: "Ransomware คือไวรัสเรียกค่าไถ่ที่ล็อกไฟล์เอกสารเพื่อข่มขู่เอาเงิน"
+            },
+            {
+                q: "17. การตั้งค่าความเป็นส่วนตัวในแอปพลิเคชันโซเชียลมีเดีย ควรตั้งค่าอย่างไรจึงปลอดภัยที่สุดสำหรับนักเรียน ป.4?",
+                opts: ["เปิดเป็นสาธารณะ (Public) ให้ทุกคนเห็นได้ทั้งหมด", "ตั้งค่าให้มองเห็นเฉพาะเพื่อนหรือคนในครอบครัว (Friends Only)", "ปิดการใช้งานรหัสผ่านทุกชนิด", "เปิดพิกัดบอกตำแหน่งบ้านแบบเรียลไทม์"],
+                ans: 1,
+                tip: "การตั้งค่าให้เห็นเฉพาะเพื่อน ช่วยคัดกรองไม่ให้คนแปลกหน้าเข้าถึงชีวิตส่วนตัวและภาพถ่ายของเรา"
+            },
+            {
+                q: "18. การถ่ายทอดสด (Live) ในห้องนอนหรือบ้านของตนเอง ควรระมัดระวังเรื่องใดมากที่สุด?",
+                opts: ["ระวังไม่ให้ติดภาพทรัพย์สินมีค่า เอกสารสำคัญ หรือพิกัดที่อยู่บ้าน", "ระวังเสียงลมพัดผ่านไมโครโฟน", "ระวังแสงไฟสว่างไม่เพียงพอ", "ระวังไม่มีคนส่งของขวัญให้"],
+                ans: 0,
+                tip: "การไลฟ์สดอาจเผลอเปิดเผยตำแหน่งบ้าน สิ่งของมีค่า หรือข้อมูลส่วนตัวให้ผู้ไม่หวังดีทราบ"
+            },
+            {
+                q: "19. หากคนแปลกหน้าในอินเทอร์เน็ตที่เพิ่งรู้จักกัน นัดหมายให้ไปพบกันตามลำพังที่สวนสาธารณะ ควรทำอย่างไร?",
+                opts: ["รีบแอบไปพบทันทีโดยไม่บอกใคร", "ปฏิเสธทันที และนำเรื่องนี้ไปบอกคุณพ่อคุณแม่หรือคุณครู", "ชวนน้องเล็กๆ ไปด้วยคนเดียว", "ขอยืมเงินคนแปลกหน้าเพื่อเป็นค่าเดินทาง"],
+                ans: 1,
+                tip: "การนัดพบบุคคลแปลกหน้าจากโลกออนไลน์มีความเสี่ยงต่อความปลอดภัยในชีวิต ห้ามไปเด็ดขาด"
+            },
+            {
+                q: "20. ข้อใดคือคุณลักษณะที่สำคัญที่สุดของการเป็น 'พลเมืองดิจิทัลที่มีคุณภาพ' (Digital Citizen)?",
+                opts: ["มีความสามารถในการเล่นเกมชนะทุกคน", "มีความรับผิดชอบ รู้เท่าทัน ปลอดภัย และเคารพผู้อื่นบนโลกออนไลน์", "มีจำนวนผู้ติดตามในโซเชียลมากที่สุดในโรงเรียน", "พิมพ์ข้อความบนแป้นพิมพ์ได้รวดเร็วที่สุด"],
+                ans: 1,
+                tip: "การเป็นพลเมืองดิจิทัลที่ดี ต้องมีทั้งความรู้ด้านความปลอดภัย มารยาท และความรับผิดชอบต่อสังคม"
+            }
+        ];
+
+        let practiceCurrentIndex = 0;
+        let practiceUserScore = 0;
+
+        function startPracticeQuiz() {
+            document.getElementById('practiceStartScreen').style.display = 'none';
+            document.getElementById('practiceQuestionArea').style.display = 'block';
+            practiceCurrentIndex = 0;
+            practiceUserScore = 0;
+            renderPracticeQuestion();
+        }
+
+        function renderPracticeQuestion() {
+            const qData = PRACTICE_QUESTIONS[practiceCurrentIndex];
+            document.getElementById('practiceStatusPill').innerText = `ข้อที่ ${practiceCurrentIndex + 1} / ${PRACTICE_QUESTIONS.length}`;
+
+            const progressPercent = ((practiceCurrentIndex + 1) / PRACTICE_QUESTIONS.length) * 100;
+            document.getElementById('practiceProgressBar').style.width = `${progressPercent}%`;
+
+            document.getElementById('practiceQuestionText').innerText = qData.q;
+
+            const optContainer = document.getElementById('practiceOptionsContainer');
+            optContainer.innerHTML = '';
+
+            const prefixes = ['A.', 'B.', 'C.', 'D.'];
+            qData.opts.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-practice-opt';
+                btn.innerHTML = `<span style="font-weight:900; color:#d84315; min-width: 22px;">${prefixes[idx]}</span> <span>${optText}</span>`;
+                btn.onclick = () => handlePracticeAnswer(idx, btn);
+                optContainer.appendChild(btn);
+            });
+
+            const fbBox = document.getElementById('practiceFeedbackBox');
+            fbBox.className = 'practice-feedback-box';
+            fbBox.innerHTML = '';
+        }
+
+        function handlePracticeAnswer(selectedIdx, selectedBtn) {
+            const qData = PRACTICE_QUESTIONS[practiceCurrentIndex];
+            const allBtns = document.querySelectorAll('#practiceOptionsContainer .btn-practice-opt');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selectedIdx === qData.ans);
+            if (isCorrect) {
+                practiceUserScore++;
+                selectedBtn.classList.add('correct');
+            } else {
+                selectedBtn.classList.add('wrong');
+                allBtns[qData.ans].classList.add('correct');
+            }
+
+            const fbBox = document.getElementById('practiceFeedbackBox');
+            const isLastQuestion = (practiceCurrentIndex >= PRACTICE_QUESTIONS.length - 1);
+
+            fbBox.innerHTML = `
+                <div style="color: ${isCorrect ? '#27ae60' : '#d63031'}; font-weight: 900; font-size: 1.25rem; margin-bottom: 6px;">
+                    ${isCorrect ? '🎉 ถูกต้องครับ! เก่งมากเจ้ามดน้อย' : '❌ ยังไม่ถูกต้องนะเจ้ามดน้อย!'}
+                </div>
+                <div style="margin-bottom: 12px; color: #37474f;">
+                    <strong>💡 คำอธิบาย/เกร็ดความรู้:</strong> ${qData.tip}
+                </div>
+                <button class="btn-next-quiz" onclick="goToNextPracticeQuestion()">
+                    <span>${isLastQuestion ? 'ดูสรุปผลคะแนนรวม 🏆' : 'ข้อถัดไป ➔'}</span>
+                </button>
+            `;
+            fbBox.style.borderLeft = isCorrect ? '6px solid #2ecc71' : '6px solid #e74c3c';
+            fbBox.classList.add('show');
+        }
+
+        function goToNextPracticeQuestion() {
+            if (practiceCurrentIndex < PRACTICE_QUESTIONS.length - 1) {
+                practiceCurrentIndex++;
+                renderPracticeQuestion();
+            } else {
+                showPracticeSummary();
+            }
+        }
+
+        function showPracticeSummary() {
+            document.getElementById('practiceQuestionArea').style.display = 'none';
+            const summaryCard = document.getElementById('practiceSummaryCard');
+            const scoreNum = document.getElementById('summaryScoreNum');
+            const scoreText = document.getElementById('summaryScoreText');
+            const remarkText = document.getElementById('summaryRemarkText');
+
+            const percent = Math.round((practiceUserScore / PRACTICE_QUESTIONS.length) * 100);
+            scoreNum.innerText = practiceUserScore;
+            scoreText.innerText = `คะแนนรวม: ${practiceUserScore} / ${PRACTICE_QUESTIONS.length} ข้อ (${percent}%)`;
+
+            if (percent >= 80) {
+                remarkText.innerHTML = '🌟 <strong>ยอดเยี่ยมระดับยอดนักสำรวจ!</strong> คุณมีความรู้ความเข้าใจด้านความปลอดภัยดิจิทัลอย่างดีเยี่ยม พร้อมลงแข่งบนกระดานจริงแล้ว!';
+            } else if (percent >= 50) {
+                remarkText.innerHTML = '👍 <strong>ทำได้ดีมาก!</strong> คุณมีพื้นฐานความปลอดภัยที่ดี ลองอ่านทบทวนเกร็ดความรู้อีกนิด จะช่วยให้เล่นชนะได้ง่ายขึ้นแน่นอน';
+            } else {
+                remarkText.innerHTML = '🌱 <strong>พยายามได้ดีครับ!</strong> แนะนำให้อ่านทบทวนเกร็ดความรู้ 3 เสาหลักด้านบน แล้วลองทำแบบทดสอบใหม่อีกครั้งเพื่อความมั่นใจนะครับ';
+            }
+
+            summaryCard.classList.add('show');
+            document.getElementById('practiceStatusPill').innerText = 'สรุปผลคะแนน';
+            document.getElementById('practiceProgressBar').style.width = '100%';
+        }
+
+        function restartPracticeQuiz() {
+            practiceCurrentIndex = 0;
+            practiceUserScore = 0;
+            document.getElementById('practiceSummaryCard').classList.remove('show');
+            document.getElementById('practiceStartScreen').style.display = 'flex';
+            document.getElementById('practiceStatusPill').innerText = '20 ข้อท้าทาย';
+        }
+
+        generateRandomRoomCode();
+        updatePreview();
+        checkUrlParameters();
+    </script>
+</body>
+
+</html>
