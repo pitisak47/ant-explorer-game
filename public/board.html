@@ -622,6 +622,92 @@
             overflow-y: auto;
         }
 
+        /* Order Selection Card Styles */
+        .order-modal-content {
+            background: #ffffff;
+            max-width: 900px;
+            width: 96%;
+            border-radius: 26px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.5);
+            border: 4px solid #fff;
+            transition: opacity 1s ease;
+        }
+
+        .order-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .order-card-wrapper {
+            perspective: 1000px;
+            height: 120px;
+        }
+
+        .order-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .order-card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .order-card-front, .order-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+        }
+
+        .order-card-front {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .order-card-front.selected {
+            border-color: #f1c40f;
+            box-shadow: 0 0 15px #f1c40f;
+        }
+
+        .order-card-back {
+            background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .card-team-label {
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 4px;
+            max-width: 80%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .quiz-active-team-bar {
             display: flex;
             align-items: center;
@@ -1253,6 +1339,10 @@
                 padding: 12px 30px;
                 font-size: 1.05rem;
             }
+            
+            .order-cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
@@ -1314,6 +1404,15 @@
                 <button class="btn-roll" id="btnRollDice" onclick="triggerDiceRoll()"><span>🎲 ทอยลูกเต๋า
                         3D</span></button>
             </div>
+        </div>
+    </div>
+
+    <!-- หน้าต่างสุ่มลำดับการทอยก่อนเริ่มเกม -->
+    <div class="modal-overlay" id="orderSelectModal" style="display: none;">
+        <div class="order-modal-content" id="orderModalContent">
+            <h2 style="color: #6c5ce7; font-size: 1.8rem; margin-bottom: 8px;">🎯 เลือกลำดับการทอยลูกเต๋า</h2>
+            <p style="color: #636e72; font-size: 1rem; margin-bottom: 15px;" id="orderStatusText">ให้แต่ละทีมเลือกบัตรวงกลมเพื่อลุ้นลำดับการเล่น</p>
+            <div class="order-cards-grid" id="orderCardsContainer"></div>
         </div>
     </div>
 
@@ -1468,6 +1567,55 @@
                 avatar: sessionStorage.getItem('ant_avatar_id') || 'ant',
                 outfit: sessionStorage.getItem('ant_outfit') || 'default',
                 isHost: netIsHost
+            }
+        });
+
+        // รับข้อมูลซิงก์จากผู้เล่นคนอื่น
+        socket.on('game-sync', (data) => {
+            if (data.playersState) {
+                players = data.playersState;
+                renderPawns();
+                updateLeaderboard();
+            }
+            if (data.currentTurnIndex !== undefined && data.type !== 'ROLL_DICE') {
+                currentTurnIndex = data.currentTurnIndex;
+                updateTurnIndicator();
+                renderPowerups();
+            }
+
+            if (data.type === 'SELECT_ORDER_CARD') {
+                orderCardSelections = data.selections || orderCardSelections;
+                renderOrderCards();
+                checkAllOrderCardsSelected();
+            } else if (data.type === 'REORDER_PLAYERS') {
+                players = data.players;
+                currentTurnIndex = 0;
+                renderPawns();
+                updateLeaderboard();
+                updateTurnIndicator();
+            } else if (data.type === 'ROLL_DICE') {
+                if (!isCurrentTurnMyTeam()) {
+                    remoteTriggerDiceRoll(data.steps);
+                }
+            } else if (data.type === 'UPDATE_POS') {
+                renderPawns();
+                updateLeaderboard();
+            } else if (data.type === 'SHOW_QUIZ') {
+                if (!isCurrentTurnMyTeam()) {
+                    displayRemoteQuiz(data.quiz, data.boxType, data.options);
+                }
+            } else if (data.type === 'SHOW_BOSS') {
+                if (!isCurrentTurnMyTeam()) {
+                    displayRemoteBoss(data.quiz, data.options, data.team);
+                }
+            } else if (data.type === 'QUIZ_RESULT' || data.type === 'BOSS_RESULT') {
+                renderPawns();
+                updateLeaderboard();
+            } else if (data.type === 'NEXT_TURN') {
+                currentTurnIndex = data.nextTurn;
+                startTurn();
+            } else if (data.type === 'SYNC_LOG') {
+                addLog(data.msg, true);
             }
         });
 
@@ -1800,7 +1948,128 @@
         let currentCardTimeLeft = 10;
         let currentQuizTimeLeft = 30;
 
+        /* ระบบสุ่มลำดับการเริ่มทอยเต๋า */
+        let orderCardValues = [];
+        let orderCardSelections = {}; // { cardIndex: teamName }
+
+        function initOrderSelection() {
+            const cardCount = Math.min(10, Math.max(4, players.length));
+            let nums = Array.from({length: cardCount}, (_, i) => i + 1);
+            orderCardValues = shuffleArray(nums);
+            orderCardSelections = {};
+
+            const container = document.getElementById('orderCardsContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < cardCount; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'order-card-wrapper';
+                wrapper.innerHTML = `
+                    <div class="order-card-inner" id="order-card-${i}" onclick="selectOrderCard(${i})">
+                        <div class="order-card-front" id="order-card-front-${i}">
+                            ❓
+                            <div class="card-team-label" id="card-label-${i}" style="display:none;"></div>
+                        </div>
+                        <div class="order-card-back" id="order-card-back-${i}">
+                            ${orderCardValues[i]}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(wrapper);
+            }
+
+            document.getElementById('orderSelectModal').style.display = 'flex';
+        }
+
+        function selectOrderCard(cardIndex) {
+            // ถ้าเลือกไปแล้ว ห้ามกดซ้ำ
+            if (orderCardSelections[cardIndex]) return;
+
+            // ตรวจสอบว่าทีมนี้เลือกไปหรือยัง
+            const myTeam = myClientGroupName.trim();
+            const alreadySelected = Object.values(orderCardSelections).includes(myTeam);
+            if (alreadySelected) return;
+
+            orderCardSelections[cardIndex] = myTeam;
+            renderOrderCards();
+
+            broadcast('SELECT_ORDER_CARD', {selections: orderCardSelections});
+            checkAllOrderCardsSelected();
+        }
+
+        function renderOrderCards() {
+            const myTeam = myClientGroupName.trim();
+            Object.keys(orderCardSelections).forEach(idx => {
+                const team = orderCardSelections[idx];
+                const frontEl = document.getElementById(`order-card-front-${idx}`);
+                const labelEl = document.getElementById(`card-label-${idx}`);
+                if (frontEl && labelEl) {
+                    frontEl.classList.add('selected');
+                    labelEl.innerText = team;
+                    labelEl.style.display = 'block';
+                }
+            });
+        }
+
+        function checkAllOrderCardsSelected() {
+            if (Object.keys(orderCardSelections).length >= players.length) {
+                document.getElementById('orderStatusText').innerText = 'เลือกครบทุกทีมแล้ว! กำลังเปิดเผยลำดับการทอย...';
+                setTimeout(() => {
+                    revealOrderCards();
+                }, 1000);
+            }
+        }
+
+        function revealOrderCards() {
+            // พลิกบัตรทั้งหมด
+            const cardCount = orderCardValues.length;
+            for (let i = 0; i < cardCount; i++) {
+                const inner = document.getElementById(`order-card-${i}`);
+                if (inner) inner.classList.add('flipped');
+            }
+
+            setTimeout(() => {
+                // จัดเรียงลำดับลำดับทอยเต๋าใหม่ (เลขที่ได้ น้อย -> ทอยก่อน)
+                let results = [];
+                Object.keys(orderCardSelections).forEach(cardIdx => {
+                    const teamName = orderCardSelections[cardIdx];
+                    const num = orderCardValues[cardIdx];
+                    results.push({teamName, num});
+                });
+
+                results.sort((a, b) => a.num - b.num);
+
+                // เรียงอาเรย์ players ตามลำดับ
+                let newPlayers = [];
+                results.forEach(res => {
+                    const p = players.find(player => player.name.trim() === res.teamName.trim());
+                    if (p) newPlayers.push(p);
+                });
+
+                // รวมทีมที่ไม่ได้เลือก (ถ้ามี)
+                players.forEach(p => {
+                    if (!newPlayers.includes(p)) newPlayers.push(p);
+                });
+
+                players = newPlayers;
+                broadcast('REORDER_PLAYERS', {players});
+
+                // หน้าต่างจางลงและปิดไป
+                const modalContent = document.getElementById('orderModalContent');
+                modalContent.style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('orderSelectModal').style.display = 'none';
+                    modalContent.style.opacity = '1';
+                    initGame();
+                }, 1000);
+
+            }, 1800);
+        }
+
         document.getElementById('lblRoom').innerText = sessionStorage.getItem('ant_room') || '8492';
+
+        window.onload = function() {
+            initOrderSelection();
+        };
 
         function initGame() {
             renderPawns();
@@ -1962,7 +2231,8 @@
                 if (currentTurnTimeLeft <= 3) wrapEl.classList.add('timer-warning');
                 if (currentTurnTimeLeft <= 0) {
                     clearInterval(turnTimer);
-                    if (isMyTurn) triggerDiceRoll(true);
+                    // ระบบอัตโนมัติ: ถ้าเป็นตาตัวเองให้ทอยเอง หรือถ้าผู้เล่นค้างส่งผลให้ข้าม/ทอยออโต้
+                    triggerDiceRoll(true);
                 }
             }, 1000);
         }
@@ -1988,6 +2258,10 @@
             const rollResult = Math.floor(1 + Math.random() * 6);
             addLog(`${players[currentTurnIndex].name} ทอยลูกเต๋าได้ ${rollResult}`);
 
+            if (isCurrentTurnMyTeam() || isAutoRoll) {
+                broadcast('ROLL_DICE', {steps: rollResult, teamName: players[currentTurnIndex].name});
+            }
+
             setTimeout(() => {
                 diceCube.className = 'dice-cube';
 
@@ -2001,14 +2275,50 @@
                 };
 
                 diceCube.style.transform = targetRotations[rollResult];
-                diceBanner.innerText = `ได้ ${rollResult} แต้ม! 🎲 ${isAutoRoll ? '(สุ่ม)' : ''}`;
+                diceBanner.innerText = `ได้ ${rollResult} แต้ม! 🎲 ${isAutoRoll ? '(อัตโนมัติ)' : ''}`;
                 diceBanner.style.display = 'block';
-
-                broadcast('ROLL_DICE', {steps: rollResult, teamName: players[currentTurnIndex].name});
 
                 setTimeout(() => {
                     diceModal.style.display = 'none';
                     movePlayerStepByStep(rollResult);
+                }, 1400);
+            }, 1200);
+        }
+
+        function remoteTriggerDiceRoll(steps) {
+            if (isRolling) return;
+            isRolling = true;
+            clearInterval(turnTimer);
+
+            playRollSound();
+
+            const diceModal = document.getElementById('diceModal');
+            const diceCube = document.getElementById('diceCube');
+            const diceBanner = document.getElementById('diceBanner');
+
+            diceModal.style.display = 'flex';
+            diceBanner.style.display = 'none';
+            diceCube.className = 'dice-cube dice-rolling-anim';
+
+            setTimeout(() => {
+                diceCube.className = 'dice-cube';
+
+                const targetRotations = {
+                    1: 'rotateX(0deg) rotateY(0deg)',
+                    2: 'rotateX(0deg) rotateY(-90deg)',
+                    3: 'rotateX(0deg) rotateY(-180deg)',
+                    4: 'rotateX(0deg) rotateY(90deg)',
+                    5: 'rotateX(-90deg) rotateY(0deg)',
+                    6: 'rotateX(90deg) rotateY(0deg)'
+                };
+
+                diceCube.style.transform = targetRotations[steps];
+                diceBanner.innerText = `ได้ ${steps} แต้ม! 🎲`;
+                diceBanner.style.display = 'block';
+
+                setTimeout(() => {
+                    diceModal.style.display = 'none';
+                    movePlayerStepByStep(steps);
                 }, 1400);
             }, 1200);
         }
@@ -2123,6 +2433,25 @@
             modal.style.display = 'flex';
             addLog(`👾 พบ Boss ไวรัสตัวร้ายที่ช่อง ${player.pos} นำการตอบโดย ${player.name}`);
             broadcast('SHOW_BOSS', {quiz: currentQuizData, options: currentShuffledOptions, team: player.name});
+        }
+
+        function displayRemoteBoss(quiz, options, teamName) {
+            playBossSound();
+            const modal = document.getElementById('bossModal');
+            document.getElementById('bossTeamName').innerText = teamName;
+            currentQuizData = quiz;
+            document.getElementById('bossQuizText').innerText = quiz.q;
+
+            const optContainer = document.getElementById('bossOptionsContainer');
+            optContainer.innerHTML = '';
+            options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.disabled = true;
+                btn.innerHTML = `<span style="background: #2d3436; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight:800;">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+                optContainer.appendChild(btn);
+            });
+            modal.style.display = 'flex';
         }
 
         function checkBossAnswer(chosenText) {
@@ -2247,6 +2576,34 @@
             startQuizTimer();
         }
 
+        function displayRemoteQuiz(quiz, boxType, options) {
+            clearInterval(cardSelectTimer);
+            document.getElementById('cardSelectPhase').style.display = 'none';
+            document.getElementById('quizQuestionPhase').style.display = 'block';
+
+            activeBoxType = boxType;
+            currentQuizData = quiz;
+
+            const quizBoxTag = document.getElementById('quizBoxTag');
+            quizBoxTag.className = `box-theme-badge box-${activeBoxType}`;
+            quizBoxTag.innerText = `เปิดคำถามภารกิจ`;
+
+            document.getElementById('quizText').innerText = quiz.q;
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.disabled = true;
+                btn.innerHTML = `<span style="background: #2d3436; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight:800;">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('quizModal').style.display = 'flex';
+            startQuizTimer();
+        }
+
         function startQuizTimer() {
             clearInterval(quizTimer);
             currentQuizTimeLeft = 30;
@@ -2278,7 +2635,11 @@
             addLog(`${player.name} หมดเวลาตอบคำถาม (${penaltyMsg})`);
 
             document.getElementById('quizModal').style.display = 'none';
-            showDetailedFeedback(false, penaltyMsg);
+            if (isCurrentTurnMyTeam()) {
+                showDetailedFeedback(false, penaltyMsg);
+            } else {
+                endTurn();
+            }
         }
 
         function checkAnswer(chosenText) {
@@ -2465,70 +2826,24 @@
             if (sorted.length > 3) {
                 runnerUpBoard.style.display = 'block';
                 for (let i = 3; i < sorted.length; i++) {
-                    const rp = sorted[i];
-                    const div = document.createElement('div');
-                    div.className = 'runner-up-row';
-                    div.innerHTML = `<span>#${i + 1} ${rp.name}</span><span style="color: #ffeaa7;">⭐ ${rp.score} | 🪙 ${rp.coins}</span>`;
-                    runnerUpGrid.appendChild(div);
+                    const rPlayer = sorted[i];
+                    const row = document.createElement('div');
+                    row.className = 'runner-up-row';
+                    row.innerHTML = `
+                        <span>#${i + 1} ${rPlayer.name}</span>
+                        <span>⭐ ${rPlayer.score} | 🪙 ${rPlayer.coins}</span>
+                    `;
+                    runnerUpGrid.appendChild(row);
                 }
-            } else runnerUpBoard.style.display = 'none';
+            } else {
+                runnerUpBoard.style.display = 'none';
+            }
 
             document.getElementById('podiumModal').style.display = 'flex';
-            setTimeout(() => {document.getElementById('podiumRank3').classList.add('show-podium');}, 600);
-            setTimeout(() => {document.getElementById('podiumRank2').classList.add('show-podium');}, 1600);
-            setTimeout(() => {document.getElementById('podiumRank1').classList.add('show-podium'); startFireworks();}, 2600);
+            setTimeout(() => document.getElementById('podiumRank1').classList.add('show-podium'), 200);
+            setTimeout(() => document.getElementById('podiumRank2').classList.add('show-podium'), 500);
+            setTimeout(() => document.getElementById('podiumRank3').classList.add('show-podium'), 800);
         }
-
-        /* ---------------- รับข้อมูลซิงค์จากทีม/อุปกรณ์อื่นในห้องเดียวกัน ---------------- */
-        function handleRemoteSync(data) {
-            if (!data) return;
-            if (data.playersState) players = data.playersState;
-            if (typeof data.currentTurnIndex === 'number') currentTurnIndex = data.currentTurnIndex;
-
-            switch (data.type) {
-                case 'GLOBAL_GO_HOME':
-                    clearInterval(turnTimer);
-                    clearInterval(cardSelectTimer);
-                    clearInterval(quizTimer);
-                    if (bgmInterval) clearInterval(bgmInterval);
-                    alert('ผู้ควบคุมได้สิ้นสุดการแข่งขันและนำทุกคนกลับสู่หน้าแรก');
-                    window.location.href = 'index.html';
-                    break;
-
-                case 'GLOBAL_RESTART':
-                    clearInterval(turnTimer);
-                    clearInterval(cardSelectTimer);
-                    clearInterval(quizTimer);
-                    if (bgmInterval) clearInterval(bgmInterval);
-                    alert('ผู้ควบคุมสั่งเริ่มต้นเกมใหม่อีกครั้ง');
-                    location.reload();
-                    break;
-
-                case 'PAUSE_GAME':
-                    isGamePaused = !!data.isPaused;
-                    const rollBtn = document.getElementById('btnRollDice');
-                    if (isGamePaused) {
-                        if (rollBtn) {
-                            rollBtn.disabled = true;
-                            rollBtn.innerHTML = '<span>⏸️ เกมหยุดชั่วคราว</span>';
-                        }
-                    } else {
-                        if (isCurrentTurnMyTeam() && rollBtn) {
-                            rollBtn.disabled = false;
-                            rollBtn.innerHTML = '<span>🎲 ทอยลูกเต๋า 3D</span>';
-                        }
-                    }
-                    break;
-
-                case 'TEAM_LEFT':
-                    addLog(`🚪 ทีม "${data.leftTeamName}" ได้ออกจากเกมไปแล้ว`);
-                    renderPawns();
-                    updateLeaderboard();
-                    break;
-            }
-        }
-
-        window.onload = initGame;
     </script>
 </body>
 
