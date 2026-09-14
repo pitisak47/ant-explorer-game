@@ -261,9 +261,6 @@
             z-index: 20;
             pointer-events: none;
             filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.5));
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .pawn-badge {
@@ -282,24 +279,9 @@
             border: 1px solid #fff;
         }
 
-        .pawn-avatar-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
         .pawn svg {
             width: 100%;
             height: 100%;
-            display: block;
-        }
-
-        /* เลเยอร์ชุดแต่งกายบนหมากตัวละคร */
-        .pawn-outfit-layer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 2;
         }
 
         .spectator-sidebar {
@@ -436,19 +418,6 @@
         .spec-avatar-icon {
             width: 40px;
             height: 40px;
-            position: relative;
-        }
-
-        .spec-outfit-badge {
-            font-size: 0.68rem;
-            color: #00cec9;
-            background: rgba(0, 206, 201, 0.15);
-            border: 1px solid rgba(0, 206, 201, 0.4);
-            padding: 1px 6px;
-            border-radius: 6px;
-            font-weight: 700;
-            display: inline-block;
-            margin-top: 2px;
         }
 
         .spec-name-tag {
@@ -847,7 +816,6 @@
         .takeover-hero-avatar {
             width: 55px;
             height: 55px;
-            position: relative;
         }
 
         .takeover-team {
@@ -926,7 +894,6 @@
             height: 85px;
             margin-bottom: 8px;
             filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
-            position: relative;
         }
 
         .podium-team-name {
@@ -1340,35 +1307,6 @@
             beetle: `<svg viewBox="0 0 100 100"><path d="M50 35 L50 14 Q50 6 42 6 M50 14 Q50 6 58 6 M50 20 L44 17 M50 20 L56 17" stroke="#4a148c" stroke-width="4.5" fill="none"/><ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c"/><circle cx="42" cy="36" r="3" fill="#ffca28"/><circle cx="58" cy="36" r="3" fill="#ffca28"/><ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a"/><line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3"/></svg>`
         };
 
-        /* ---------------- พจนานุกรม/SVG เพิ่มเติมสำหรับ ชุดการแต่งกาย (Outfits / Costumes) ---------------- */
-        const OUTFIT_SVGS = {
-            none: ``,
-            crown: `<svg viewBox="0 0 100 100"><path d="M 28 26 L 36 12 L 50 22 L 64 12 L 72 26 Z" fill="#f1c40f" stroke="#d4ac0d" stroke-width="2.5"/><circle cx="36" cy="12" r="2.5" fill="#e74c3c"/><circle cx="50" cy="22" r="2.5" fill="#2ecc71"/><circle cx="64" cy="12" r="2.5" fill="#3498db"/></svg>`,
-            hat: `<svg viewBox="0 0 100 100"><path d="M 20 28 Q 50 20 80 28 L 72 22 Q 50 10 28 22 Z" fill="#e67e22" stroke="#d35400" stroke-width="2"/><ellipse cx="50" cy="21" rx="20" ry="8" fill="#d35400"/></svg>`,
-            glasses: `<svg viewBox="0 0 100 100"><circle cx="38" cy="30" r="8" fill="none" stroke="#2c3e50" stroke-width="3"/><circle cx="62" cy="30" r="8" fill="none" stroke="#2c3e50" stroke-width="3"/><line x1="46" y1="30" x2="54" y2="30" stroke="#2c3e50" stroke-width="3"/></svg>`,
-            cape: `<svg viewBox="0 0 100 100"><path d="M 30 48 Q 18 78 22 88 Q 50 82 78 88 Q 82 78 70 48 Q 50 56 30 48 Z" fill="#e74c3c" opacity="0.85"/></svg>`
-        };
-
-        const OUTFIT_NAMES = {
-            none: 'ชุดเริ่มต้น',
-            crown: 'มงกุฎทอง',
-            hat: 'หมวกนักสำรวจ',
-            glasses: 'แว่นตาเท่',
-            cape: 'ผ้าคลุมฮีโร่'
-        };
-
-        // ฟังก์ชันช่วยเหลือในการเรนเดอร์ตัวละครพร้อมชุดแต่งกาย
-        function getAvatarWithOutfitHTML(avatarKey, outfitKey) {
-            const baseAvatar = AVATAR_SVGS[avatarKey] || AVATAR_SVGS.ant;
-            const outfitSVG = OUTFIT_SVGS[outfitKey] || '';
-            return `
-                <div class="pawn-avatar-wrapper">
-                    ${baseAvatar}
-                    ${outfitSVG ? `<div class="pawn-outfit-layer">${outfitSVG}</div>` : ''}
-                </div>
-            `;
-        }
-
         const specRoomCode = sessionStorage.getItem('ant_room') || '8492';
         document.getElementById('lblRoomCode').innerText = specRoomCode;
 
@@ -1376,18 +1314,12 @@
         const savedAllPlayers = sessionStorage.getItem('ant_all_players');
         if (savedAllPlayers) {
             players = JSON.parse(savedAllPlayers).map((p, idx) => ({
-                id: p.id || idx + 1,
-                name: p.name,
-                avatar: p.avatar,
-                outfit: p.outfit || 'none', // รองรับฟิลด์ชุดแต่งกาย
-                pos: p.pos || 0,
-                score: p.score || 0,
-                coins: p.coins || 0
+                id: p.id || idx + 1, name: p.name, avatar: p.avatar, pos: p.pos || 0, score: p.score || 0, coins: p.coins || 0
             }));
         } else {
             players = [
-                {id: 1, name: 'ทีมมดสายลุย', avatar: 'ant', outfit: 'none', pos: 0, score: 0, coins: 0},
-                {id: 2, name: 'ผึ้งน้อยไอที', avatar: 'bee', outfit: 'none', pos: 0, score: 0, coins: 0}
+                {id: 1, name: 'ทีมมดสายลุย', avatar: 'ant', pos: 0, score: 0, coins: 0},
+                {id: 2, name: 'ผึ้งน้อยไอที', avatar: 'bee', pos: 0, score: 0, coins: 0}
             ];
         }
 
@@ -1579,7 +1511,7 @@
                 const offset = (index - 1) * 2;
                 pawnEl.style.left = `calc(${coord.x}% + ${offset}%)`;
                 pawnEl.style.top = `calc(${coord.y}% + ${offset}%)`;
-                pawnEl.innerHTML = `<div class="pawn-badge">${p.name}</div>${getAvatarWithOutfitHTML(p.avatar, p.outfit)}`;
+                pawnEl.innerHTML = `<div class="pawn-badge">${p.name}</div>${AVATAR_SVGS[p.avatar] || AVATAR_SVGS.ant}`;
                 container.appendChild(pawnEl);
             });
         }
@@ -1598,16 +1530,13 @@
                 if (idx === 1) rankBadgeClass = 'rank-silver';
                 if (idx === 2) rankBadgeClass = 'rank-bronze';
 
-                const outfitLabel = OUTFIT_NAMES[p.outfit] || OUTFIT_NAMES.none;
-
                 row.innerHTML = `
                   <div class="spec-player-left">
                     <span class="spec-rank-num ${rankBadgeClass}">#${idx + 1}</span>
-                    <div class="spec-avatar-icon">${getAvatarWithOutfitHTML(p.avatar, p.outfit)}</div>
+                    <div class="spec-avatar-icon">${AVATAR_SVGS[p.avatar]}</div>
                     <div>
                       <div class="spec-name-tag">${p.name}</div>
                       <div class="spec-pos-tag">ช่องที่ ${p.pos} / 50</div>
-                      <div class="spec-outfit-badge">👕 ${outfitLabel}</div>
                     </div>
                   </div>
                   <div class="spec-score-tag">
@@ -1647,7 +1576,7 @@
                 socket.on('game-start', (data) => {
                     if (data && data.players) {
                         players = data.players.map((p, idx) => ({
-                            id: p.id || idx + 1, name: p.name, avatar: p.avatar, outfit: p.outfit || 'none',
+                            id: p.id || idx + 1, name: p.name, avatar: p.avatar,
                             pos: p.pos || 0, score: p.score || 0, coins: p.coins || 0
                         }));
                         renderPawns(); updateLeaderboard(); updateTurnStatus();
@@ -1691,10 +1620,6 @@
                 }, 1200);
             } else if (data.type === 'ROLL_TIMEOUT' || data.type === 'UPDATE_POS') {
                 renderPawns(); updateLeaderboard();
-            } else if (data.type === 'CHANGE_OUTFIT') {
-                // เหตุการณ์สลับ/ซื้อชุดแต่งกาย
-                renderPawns(); updateLeaderboard();
-                addFeed(`👕 <strong>${data.teamName || 'ผู้เล่น'}</strong> เปลี่ยนชุดการแต่งกายเป็น <strong>${OUTFIT_NAMES[data.outfit] || 'ชุดใหม่'}</strong>`);
             } else if (data.type === 'SHOW_QUIZ') {
                 showQuizOnScreen(data.quiz, data.boxType, data.options);
             } else if (data.type === 'QUIZ_RESULT') {
@@ -1803,7 +1728,7 @@
         function triggerTakeoverPopup(team) {
             playTakeoverSound();
             const popup = document.getElementById('takeoverPopup');
-            document.getElementById('takeoverAvatar').innerHTML = getAvatarWithOutfitHTML(team.avatar, team.outfit);
+            document.getElementById('takeoverAvatar').innerHTML = AVATAR_SVGS[team.avatar];
             document.getElementById('takeoverTeamName').innerText = team.name;
             popup.style.display = 'flex';
             setTimeout(() => popup.style.display = 'none', 2800);
@@ -1812,18 +1737,18 @@
         function triggerPodiumScene() {
             const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
             const p1 = sorted[0];
-            const p2 = sorted[1] || {name: '-', avatar: 'ant', outfit: 'none', score: 0, coins: 0};
-            const p3 = sorted[2] || {name: '-', avatar: 'bee', outfit: 'none', score: 0, coins: 0};
+            const p2 = sorted[1] || {name: '-', avatar: 'ant', score: 0, coins: 0};
+            const p3 = sorted[2] || {name: '-', avatar: 'bee', score: 0, coins: 0};
 
-            document.getElementById('avatarRank1').innerHTML = getAvatarWithOutfitHTML(p1.avatar, p1.outfit);
+            document.getElementById('avatarRank1').innerHTML = AVATAR_SVGS[p1.avatar];
             document.getElementById('nameRank1').innerText = p1.name;
             document.getElementById('scoreRank1').innerText = `⭐ ${p1.score} | 🪙 ${p1.coins}`;
 
-            document.getElementById('avatarRank2').innerHTML = getAvatarWithOutfitHTML(p2.avatar, p2.outfit);
+            document.getElementById('avatarRank2').innerHTML = AVATAR_SVGS[p2.avatar];
             document.getElementById('nameRank2').innerText = p2.name;
             document.getElementById('scoreRank2').innerText = `⭐ ${p2.score} | 🪙 ${p2.coins}`;
 
-            document.getElementById('avatarRank3').innerHTML = getAvatarWithOutfitHTML(p3.avatar, p3.outfit);
+            document.getElementById('avatarRank3').innerHTML = AVATAR_SVGS[p3.avatar];
             document.getElementById('nameRank3').innerText = p3.name;
             document.getElementById('scoreRank3').innerText = `⭐ ${p3.score} | 🪙 ${p3.coins}`;
 
@@ -1837,7 +1762,7 @@
                     const rp = sorted[i];
                     const div = document.createElement('div');
                     div.className = 'runner-up-row';
-                    div.innerHTML = `<span>#${i + 1} ${rp.name} (👕 ${OUTFIT_NAMES[rp.outfit] || 'เริ่มต้น'})</span><span style="color: #ffeaa7;">⭐ ${rp.score} | 🪙 ${rp.coins}</span>`;
+                    div.innerHTML = `<span>#${i + 1} ${rp.name}</span><span style="color: #ffeaa7;">⭐ ${rp.score} | 🪙 ${rp.coins}</span>`;
                     runnerUpGrid.appendChild(div);
                 }
             } else {
