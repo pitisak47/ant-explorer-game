@@ -1505,7 +1505,7 @@
             <div class="leaderboard-panel">
                 <div class="leaderboard-title">
                     <span>🏆 อันดับทีมสำรวจ</span>
-                    <span style="font-size: 0.82rem; color: #78909c;">คะแนน / เหรียญ</span>
+                    <span style="font-size: 0.82rem; color: #78909c;">เหรียญ / คะแนน / ช่อง</span>
                 </div>
                 <div id="playersRankList"></div>
             </div>
@@ -2296,8 +2296,9 @@
             if (!rankListEl) return;
 
             const sorted = [...players].sort((a, b) => {
-                if (b.pos !== a.pos) return b.pos - a.pos;
-                return b.score - a.score;
+                if (b.coins !== a.coins) return b.coins - a.coins;
+                if (b.score !== a.score) return b.score - a.score;
+                return b.pos - a.pos;
             });
 
             rankListEl.innerHTML = sorted.map((p, idx) => {
@@ -2314,8 +2315,8 @@
                             </div>
                         </div>
                         <div class="player-stats">
-                            <div class="stat-score">⭐ ${p.score}</div>
-                            <div class="stat-coins">🪙 ${p.coins}</div>
+                            <div class="stat-coins">🪙 ${p.coins} เหรียญ</div>
+                            <div class="stat-score">⭐ ${p.score} แต้ม</div>
                         </div>
                     </div>
                 `;
@@ -2599,234 +2600,132 @@
             endTurn();
         }
 
-        function triggerBossCoop() {
-            playBossSound();
-            const player = players[currentTurnIndex];
-            const modal = document.getElementById('bossModal');
-            document.getElementById('bossTeamName').innerText = player.name;
-
-            currentQuizData = QUESTION_BANK['orange'][1][0];
-            currentShuffledOptions = shuffleArray(currentQuizData.options);
-
-            document.getElementById('bossQuizText').innerText = currentQuizData.q;
-            const optContainer = document.getElementById('bossOptionsContainer');
-            optContainer.innerHTML = '';
-
-            const isMyTurn = isCurrentTurnMyTeam();
-
-            currentShuffledOptions.forEach((optText, optIdx) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-option';
-                btn.innerHTML = `<span style="background: #2d3436; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight:800;">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
-
-                if (!isMyTurn) {
-                    btn.disabled = true;
-                } else {
-                    btn.onclick = () => checkBossAnswer(optText);
-                }
-                optContainer.appendChild(btn);
-            });
-
-            modal.style.display = 'flex';
-            addLog(`👾 พบ Boss ไวรัสตัวร้ายที่ช่อง ${player.pos} นำการตอบโดย ${player.name}`);
-            broadcast('SHOW_BOSS', {quiz: currentQuizData, options: currentShuffledOptions, team: player.name});
-        }
-
-        function checkBossAnswer(chosenText) {
-            document.querySelectorAll('#bossOptionsContainer .btn-option').forEach(b => b.disabled = true);
-            let isCorrect = (chosenText === currentQuizData.correctText);
-
-            if (isCorrect) {
-                playCorrectSound();
-                alert('🎉 ยอดเยี่ยมมาก! ช่วยกันกำจัดไวรัสสำเร็จ ทุกทีมรับไปเลย +20 แต้ม!');
-                players.forEach(p => p.score += 20);
-                addLog(`ทุกทีมกำจัดไวรัสสำเร็จ (+20 แต้ม)`);
-            } else {
-                playWrongSound();
-                alert(`❌ ยังไม่ถูก! ทุกทีมโดนไวรัสโจมตี หัก -10 แต้ม\n(เฉลย: ${currentQuizData.correctText})`);
-                players.forEach(p => p.score = Math.max(0, p.score - 10));
-                addLog(`ทุกทีมพ่ายแพ้บอสไวรัส (-10 แต้ม)`);
-            }
-
-            renderPawns(); updateLeaderboard();
-            broadcast('BOSS_RESULT', {isCorrect});
-
-            document.getElementById('bossModal').style.display = 'none';
-            endTurn();
-        }
-
         function openQuizCardsModal(boxType) {
-            clearInterval(cardSelectTimer);
-            const modal = document.getElementById('quizModal');
-            const cardPhase = document.getElementById('cardSelectPhase');
-            const quizPhase = document.getElementById('quizQuestionPhase');
-            const activePlayer = players[currentTurnIndex];
-            const isMyTurn = isCurrentTurnMyTeam();
+            const player = players[currentTurnIndex];
 
-            document.getElementById('quizModalTeamAvatar').innerHTML = AVATAR_SVGS[activePlayer.avatar] || AVATAR_SVGS.ant;
-            document.getElementById('quizModalTeamName').innerText = `ตาทีม: ${activePlayer.name}`;
+            document.getElementById('quizModalTeamAvatar').innerHTML = AVATAR_SVGS[player.avatar] || AVATAR_SVGS.ant;
+            document.getElementById('quizModalTeamName').innerText = `ตาทีม: ${player.name}`;
 
-            if (isMyTurn) {
-                document.getElementById('cardSelectDesc').innerText = 'โปรดเลือกซองการ์ดภารกิจ 1 ใน 4 ใบ เพื่อเปิดโจทย์คำถาม';
-            } else {
-                document.getElementById('cardSelectDesc').innerText = `⏳ กำลังรอให้ทีม "${activePlayer.name}" เป็นผู้เลือกซองการ์ด...`;
-            }
+            const boxThemeTag = document.getElementById('boxThemeTag');
+            boxThemeTag.className = `box-theme-badge box-${boxType}`;
+            boxThemeTag.innerText = boxType === 'green' ? '🟩 กล่องสีเขียว (ง่าย)' : boxType === 'yellow' ? '🟨 กล่องสีเหลือง (ปานกลาง)' : '🟧 กล่องสีส้ม (ท้าทาย)';
+
+            document.getElementById('cardSelectPhase').style.display = 'block';
+            document.getElementById('quizQuestionPhase').style.display = 'none';
 
             for (let i = 1; i <= 4; i++) {
-                const cardBtn = document.getElementById(`card-btn-${i}`);
-                if (isMyTurn) cardBtn.classList.remove('locked-card');
-                else cardBtn.classList.add('locked-card');
+                const card = document.getElementById(`card-btn-${i}`);
+                card.classList.remove('locked-card');
             }
 
-            cardPhase.style.display = 'block';
-            quizPhase.style.display = 'none';
+            document.getElementById('quizModal').style.display = 'flex';
 
-            const boxTag = document.getElementById('boxThemeTag');
-            if (boxType === 'green') {
-                boxTag.className = 'box-theme-badge box-green';
-                boxTag.innerText = '🟩 กล่องเขียว (+10 แต้ม)';
-            } else if (boxType === 'yellow') {
-                boxTag.className = 'box-theme-badge box-yellow';
-                boxTag.innerText = '🟨 กล่องเหลือง (+20 แต้ม & 1 เหรียญ)';
-            } else {
-                boxTag.className = 'box-theme-badge box-orange';
-                boxTag.innerText = '🟧 กล่องส้ม (+30 แต้ม & 2 เหรียญ)';
-            }
-
-            modal.style.display = 'flex';
             currentCardTimeLeft = 10;
             document.getElementById('cardSelectCountdown').innerText = currentCardTimeLeft;
 
+            clearInterval(cardSelectTimer);
             cardSelectTimer = setInterval(() => {
-                if (isGamePaused) return;
                 currentCardTimeLeft--;
                 document.getElementById('cardSelectCountdown').innerText = currentCardTimeLeft;
+
                 if (currentCardTimeLeft <= 0) {
                     clearInterval(cardSelectTimer);
-                    if (isMyTurn) handleCardClick(Math.floor(1 + Math.random() * 4));
+                    handleCardClick(Math.floor(1 + Math.random() * 4));
                 }
             }, 1000);
         }
 
-        function handleCardClick(cardIndex) {
-            if (!isCurrentTurnMyTeam() || isGamePaused) return;
+        function handleCardClick(cardNumber) {
             clearInterval(cardSelectTimer);
 
-            const questionsArr = QUESTION_BANK[activeBoxType][cardIndex] || QUESTION_BANK['green'][1];
-            currentQuizData = questionsArr[Math.floor(Math.random() * questionsArr.length)];
-            currentShuffledOptions = shuffleArray(currentQuizData.options);
+            const pool = QUESTION_BANK[activeBoxType][cardNumber] || QUESTION_BANK[activeBoxType][1];
+            currentQuizData = pool[Math.floor(Math.random() * pool.length)];
 
-            broadcast('CARD_SELECTED', {cardIndex, quizData: currentQuizData, options: currentShuffledOptions});
-            showQuizQuestionPhase();
-        }
-
-        function showQuizQuestionPhase() {
-            clearInterval(quizTimer);
-            const cardPhase = document.getElementById('cardSelectPhase');
-            const quizPhase = document.getElementById('quizQuestionPhase');
-
-            cardPhase.style.display = 'none';
-            quizPhase.style.display = 'block';
+            document.getElementById('cardSelectPhase').style.display = 'none';
+            document.getElementById('quizQuestionPhase').style.display = 'block';
 
             const quizBoxTag = document.getElementById('quizBoxTag');
-            if (activeBoxType === 'green') {
-                quizBoxTag.className = 'box-theme-badge box-green';
-                quizBoxTag.innerText = '🟩 กล่องเขียว';
-            } else if (activeBoxType === 'yellow') {
-                quizBoxTag.className = 'box-theme-badge box-yellow';
-                quizBoxTag.innerText = '🟨 กล่องเหลือง';
-            } else {
-                quizBoxTag.className = 'box-theme-badge box-orange';
-                quizBoxTag.innerText = '🟧 กล่องส้ม';
-            }
+            quizBoxTag.className = `box-theme-badge box-${activeBoxType}`;
+            quizBoxTag.innerText = activeBoxType === 'green' ? '🟩 กล่องสีเขียว' : activeBoxType === 'yellow' ? '🟨 กล่องสีเหลือง' : '🟧 กล่องสีส้ม';
 
             document.getElementById('quizText').innerText = currentQuizData.q;
+
+            currentShuffledOptions = shuffleArray(currentQuizData.options);
             const container = document.getElementById('optionsContainer');
-            container.innerHTML = '';
+            container.innerHTML = currentShuffledOptions.map((opt, idx) => `
+                <button class="btn-option" onclick="submitAnswer('${opt.replace(/'/g, "\\'")}')">
+                    <span>${['A', 'B', 'C', 'D'][idx]}.</span> ${opt}
+                </button>
+            `).join('');
 
             const isMyTurn = isCurrentTurnMyTeam();
+            const btnHalf = document.getElementById('btnPwHalf');
+            const btnDouble = document.getElementById('btnPwDouble');
+            const p = players[currentTurnIndex];
 
-            currentShuffledOptions.forEach((optText, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-option';
-                btn.innerHTML = `<span style="background: #0984e3; color: #fff; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; font-weight:800;">${String.fromCharCode(65 + idx)}</span> <span>${optText}</span>`;
-
-                if (!isMyTurn) {
-                    btn.disabled = true;
-                } else {
-                    btn.onclick = () => submitAnswer(optText);
-                }
-                container.appendChild(btn);
-            });
-
-            if (isMyTurn) {
-                const btnHalf = document.getElementById('btnPwHalf');
-                const btnDouble = document.getElementById('btnPwDouble');
-                const p = players[currentTurnIndex];
-                btnHalf.disabled = p.powerups.half <= 0;
-                btnDouble.disabled = p.powerups.double <= 0;
-            }
+            btnHalf.disabled = !isMyTurn || p.powerups.half <= 0;
+            btnDouble.disabled = !isMyTurn || p.powerups.double <= 0;
 
             currentQuizTimeLeft = 30;
             document.getElementById('quizCountdown').innerText = currentQuizTimeLeft;
 
+            clearInterval(quizTimer);
             quizTimer = setInterval(() => {
-                if (isGamePaused) return;
                 currentQuizTimeLeft--;
                 document.getElementById('quizCountdown').innerText = currentQuizTimeLeft;
+
                 if (currentQuizTimeLeft <= 0) {
                     clearInterval(quizTimer);
-                    if (isMyTurn) submitAnswer(null);
+                    submitAnswer(null); // หมดเวลาถือว่าตอบผิด
                 }
             }, 1000);
         }
 
-        function submitAnswer(chosenText) {
+        function submitAnswer(selectedOpt) {
             clearInterval(quizTimer);
-            document.querySelectorAll('#optionsContainer .btn-option').forEach(b => b.disabled = true);
-
-            const player = players[currentTurnIndex];
-            const isCorrect = (chosenText === currentQuizData.correctText);
-
             document.getElementById('quizModal').style.display = 'none';
 
-            let pointsGained = 0;
-            let coinsGained = 0;
+            const player = players[currentTurnIndex];
+            const isCorrect = selectedOpt === currentQuizData.correctText;
 
-            if (isCorrect) {
-                if (activeBoxType === 'green') pointsGained = 10;
-                else if (activeBoxType === 'yellow') { pointsGained = 20; coinsGained = 1; }
-                else if (activeBoxType === 'orange') { pointsGained = 30; coinsGained = 2; }
+            let scoreGain = activeBoxType === 'green' ? 10 : activeBoxType === 'yellow' ? 20 : 30;
+            let coinsGain = activeBoxType === 'green' ? 5 : activeBoxType === 'yellow' ? 10 : 15;
 
-                if (player.multiplier && player.multiplier > 1) {
-                    coinsGained *= player.multiplier;
-                    player.multiplier = 1;
-                }
-
-                player.score += pointsGained;
-                player.coins += coinsGained;
-
-                playCorrectSound();
-                showFeedback(true, `ถูกต้อง! (+${pointsGained} แต้ม${coinsGained > 0 ? ` & +${coinsGained} เหรียญ` : ''})`, currentQuizData.tip);
-                addLog(`${player.name} ตอบคำถามถูกต้อง (+${pointsGained} แต้ม)`);
-            } else {
-                playWrongSound();
-                showFeedback(false, `คำตอบยังไม่ถูกต้อง!`, `เฉลย: ${currentQuizData.correctText}\n💡 ${currentQuizData.tip}`);
-                addLog(`${player.name} ตอบคำถามไม่ถูกต้อง`);
+            if (player.multiplier) {
+                scoreGain *= player.multiplier;
+                coinsGain *= player.multiplier;
             }
 
-            renderPawns(); updateLeaderboard();
-            broadcast('QUIZ_RESULT', {isCorrect, pointsGained, coinsGained});
-        }
+            const fbIcon = document.getElementById('fbIcon');
+            const fbTitle = document.getElementById('fbTitle');
+            const fbDesc = document.getElementById('fbDesc');
 
-        function showFeedback(isSuccess, title, desc) {
-            const fbModal = document.getElementById('feedbackModal');
-            document.getElementById('fbIcon').innerText = isSuccess ? '🎉' : '❌';
-            const titleEl = document.getElementById('fbTitle');
-            titleEl.innerText = title;
-            titleEl.style.color = isSuccess ? '#27ae60' : '#d63031';
-            document.getElementById('fbDesc').innerText = desc;
-            fbModal.style.display = 'flex';
+            if (isCorrect) {
+                playCorrectSound();
+                player.score += scoreGain;
+                player.coins += coinsGain;
+
+                fbIcon.innerText = '🎉';
+                fbTitle.style.color = '#27ae60';
+                fbTitle.innerText = `ถูกต้อง! (+${scoreGain} แต้ม / +${coinsGain} เหรียญ)`;
+                fbDesc.innerText = `💡 เกร็ดความรู้: ${currentQuizData.tip}`;
+
+                addLog(`${player.name} ตอบคำถามถูก รับ +${scoreGain} แต้ม (+${coinsGain} เหรียญ)`);
+            } else {
+                playWrongSound();
+                fbIcon.innerText = '❌';
+                fbTitle.style.color = '#d63031';
+                fbTitle.innerText = selectedOpt === null ? 'หมดเวลาตอบคำถาม!' : 'ยังไม่ถูกต้อง!';
+                fbDesc.innerText = `เฉลย: ${currentQuizData.correctText}\n💡 เกร็ดความรู้: ${currentQuizData.tip}`;
+
+                addLog(`${player.name} ตอบคำถามผิด`);
+            }
+
+            renderPawns();
+            updateLeaderboard();
+            broadcast('UPDATE_SCORE', {score: player.score, coins: player.coins});
+
+            document.getElementById('feedbackModal').style.display = 'flex';
         }
 
         function closeFeedback() {
@@ -2834,19 +2733,62 @@
             endTurn();
         }
 
+        function triggerBossCoop() {
+            playBossSound();
+            const player = players[currentTurnIndex];
+
+            document.getElementById('bossTeamName').innerText = player.name;
+
+            const bossPool = [
+                {q: "👾 บอสไวรัสขู่ว่าจะลบข้อมูลทุกคน! วิธีใดป้องกันมัลแวร์ได้ดีที่สุด?", options: ["เปิดไฟล์จากอีเมลแปลกหน้า", "ติดตั้งโปรแกรมสแกนไวรัสและอัปเดตสม่ำเสมอ", "แชร์รหัสผ่านให้เพื่อนช่วยเฝ้า", "ปิดไฟคอมพิวเตอร์"], correctText: "ติดตั้งโปรแกรมสแกนไวรัสและอัปเดตสม่ำเสมอ"},
+                {q: "👾 บอสส่งข่าวปลอมกระจายไปทั่ว! สิ่งแรกที่ทุกคนควรทำร่วมกันคือ?", options: ["กดแชร์ทันที", "ตรวจสอบแหล่งที่มาจากสำนักข่าวที่น่าเชื่อถือ", "เพิ่มข้อความให้ตื่นเต้นขึ้น", "ส่งต่อให้ทุกกลุ่ม"], correctText: "ตรวจสอบแหล่งที่มาจากสำนักข่าวที่น่าเชื่อถือ"}
+            ];
+
+            const bossQuiz = bossPool[Math.floor(Math.random() * bossPool.length)];
+            document.getElementById('bossQuizText').innerText = bossQuiz.q;
+
+            const opts = shuffleArray(bossQuiz.options);
+            document.getElementById('bossOptionsContainer').innerHTML = opts.map((opt) => `
+                <button class="btn-option" onclick="submitBossAnswer('${opt.replace(/'/g, "\\'")}', '${bossQuiz.correctText.replace(/'/g, "\\'")}')">
+                    ${opt}
+                </button>
+            `).join('');
+
+            document.getElementById('bossModal').style.display = 'flex';
+        }
+
+        function submitBossAnswer(selectedOpt, correctText) {
+            document.getElementById('bossModal').style.display = 'none';
+            if (selectedOpt === correctText) {
+                playCorrectSound();
+                alert('🎉 ปราบไวรัสสำเร็จ! ทุกทีมได้รับโบนัส +15 เหรียญ!');
+                players.forEach(p => p.coins += 15);
+                addLog('👾 รวมพลังปราบไวรัสสำเร็จ! ทุกทีมรับ +15 เหรียญ');
+            } else {
+                playWrongSound();
+                alert('💥 ปราบไวรัสไม่สำเร็จ! ทุกทีมสูญเสีย 5 เหรียญ');
+                players.forEach(p => p.coins = Math.max(0, p.coins - 5));
+                addLog('👾 พ่ายแพ้ไวรัส! ทุกทีมเสีย -5 เหรียญ');
+            }
+
+            renderPawns();
+            updateLeaderboard();
+            endTurn();
+        }
+
+        function endTurn() {
+            if (hasWinnerDeclared) return;
+
+            currentTurnIndex = (currentTurnIndex + 1) % players.length;
+            broadcast('NEXT_TURN', {currentTurnIndex});
+            startTurn();
+        }
+
         function declareWinner(winnerPlayer) {
             if (hasWinnerDeclared) return;
             hasWinnerDeclared = true;
 
-            // มอบคะแนนโบนัส +40 แต้ม แก่ทีมแรกที่เข้าเส้นชัย
-            winnerPlayer.score += 40;
             playTakeoverSound();
-            addLog(`🏆 ${winnerPlayer.name} เข้าเส้นชัยเป็นทีมแรก! รับโบนัสพิเศษ +40 คะแนน!`);
-
-            renderPawns();
-            updateLeaderboard();
-
-            // ส่งสัญญาณแจ้งเตือนทุกเครื่องตัดไปหน้าสรุปคะแนนทันที
             broadcast('GAME_OVER', {winner: winnerPlayer});
             showPodiumModal(winnerPlayer);
         }
@@ -2857,51 +2799,64 @@
             clearInterval(cardSelectTimer);
             clearInterval(quizTimer);
 
-            const podiumModal = document.getElementById('podiumModal');
-            podiumModal.style.display = 'flex';
+            const sorted = [...players].sort((a, b) => {
+                if (b.coins !== a.coins) return b.coins - a.coins;
+                if (b.score !== a.score) return b.score - a.score;
+                return b.pos - a.pos;
+            });
 
-            const sorted = [...players].sort((a, b) => b.score - a.score);
+            const p1 = sorted[0] || winner;
+            const p2 = sorted[1];
+            const p3 = sorted[2];
 
-            if (sorted[0]) {
-                document.getElementById('avatarRank1').innerHTML = AVATAR_SVGS[sorted[0].avatar] || AVATAR_SVGS.ant;
-                document.getElementById('nameRank1').innerText = sorted[0].name;
-                document.getElementById('scoreRank1').innerText = `${sorted[0].score} แต้ม (${sorted[0].coins} เหรียญ)`;
-                setTimeout(() => document.getElementById('podiumRank1').classList.add('show-podium'), 300);
-            }
+            document.getElementById('avatarRank1').innerHTML = AVATAR_SVGS[p1.avatar] || AVATAR_SVGS.ant;
+            document.getElementById('nameRank1').innerText = p1.name;
+            document.getElementById('scoreRank1').innerText = `🪙 ${p1.coins} เหรียญ | ⭐ ${p1.score} แต้ม`;
 
-            if (sorted[1]) {
-                document.getElementById('avatarRank2').innerHTML = AVATAR_SVGS[sorted[1].avatar] || AVATAR_SVGS.ant;
-                document.getElementById('nameRank2').innerText = sorted[1].name;
-                document.getElementById('scoreRank2').innerText = `${sorted[1].score} แต้ม (${sorted[1].coins} เหรียญ)`;
-                setTimeout(() => document.getElementById('podiumRank2').classList.add('show-podium'), 600);
+            if (p2) {
+                document.getElementById('avatarRank2').innerHTML = AVATAR_SVGS[p2.avatar] || AVATAR_SVGS.ant;
+                document.getElementById('nameRank2').innerText = p2.name;
+                document.getElementById('scoreRank2').innerText = `🪙 ${p2.coins} เหรียญ | ⭐ ${p2.score} แต้ม`;
+                document.getElementById('podiumRank2').style.display = 'flex';
             } else {
                 document.getElementById('podiumRank2').style.display = 'none';
             }
 
-            if (sorted[2]) {
-                document.getElementById('avatarRank3').innerHTML = AVATAR_SVGS[sorted[2].avatar] || AVATAR_SVGS.ant;
-                document.getElementById('nameRank3').innerText = sorted[2].name;
-                document.getElementById('scoreRank3').innerText = `${sorted[2].score} แต้ม (${sorted[2].coins} เหรียญ)`;
-                setTimeout(() => document.getElementById('podiumRank3').classList.add('show-podium'), 900);
+            if (p3) {
+                document.getElementById('avatarRank3').innerHTML = AVATAR_SVGS[p3.avatar] || AVATAR_SVGS.ant;
+                document.getElementById('nameRank3').innerText = p3.name;
+                document.getElementById('scoreRank3').innerText = `🪙 ${p3.coins} เหรียญ | ⭐ ${p3.score} แต้ม`;
+                document.getElementById('podiumRank3').style.display = 'flex';
             } else {
                 document.getElementById('podiumRank3').style.display = 'none';
             }
 
-            if (sorted.length > 3) {
-                const runnerGrid = document.getElementById('runnerUpGrid');
-                runnerGrid.innerHTML = sorted.slice(3).map((p, i) => `
+            const runnerUps = sorted.slice(3);
+            const runnerUpBoard = document.getElementById('runnerUpBoard');
+            const runnerUpGrid = document.getElementById('runnerUpGrid');
+
+            if (runnerUps.length > 0) {
+                runnerUpBoard.style.display = 'block';
+                runnerUpGrid.innerHTML = runnerUps.map((p, i) => `
                     <div class="runner-up-row">
-                        <span>อันดับ ${i + 4}: ${p.name}</span>
-                        <span>⭐ ${p.score} แต้ม</span>
+                        <span>ที่ ${i + 4}. ${p.name}</span>
+                        <span>🪙 ${p.coins} เหรียญ | ⭐ ${p.score} แต้ม</span>
                     </div>
                 `).join('');
-                document.getElementById('runnerUpBoard').style.display = 'block';
+            } else {
+                runnerUpBoard.style.display = 'none';
             }
 
-            initFireworks();
+            document.getElementById('podiumModal').style.display = 'flex';
+
+            setTimeout(() => document.getElementById('podiumRank1').classList.add('show-podium'), 300);
+            setTimeout(() => document.getElementById('podiumRank2').classList.add('show-podium'), 600);
+            setTimeout(() => document.getElementById('podiumRank3').classList.add('show-podium'), 900);
+
+            startFireworks();
         }
 
-        function initFireworks() {
+        function startFireworks() {
             const canvas = document.getElementById('fireworksCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
@@ -2909,51 +2864,53 @@
             canvas.height = window.innerHeight;
 
             let particles = [];
-            const colors = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
+            const colors = ['#f1c40f', '#e74c3c', '#2ecc71', '#3498db', '#e67e22', '#9b59b6'];
 
-            for (let i = 0; i < 120; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    dx: (Math.random() - 0.5) * 12,
-                    dy: (Math.random() - 0.5) * 12,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    radius: Math.random() * 4 + 2,
-                    life: 100
-                });
-            }
+            function createFirework() {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * (canvas.height * 0.6);
+                const color = colors[Math.floor(Math.random() * colors.length)];
 
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach((p, i) => {
-                    if (p.life > 0) {
-                        p.x += p.dx;
-                        p.y += p.dy;
-                        p.life--;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = p.color;
-                        ctx.fill();
-                    }
-                });
-                if (particles.some(p => p.life > 0)) {
-                    requestAnimationFrame(animate);
+                for (let i = 0; i < 35; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 5 + 2;
+                    particles.push({
+                        x, y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        alpha: 1,
+                        color
+                    });
                 }
             }
-            animate();
+
+            setInterval(createFirework, 400);
+
+            function loop() {
+                ctx.fillStyle = 'rgba(10, 15, 29, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach((p, idx) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= 0.015;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = Math.max(0, p.alpha);
+                    ctx.fill();
+
+                    if (p.alpha <= 0) particles.splice(idx, 1);
+                });
+
+                requestAnimationFrame(loop);
+            }
+
+            loop();
         }
 
-        function endTurn() {
-            if (isGamePaused || hasWinnerDeclared) return;
-
-            currentTurnIndex = (currentTurnIndex + 1) % players.length;
-            broadcast('NEXT_TURN', {nextTurnIndex: currentTurnIndex});
-            startTurn();
-        }
-
-        window.onload = () => {
-            initGame();
-        };
+        window.onload = initGame;
     </script>
 </body>
 
