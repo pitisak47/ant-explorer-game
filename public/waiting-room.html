@@ -359,17 +359,35 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            position: relative;
         }
 
+        /* เอฟเฟกต์เด้งพุ่งออร่าของปุ่มเริ่มเกมเมื่อทุกทีมพร้อมแล้ว */
         .btn-start-game.active {
             background: #2ecc71;
             cursor: pointer;
             box-shadow: 0 6px 0 #27ae60, 0 14px 28px rgba(46, 204, 113, 0.45);
+            animation: hostBtnPulse 1.2s infinite ease-in-out;
+        }
+
+        @keyframes hostBtnPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 6px 0 #27ae60, 0 0 0 0 rgba(46, 204, 113, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 8px 0 #219d55, 0 0 25px 10px rgba(46, 204, 113, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 6px 0 #27ae60, 0 0 0 0 rgba(46, 204, 113, 0);
+            }
         }
 
         .btn-start-game.active:hover {
             background: #27ae60;
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.06);
             box-shadow: 0 8px 0 #219d55, 0 16px 30px rgba(46, 204, 113, 0.5);
         }
 
@@ -449,6 +467,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
             min-height: 110px;
             justify-content: center;
+            transition: all 0.2s ease;
         }
 
         .player-card.is-host {
@@ -1066,6 +1085,68 @@
             transform: scale(1.05);
         }
 
+        /* ---------------- ป๊อปอัปแจ้งเตือนเริ่มเกมเด้งผ่านหน้า (Game Start Alert Modal) ---------------- */
+        .game-start-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .game-start-modal-card {
+            background: linear-gradient(135deg, #ffffff 0%, #e8f8f5 100%);
+            border: 5px solid #2ecc71;
+            border-radius: 40px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(46, 204, 113, 0.5);
+            max-width: 90vw;
+            width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            animation: startModalFly 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .game-start-icon {
+            font-size: 4.5rem;
+            animation: rocketFly 1s ease-in-out infinite alternate;
+        }
+
+        .game-start-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #27ae60;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .game-start-subtitle {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #34495e;
+        }
+
+        @keyframes startModalFly {
+            0% {
+                transform: scale(0.2) translateY(100px);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes rocketFly {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(10deg); }
+        }
+
         /* ---------------- ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ (แสดงกลางหน้าจอ) ---------------- */
         .join-popup-overlay {
             position: fixed;
@@ -1589,6 +1670,15 @@
         </div>
     </div>
 
+    <!-- Modal เด้งผ่านหน้าจอบอกเริ่มเกมแล้ว -->
+    <div class="game-start-modal-overlay" id="gameStartModal">
+        <div class="game-start-modal-card">
+            <div class="game-start-icon">🚀</div>
+            <div class="game-start-title">เริ่มเกมแล้ว!</div>
+            <div class="game-start-subtitle">กำลังนำทางเข้าสู่สนามสำรวจ...</div>
+        </div>
+    </div>
+
     <!-- Container ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ (กลางหน้าจอ) -->
     <div id="joinPopupContainer"></div>
 
@@ -1673,7 +1763,7 @@
             document.getElementById('qrModal').style.display = 'none';
         }
 
-        /* ---------------- ระบบห้องแต่งตัว (Wardrobe) ---------------- */
+        /* ---------------- ระบบห้องแต่งตัว (Wardrobe) Real-time ---------------- */
         let tempSelectedCostumes = parseCostumes(myCurrentCostume);
 
         function openWardrobeModal() {
@@ -1696,12 +1786,36 @@
             }
             updateWardrobePreview();
             updateCostumeButtonsUI();
+
+            // ส่งข้อมูลแต่งตัวให้ทุกทีมในห้องเห็นแบบเรียลไทม์สดๆ ทันทีที่เลือกชุด
+            broadcastCostumeChange(tempSelectedCostumes.join(','));
         }
 
         function resetAllCostumes() {
             tempSelectedCostumes = [];
             updateWardrobePreview();
             updateCostumeButtonsUI();
+
+            // ส่งข้อมูลรีเซ็ตให้ทุกทีมในห้องเห็นทันที
+            broadcastCostumeChange('');
+        }
+
+        function broadcastCostumeChange(costumeStr) {
+            myCurrentCostume = costumeStr;
+            sessionStorage.setItem('ant_costume', costumeStr);
+
+            const me = players.find(p => p.name === hostGroupName);
+            if (me) me.costume = costumeStr;
+
+            if (socket) {
+                socket.emit('game-sync', {
+                    roomCode: currentRoomCode,
+                    type: 'UPDATE_PLAYER_COSTUME',
+                    playerName: hostGroupName,
+                    costume: costumeStr
+                });
+            }
+            renderLobby();
         }
 
         function updateCostumeButtonsUI() {
@@ -1717,22 +1831,7 @@
         }
 
         function saveAndApplyCostume() {
-            myCurrentCostume = tempSelectedCostumes.join(',');
-            sessionStorage.setItem('ant_costume', myCurrentCostume);
-
-            const me = players.find(p => p.name === hostGroupName);
-            if (me) me.costume = myCurrentCostume;
-
-            if (socket) {
-                socket.emit('game-sync', {
-                    roomCode: currentRoomCode,
-                    type: 'UPDATE_PLAYER_COSTUME',
-                    playerName: hostGroupName,
-                    costume: myCurrentCostume
-                });
-            }
-
-            renderLobby();
+            broadcastCostumeChange(tempSelectedCostumes.join(','));
             closeWardrobeModal();
         }
 
@@ -1801,11 +1900,12 @@
                     const data = event.data;
                     if (!data) return;
                     if (data.type === 'GLOBAL_GO_HOME') {
+                        sessionStorage.removeItem('ant_costume'); // รีเซ็ตชุดเมื่อย้อนกลับ
                         window.location.href = 'index.html';
                     } else if (data.type === 'GLOBAL_RESTART') {
                         location.reload();
                     } else if (data.type === 'START_GAME_DIRECT') {
-                        goToBoardPage();
+                        triggerGameStartSequence();
                     }
                 };
             }
@@ -1855,13 +1955,13 @@
             });
 
             socket.on('trigger-start-game', () => {
-                goToBoardPage();
+                triggerGameStartSequence();
             });
 
             socket.on('game-start', (data) => {
                 const activePlayers = (data && data.players) ? data.players : players;
                 sessionStorage.setItem('ant_all_players', JSON.stringify(activePlayers));
-                window.location.href = 'board.html';
+                triggerGameStartSequence();
             });
 
             socket.on('game-sync', (data) => {
@@ -1879,8 +1979,9 @@
                         renderLobby();
                     }
                 } else if (data.type === 'START_GAME_DIRECT') {
-                    goToBoardPage();
+                    triggerGameStartSequence();
                 } else if (data.type === 'GLOBAL_GO_HOME') {
+                    sessionStorage.removeItem('ant_costume'); // รีเซ็ตชุดเมื่อย้อนกลับ
                     window.location.href = 'index.html';
                 } else if (data.type === 'GLOBAL_RESTART') {
                     location.reload();
@@ -2015,9 +2116,9 @@
                 empty.innerHTML = `
                     <div class="waiting-status-header">
                         <span class="spinner-icon">🔄</span>
-                        <span>กำลังเตรียมพร้อม...</span>
+                        <span>กำลังรอ...</span>
                     </div>
-                    <span style="font-weight: 800; color:#95a5a6;">+ รอเพื่อน #${i + 1}</span>
+                    <span style="font-weight: 800; color:#95a5a6;">+ กลุ่มที่ #${i + 1}</span>
                 `;
                 grid.appendChild(empty);
             }
@@ -2075,7 +2176,7 @@
 
                 if (players.length < 2) {
                     statusMsg.className = 'status-msg';
-                    statusMsg.innerHTML = `⚠️ รอสมาชิกเข้าร่วมอย่างน้อย 2 กลุ่มขึ้นไป (ปัจจุบัน ${players.length} กลุ่ม)...`;
+                    statusMsg.innerHTML = `⚠️ รอสมาชิกเข้าร่วมอย่างน้อย 2 กลุ่มขึ้นไป (ปัจจุบัน ${players.length} กลุ่ม)`;
                 } else {
                     statusMsg.className = 'status-msg';
                     statusMsg.innerHTML = `⏳ รอสมาชิกทุกกลุ่มกดเตรียมพร้อม (พร้อมแล้ว ${readyNonHosts.length}/${nonHostPlayers.length} กลุ่ม)...`;
@@ -2133,7 +2234,18 @@
                 });
             }
 
-            goToBoardPage();
+            triggerGameStartSequence();
+        }
+
+        /* ฟังก์ชันแสดงป๊อปอัปเด้งผ่านหน้าก่อนย้ายไปยังหน้าเล่นเกม board.html */
+        function triggerGameStartSequence() {
+            const startModal = document.getElementById('gameStartModal');
+            if (startModal) {
+                startModal.style.display = 'flex';
+            }
+            setTimeout(() => {
+                goToBoardPage();
+            }, 1400);
         }
 
         /* ฟังก์ชันย้ายไปยังหน้าเล่นเกม board.html */
@@ -2145,6 +2257,9 @@
         function leaveRoom() {
             if (confirm('คุณต้องการออกจากห้องและย้อนกลับไปยังหน้าแรกใช่หรือไม่?')) {
                 clearInterval(bgmInterval);
+                // ล้างค่าชุดแต่งตัวเมื่อกดออกย้อนกลับหน้าแรก (เพื่อให้เข้าใหม่แล้วรีเซ็ทชุด)
+                sessionStorage.removeItem('ant_costume');
+                
                 if (socket) {
                     socket.emit('leave-room', {roomCode: currentRoomCode});
                 }
