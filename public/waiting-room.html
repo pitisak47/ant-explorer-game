@@ -1910,8 +1910,16 @@
 
                 newPlayers.forEach(np => {
                     const existing = players.find(p => p.name === np.name);
-                    if (existing && np.isReady === undefined) {
-                        np.isReady = existing.isReady;
+                    if (existing) {
+                        if (np.isReady === undefined) {
+                            np.isReady = existing.isReady;
+                        }
+                        if (!np.costume && existing.costume) {
+                            np.costume = existing.costume;
+                        }
+                    }
+                    if (np.name === hostGroupName && myCurrentCostume) {
+                        np.costume = myCurrentCostume;
                     }
                 });
 
@@ -1924,6 +1932,7 @@
             });
 
             socket.on('game-start', (data) => {
+                if (isHostClient) return; // ฝั่งหัวหน้าห้องจะไม่ไปหน้าเริ่มเกม
                 const activePlayers = (data && data.players) ? data.players : players;
                 sessionStorage.setItem('ant_all_players', JSON.stringify(activePlayers));
                 window.location.href = 'board.html';
@@ -2205,6 +2214,9 @@
 
         /* ฟังก์ชันแสดง Pop-up นับถอยหลังสวยงาม 5-4-3-2-1-0 และย้ายไปยังหน้าเล่นเกม */
         function triggerStartCountdown() {
+            // หัวหน้าห้องจะไม่นับถอยหลัง และไม่ย้ายหน้าไป board.html
+            if (isHostClient) return;
+
             if (isCountingDown) return;
             isCountingDown = true;
 
@@ -2236,9 +2248,6 @@
 
                     setTimeout(() => {
                         sessionStorage.setItem('ant_all_players', JSON.stringify(players));
-                        if (isHostClient && socket) {
-                            socket.emit('start-game', {roomCode: currentRoomCode, players});
-                        }
                         window.location.href = 'board.html';
                     }, 800);
                 }
