@@ -888,7 +888,7 @@
         .takeover-hero-avatar { width: 48px; height: 48px; }
         .takeover-team { font-size: 1.5rem; font-weight: 900; color: #2c3e50; }
 
-        /* PODIUM MODAL - ขยับตัวละครและปรับปรุงระยะห่าง */
+        /* PODIUM MODAL - จัดระเบียบระยะห่าง */
         .podium-modal {
             position: fixed;
             inset: 0;
@@ -954,7 +954,6 @@
             transform: translateY(0);
         }
 
-        /* ขยับตัวละครลงมา ไม่ให้ชนกับมงกุฎและข้อความ */
         .podium-hero-avatar {
             width: 72px;
             height: 72px;
@@ -1155,6 +1154,7 @@
             border-radius: 50%;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             border: 6px solid #fff;
+            transition: transform 5.5s cubic-bezier(0.15, 0.9, 0.2, 1);
         }
 
         .wheel-right-side {
@@ -1349,7 +1349,8 @@
     <div class="ambient-light light-3"></div>
 
     <div class="edu-global-badge">
-        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo" onerror="this.style.display='none'">
+        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo"
+            onerror="this.style.display='none'">
         <span>สาขาวิชาคอมพิวเตอร์ศึกษา RERU</span>
     </div>
 
@@ -1395,21 +1396,25 @@
             </div>
 
             <div class="controls-panel">
-                <div style="font-size:0.82rem; font-weight: bold; color:#e67e22; margin-bottom:5px; text-align:left;">✨ ไอเทมตัวช่วย:</div>
+                <div style="font-size:0.82rem; font-weight: bold; color:#e67e22; margin-bottom:5px; text-align:left;">✨
+                    ไอเทมตัวช่วย:</div>
                 <div class="powerup-row">
                     <button class="btn-powerup" id="btnPwShield" onclick="usePowerup('shield')">🛡️ โล่ (1)</button>
                     <button class="btn-powerup" id="btnPwHalf" onclick="usePowerup('half')">🔍 50/50 (1)</button>
                     <button class="btn-powerup" id="btnPwDouble" onclick="usePowerup('double')">🪙 x2 (1)</button>
                 </div>
-                <button class="btn-roll" id="btnRollDice" onclick="triggerDiceRoll()"><span>🎲 ทอยลูกเต๋า 3D</span></button>
+                <button class="btn-roll" id="btnRollDice" onclick="triggerDiceRoll()"><span>🎲 ทอยลูกเต๋า
+                        3D</span></button>
             </div>
         </div>
     </div>
 
     <div class="wheel-modal-overlay" id="startupWheelModal">
         <div class="wheel-modal-card">
-            <h2 id="wheelStatusTitle" style="color: #0984e3; font-size: 1.6rem; margin-bottom: 2px;">🎡 สุ่มลำดับการทอยเต๋า</h2>
-            <p id="wheelStatusSub" style="color: #636e72; font-size: 0.95rem;">กำลังหมุนวงล้อเพื่อจัดลำดับการเล่นของทุกทีม...</p>
+            <h2 id="wheelStatusTitle" style="color: #0984e3; font-size: 1.6rem; margin-bottom: 2px;">🎡
+                สุ่มลำดับการทอยเต๋า</h2>
+            <p id="wheelStatusSub" style="color: #636e72; font-size: 0.95rem;">
+                กำลังหมุนวงล้อเพื่อจัดลำดับการเล่นของทุกทีม...</p>
 
             <div class="wheel-modal-layout">
                 <div class="wheel-left-side">
@@ -1421,9 +1426,11 @@
 
                 <div class="wheel-right-side">
                     <div class="order-result-box" id="orderResultBox">
-                        <h3 style="color: #27ae60; font-size: 1.15rem; margin-bottom: 4px; text-align: left;">📋 ลำดับการทอย</h3>
+                        <h3 style="color: #27ae60; font-size: 1.15rem; margin-bottom: 4px; text-align: left;">📋
+                            ลำดับการทอย</h3>
                         <div id="orderResultList">
-                            <div style="color: #b2bec3; font-size: 0.9rem; text-align: center; padding: 15px 0;">กำลังเริ่มหมุนสุ่ม...</div>
+                            <div style="color: #b2bec3; font-size: 0.9rem; text-align: center; padding: 15px 0;">
+                                กำลังเริ่มหมุนสุ่ม...</div>
                         </div>
                     </div>
                 </div>
@@ -1434,7 +1441,8 @@
     <div class="game-countdown-overlay" id="gameCountdownOverlay">
         <div style="color: #fff; font-size: 1.8rem; font-weight: 800; margin-bottom: 10px;">เตรียมตัวให้พร้อม!</div>
         <div class="game-countdown-num" id="countdownBigNum">5</div>
-        <div style="color: #00cec9; font-size: 1.2rem; font-weight: 700; margin-top: 15px;">กำลังจะเริ่มการแข่งขัน...</div>
+        <div style="color: #00cec9; font-size: 1.2rem; font-weight: 700; margin-top: 15px;">กำลังจะเริ่มการแข่งขัน...
+        </div>
     </div>
 
     <div class="dice-overlay" id="diceModal">
@@ -1497,7 +1505,8 @@
         <div class="modal-content">
             <div class="boss-icon">👾</div>
             <h2 style="color: #d63031; font-size: 1.8rem; margin-bottom: 8px;">ไวรัสตัวร้ายปรากฏตัว!</h2>
-            <p style="font-size: 1rem; color: #2d3436; margin-bottom: 16px;">ภารกิจร่วมมือ: <strong style="color:#0984e3" id="bossTeamName">-</strong> เป็นผู้นำตอบโจทย์เพื่อปกป้องคะแนนของทุกคน!</p>
+            <p style="font-size: 1rem; color: #2d3436; margin-bottom: 16px;">ภารกิจร่วมมือ: <strong
+                    style="color:#0984e3" id="bossTeamName">-</strong> เป็นผู้นำตอบโจทย์เพื่อปกป้องคะแนนของทุกคน!</p>
             <div class="quiz-question" id="bossQuizText">คำถามบอส...</div>
             <div class="options-grid" id="bossOptionsContainer"></div>
         </div>
@@ -2029,6 +2038,8 @@
             const subEl = document.getElementById('wheelStatusSub');
             const resultList = document.getElementById('orderResultList');
 
+            let wheelSoundTimer = null;
+
             wheelModal.style.display = 'flex';
             resultList.innerHTML = '<div style="color: #b2bec3; font-size: 0.9rem; text-align: center; padding: 15px 0;">กำลังเริ่มหมุนสุ่ม...</div>';
 
@@ -2042,7 +2053,13 @@
             let currentRound = 0;
 
             function runSpinRound() {
+                if (wheelSoundTimer) clearInterval(wheelSoundTimer);
+
                 if (currentRound >= numRounds) {
+                    if (wheelSoundTimer) {
+                        clearInterval(wheelSoundTimer);
+                        wheelSoundTimer = null;
+                    }
                     players = finalOrder;
                     renderPawns();
                     updateLeaderboard();
@@ -2074,7 +2091,7 @@
                 let start = null;
                 const duration = 5500;
 
-                let soundTimer = setInterval(() => playRollSound(), 260);
+                wheelSoundTimer = setInterval(() => playRollSound(), 260);
 
                 function animateWheel(timestamp) {
                     if (!start) start = timestamp;
@@ -2088,7 +2105,10 @@
                     if (progress < 1) {
                         requestAnimationFrame(animateWheel);
                     } else {
-                        clearInterval(soundTimer);
+                        if (wheelSoundTimer) {
+                            clearInterval(wheelSoundTimer);
+                            wheelSoundTimer = null;
+                        }
                         playCorrectSound();
 
                         finalOrder.push(winningTeam);
@@ -2441,6 +2461,7 @@
                 currentStep++;
                 player.pos++;
                 playStepSound();
+                broadcast('STEP_SOUND'); // ส่งสัญญาณเสียงเดินไปที่ spectator
 
                 if (player.pos >= 50) {
                     player.pos = 50;
@@ -2472,6 +2493,7 @@
             if (LADDERS[tileNum]) {
                 const climbTo = LADDERS[tileNum];
                 playSlideSound();
+                broadcast('SLIDE_SOUND'); // ส่งสัญญาณเสียงไต่บันไดไปที่ spectator
                 alert(`🪜 ว้าว! ${player.name} ตกช่องบันได ไต่ขึ้นไปช่อง ${climbTo}!`);
                 addLog(`${player.name} ไต่บันไดจาก ${tileNum} ไป ${climbTo}`);
                 player.pos = climbTo;
@@ -2492,6 +2514,7 @@
 
                 const fallBackTo = TRAP_HOLES[tileNum];
                 playSlideSound();
+                broadcast('SLIDE_SOUND'); // ส่งสัญญาณเสียงลื่นไถลตกหลุมไปที่ spectator
                 alert(`🕳️ อุ๊ย! ${player.name} ตกหลุมดิน ลื่นถอยหลังไปช่อง ${fallBackTo}!`);
                 addLog(`${player.name} ตกหลุมถอยหลังไปช่อง ${fallBackTo}`);
                 player.pos = fallBackTo;
