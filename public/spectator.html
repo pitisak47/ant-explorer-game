@@ -1286,6 +1286,10 @@
         let socket = null;
         let broadcastChan = null;
 
+        /* Global Timer สำหรับเสียงหมุนวงล้อ เพื่อป้องกันเสียงค้างข้ามเกม */
+        let specWheelSoundTimer = null;
+        let specWheelAnimationId = null;
+
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1426,6 +1430,7 @@
 
         function sendGlobalGoHome() {
             if (!confirm('คุณต้องการนำทุกทีมออกจากเกมและกลับไปยังหน้าแรกพร้อมกันใช่หรือไม่?')) return;
+            if (specWheelSoundTimer) clearInterval(specWheelSoundTimer);
             emitGlobalSync({ type: 'GLOBAL_GO_HOME' });
             sessionStorage.removeItem('ant_all_players');
             setTimeout(() => {
@@ -1435,6 +1440,7 @@
 
         function sendGlobalRestart() {
             if (!confirm('คุณต้องการรีเซ็ตและให้ทุกทีมเริ่มเล่นใหม่ตั้งแต่ต้นใช่หรือไม่?')) return;
+            if (specWheelSoundTimer) clearInterval(specWheelSoundTimer);
             emitGlobalSync({ type: 'GLOBAL_RESTART' });
             setTimeout(() => {
                 location.reload();
@@ -1539,7 +1545,6 @@
 
         /* ---------------- วงล้อสุ่มลำดับเสมือน (Canvas Wheel Sync & Animation) ---------------- */
         const wheelColors = ["#00b894", "#0984e3", "#6c5ce7", "#e17055", "#fdcb6e", "#e84393", "#00cec9", "#ff7675"];
-        let specWheelAnimationId = null;
 
         function drawSpecWheel(teams, currentAngle = 0) {
             const canvas = document.getElementById('wheelCanvas');
@@ -1592,9 +1597,14 @@
 
         function animateSpecWheel(pool, targetAngle, callback) {
             if (specWheelAnimationId) cancelAnimationFrame(specWheelAnimationId);
+            if (specWheelSoundTimer) {
+                clearInterval(specWheelSoundTimer);
+                specWheelSoundTimer = null;
+            }
+
             let start = null;
             const duration = 5500;
-            const soundTimer = setInterval(() => playRollSound(), 260);
+            specWheelSoundTimer = setInterval(() => playRollSound(), 260);
 
             function step(timestamp) {
                 if (!start) start = timestamp;
@@ -1608,7 +1618,10 @@
                 if (progress < 1) {
                     specWheelAnimationId = requestAnimationFrame(step);
                 } else {
-                    clearInterval(soundTimer);
+                    if (specWheelSoundTimer) {
+                        clearInterval(specWheelSoundTimer);
+                        specWheelSoundTimer = null;
+                    }
                     playCorrectSound();
                     if (callback) callback();
                 }
@@ -1685,7 +1698,7 @@
                 titleEl.innerText = "🎡 สุ่มลำดับการทอยเต๋า";
                 subEl.innerText = "กำลังหมุนวงล้อเพื่อจัดลำดับการเล่นของทุกทีม...";
                 resultList.innerHTML = '<div style="color: #b2bec3; font-size: 0.9rem; text-align: center; padding: 15px 0;">กำลังเริ่มหมุนสุ่ม...</div>';
-                
+
                 const pool = data.pool || players;
                 if (pool && pool.length > 0) {
                     drawSpecWheel(pool, 0);
@@ -1725,6 +1738,10 @@
                 }
             }
             else if (data.type === 'SPIN_ORDER_COMPLETE') {
+                if (specWheelSoundTimer) {
+                    clearInterval(specWheelSoundTimer);
+                    specWheelSoundTimer = null;
+                }
                 const titleEl = document.getElementById('wheelStatusTitle');
                 const subEl = document.getElementById('wheelStatusSub');
                 titleEl.innerText = "🎉 ได้ลำดับการทอยเรียบร้อย!";
@@ -1739,6 +1756,10 @@
                 }, 2800);
             }
             else if (data.type === 'START_COUNTDOWN_TICK') {
+                if (specWheelSoundTimer) {
+                    clearInterval(specWheelSoundTimer);
+                    specWheelSoundTimer = null;
+                }
                 const overlay = document.getElementById('gameCountdownOverlay');
                 const numEl = document.getElementById('countdownBigNum');
                 overlay.style.display = 'flex';
@@ -1817,10 +1838,12 @@
                 triggerPodiumScene(data.winner);
             }
             else if (data.type === 'GLOBAL_GO_HOME') {
+                if (specWheelSoundTimer) clearInterval(specWheelSoundTimer);
                 sessionStorage.removeItem('ant_all_players');
                 window.location.href = 'index.html';
             }
             else if (data.type === 'GLOBAL_RESTART') {
+                if (specWheelSoundTimer) clearInterval(specWheelSoundTimer);
                 location.reload();
             }
             else if (data.type === 'PAUSE_GAME') {
@@ -2030,9 +2053,9 @@
                 const y = Math.random() * (canvas.height * 0.6);
                 const color = colors[Math.floor(Math.random() * colors.length)];
 
-                for (let i = 0; i < 35; i++) {
+                for (let i = 0; i < 70; i++) {
                     const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 5 + 2;
+                    const speed = Math.random() * 6 + 2;
                     particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, alpha: 1, color, radius: Math.random() * 3 + 2 });
                 }
             }
@@ -2040,26 +2063,15 @@
             setInterval(createFirework, 400);
 
             function loop() {
-                ctx.fillStyle = 'rgba(10, 15, 29, 0.2)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                particles.forEach((p, idx) => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.alpha -= 0.015;
-
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.globalAlpha = Math.max(0, p.alpha);
-                    ctx.fill();
-
-                    if (p.alpha <= 0) particles.splice(idx, 1);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (Math.random() < 0.08) createFirework(Math.random() * canvas.width * 0.8 + canvas.width * 0.1, Math.random() * canvas.height * 0.5 + canvas.height * 0.1);
+                particles.forEach((p, index) => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.alpha -= 0.015;
+                    ctx.save(); ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                    if (p.alpha <= 0) particles.splice(index, 1);
                 });
-
                 requestAnimationFrame(loop);
             }
-
             loop();
         }
 
