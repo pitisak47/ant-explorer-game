@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="mod.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RERU บอร์ดเกมส์ มดนักสำรวจ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Prompt:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #ff9f1a;
+            --primary-hover: #e58e10;
+            --leaf-green: #2ecc71;
+            --leaf-dark: #27ae60;
+            --earth-brown: #5d4037;
+            --bg-gradient: radial-gradient(circle at center, #78e08f 0%, #38ada9 55%, #079992 100%);
+            --card-bg: rgba(255, 255, 255, 0.96);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', 'Mitr', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 85px 20px 25px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .edu-global-badge {
+            position: fixed;
+            top: 18px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 3px solid #2ecc71;
+            padding: 10px 20px;
+            height: 48px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1b5e20;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .edu-badge-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            border: 1.5px solid #2ecc71;
+        }
+
+        .top-right-controls {
+            position: fixed;
+            top: 18px;
+            right: 24px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .btn-top-bar {
+            background: rgba(255, 255, 255, 0.92);
+            border: 3px solid #ff9f1a;
+            color: #d35400;
+            padding: 10px 20px;
+            height: 48px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-top-bar:hover {
+            background: #ff9f1a;
+            color: #fff;
+            transform: scale(1.06);
+        }
+
+        .btn-top-back {
+            border-color: #34495e;
+            color: #2c3e50;
+        }
+
+        .btn-top-back:hover {
+            background: #34495e;
+            color: #fff;
+        }
+
+        .bg-decor {
+            position: absolute;
+            font-size: 3.5rem;
+            opacity: 0.32;
+            pointer-events: none;
+            animation: floatLeaves 7s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+
+        .leaf-1 {
+            top: 12%;
+            left: 4%;
+            animation-duration: 6s;
+        }
+
+        .leaf-2 {
+            top: 80%;
+            left: 6%;
+            animation-duration: 8s;
+        }
+
+        .leaf-3 {
+            top: 15%;
+            right: 4%;
+            animation-duration: 7s;
+        }
+
+        .leaf-4 {
+            bottom: 10%;
+            right: 6%;
+            animation-duration: 9s;
+        }
+
+        @keyframes floatLeaves {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-30px) rotate(20deg) scale(1.12);
+            }
+
+            100% {
+                transform: translateY(18px) rotate(-15deg) scale(0.92);
+            }
+        }
+
+        .landscape-card {
+            position: relative;
+            z-index: 10;
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            width: 100%;
+            max-width: 1320px;
+            min-height: 620px;
+            border-radius: 40px;
+            padding: 30px 35px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35), 0 0 0 12px rgba(255, 255, 255, 0.4);
+            border: 5px solid #fff;
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            align-items: stretch;
+        }
+
+        .left-room-panel {
+            flex: 0.85;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            background: linear-gradient(145deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 32px;
+            padding: 20px 18px;
+            border: 3px solid #a5d6a7;
+            box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.6), 0 12px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .room-header-wrap {
+            margin-bottom: 2px;
+        }
+
+        .ant-logo-big {
+            display: inline-block;
+            animation: heroBounce 2.4s infinite ease-in-out;
+        }
+
+        .ant-logo-big img {
+            width: 110px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.18));
+        }
+
+        @keyframes heroBounce {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-8px) rotate(2deg) scale(1.03);
+            }
+        }
+
+        .room-code-box {
+            margin: 4px 0;
+            background: #fff8e1;
+            border: 2.5px dashed #ffb300;
+            border-radius: 18px;
+            padding: 10px 14px;
+            width: 95%;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(255, 179, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .room-code-label {
+            font-size: 0.85rem;
+            color: #795548;
+            font-weight: 700;
+        }
+
+        .room-code-display {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #d84315;
+            margin: 1px 0;
+        }
+
+        .qr-wrapper {
+            margin: 6px auto 8px auto;
+            background: #ffffff;
+            padding: 8px;
+            border-radius: 16px;
+            border: 2px solid #ffe082;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .qr-wrapper:hover {
+            transform: scale(1.03);
+        }
+
+        .qr-img {
+            width: 145px;
+            height: 145px;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .qr-caption {
+            font-size: 0.78rem;
+            color: #795548;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .btn-copy-code {
+            background: #ff9f1a;
+            border: none;
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(255, 159, 26, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-copy-code:hover {
+            background: #e58e10;
+            transform: scale(1.04);
+        }
+
+        .room-timer-info {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #81c784;
+            border-radius: 14px;
+            padding: 5px 10px;
+            width: 100%;
+            margin: 3px 0;
+            font-size: 0.8rem;
+            color: #2e7d32;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .timer-highlight {
+            font-size: 0.95rem;
+            color: #1b5e20;
+            font-weight: 900;
+        }
+
+        .status-msg {
+            font-size: 0.85rem;
+            color: #d63031;
+            font-weight: 800;
+            padding: 6px 10px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 2px solid #ff7675;
+            width: 100%;
+            margin: 3px 0;
+            line-height: 1.3;
+        }
+
+        .status-msg.ready {
+            color: #27ae60;
+            border-color: #2ecc71;
+            background: #e8f8f5;
+        }
+
+        .btn-start-game {
+            width: 100%;
+            padding: 13px;
+            background: #b2bec3;
+            color: #ffffff;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.15rem;
+            font-weight: 900;
+            cursor: not-allowed;
+            box-shadow: none;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .btn-start-game.active {
+            background: #2ecc71;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #27ae60, 0 14px 28px rgba(46, 204, 113, 0.45);
+            animation: hostBtnPulse 1.2s infinite ease-in-out;
+        }
+
+        @keyframes hostBtnPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 6px 0 #27ae60, 0 0 0 0 rgba(46, 204, 113, 0.7);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 8px 0 #219d55, 0 0 25px 10px rgba(46, 204, 113, 0.8);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 6px 0 #27ae60, 0 0 0 0 rgba(46, 204, 113, 0);
+            }
+        }
+
+        .btn-start-game.active:hover {
+            background: #27ae60;
+            transform: translateY(-2px) scale(1.06);
+            box-shadow: 0 8px 0 #219d55, 0 16px 30px rgba(46, 204, 113, 0.5);
+        }
+
+        .btn-start-game.ready-btn-normal {
+            background: #ff9f1a;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #e58e10, 0 12px 24px rgba(255, 159, 26, 0.4);
+        }
+
+        .btn-start-game.ready-btn-normal:hover {
+            background: #e58e10;
+            transform: translateY(-2px);
+        }
+
+        .btn-start-game.ready-btn-active {
+            background: #00b894;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #00896f, 0 12px 24px rgba(0, 184, 148, 0.4);
+        }
+
+        .btn-start-game.ready-btn-active:hover {
+            background: #00a884;
+            transform: translateY(-2px);
+        }
+
+        .right-players-panel {
+            flex: 1.65;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .players-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            padding: 0 4px;
+        }
+
+        .players-panel-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #3e2723;
+        }
+
+        .player-count-badge {
+            background: #e8f5e9;
+            border: 2px solid #2ecc71;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #27ae60;
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .player-card {
+            background: #ffffff;
+            border: 3px solid #dfe6e9;
+            border-radius: 20px;
+            padding: 10px 4px 8px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            animation: popIn 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+            min-height: 110px;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .player-card.is-host {
+            border-color: #ff9f1a;
+            background: #fffdf9;
+            box-shadow: 0 8px 18px rgba(255, 159, 26, 0.2);
+        }
+
+        .host-tag {
+            position: absolute;
+            top: -8px;
+            background: #ff9f1a;
+            color: white;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 1px 8px;
+            border-radius: 10px;
+            border: 1.5px solid #fff;
+            z-index: 5;
+        }
+
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .player-avatar svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .avatar-ready-check {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #2ecc71;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 900;
+            border: 2px solid #ffffff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+            z-index: 10;
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .player-name {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #2d3436;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 4px;
+        }
+
+        .ready-check-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #2ecc71;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 900;
+            border: 2px solid #fff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .team-ready-toast {
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2ecc71;
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+            border: 1.5px solid #ffffff;
+            z-index: 12;
+            animation: popIn 0.25s ease;
+        }
+
+        .player-card.empty-slot {
+            border: 2.5px dashed #b2bec3;
+            background: rgba(245, 246, 250, 0.55);
+            color: #7f8c8d;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .waiting-status-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            color: #e67e22;
+            font-weight: 800;
+            animation: pulseText 2.2s infinite ease-in-out;
+        }
+
+        .spinner-icon {
+            display: inline-block;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulseText {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ---------------- การปรับแต่งขนาดการ์ดเกร็ดความรู้ (Did You Know?) ให้ใหญ่ขึ้น ---------------- */
+        .lobby-tip-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
+            border: 3px dashed #81c784;
+            border-radius: 20px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 6px 16px rgba(46, 204, 113, 0.12);
+            margin-bottom: 14px;
+        }
+
+        .lobby-tip-icon {
+            font-size: 2.3rem;
+            background: #e8f8f5;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 2px solid #a5d6a7;
+        }
+
+        .lobby-tip-body {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: left;
+        }
+
+        .lobby-tip-tag {
+            font-size: 0.95rem;
+            font-weight: 900;
+            color: #27ae60;
+            letter-spacing: 0.5px;
+        }
+
+        .lobby-tip-text {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #2c3e50;
+            line-height: 1.45;
+            transition: opacity 0.25s ease;
+        }
+
+        .lobby-quick-guide-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .quick-guide-item {
+            background: #ffffff;
+            border: 1.5px solid #edf2f7;
+            border-radius: 12px;
+            padding: 5px 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-align: left;
+        }
+
+        .quick-guide-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .quick-guide-title {
+            font-size: 0.76rem;
+            font-weight: 900;
+            color: #2d3436;
+        }
+
+        .quick-guide-desc {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #718096;
+        }
+
+        .lobby-mini-steps-flow {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: #f1f8e9;
+            border: 1.5px solid #c5e1a5;
+            border-radius: 14px;
+            padding: 6px 10px;
+            margin-bottom: 8px;
+        }
+
+        .mini-step-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-align: left;
+        }
+
+        .mini-step-num {
+            width: 22px;
+            height: 22px;
+            background: #2ecc71;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .mini-step-title {
+            font-size: 0.78rem;
+            font-weight: 900;
+            color: #1b5e20;
+        }
+
+        .mini-step-desc {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #558b2f;
+        }
+
+        .dev-controls {
+            background: #f8f9fa;
+            border-radius: 18px;
+            padding: 8px 14px;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spectator-info-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-dev {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            color: #475569;
+            padding: 8px 18px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 800;
+            transition: all 0.15s;
+        }
+
+        .btn-dev:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-spectator-link {
+            background: #0984e3;
+            color: #fff;
+            border-color: #0984e3;
+        }
+
+        .btn-spectator-link:hover {
+            background: #076bb8;
+            color: #fff;
+        }
+
+        /* ---------------- Modal แสดง QR Code เต็มหน้าจอ ---------------- */
+        .qr-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2500;
+            padding: 20px;
+        }
+
+        .qr-modal-card {
+            background: #ffffff;
+            border-radius: 36px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            border: 5px solid #ffb300;
+            max-width: 90vw;
+            width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .qr-modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #795548;
+        }
+
+        .qr-modal-code {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #d84315;
+            background: #fff8e1;
+            padding: 6px 24px;
+            border-radius: 20px;
+            border: 3px dashed #ffb300;
+            width: 100%;
+        }
+
+        .qr-modal-img {
+            width: 280px;
+            height: 280px;
+            border-radius: 16px;
+            border: 3px solid #ffe082;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-close-qr-modal {
+            background: #ff7675;
+            color: #ffffff;
+            border: none;
+            padding: 12px 36px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(255, 118, 117, 0.4);
+            transition: all 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn-close-qr-modal:hover {
+            background: #d63031;
+            transform: scale(1.05);
+        }
+
+        /* ---------------- ป๊อปอัปแจ้งเตือนเริ่มเกม ---------------- */
+        .game-start-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .game-start-modal-card {
+            background: linear-gradient(135deg, #ffffff 0%, #e8f8f5 100%);
+            border: 5px solid #2ecc71;
+            border-radius: 40px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(46, 204, 113, 0.5);
+            max-width: 90vw;
+            width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            animation: startModalFly 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .game-start-icon {
+            font-size: 4.5rem;
+            animation: rocketFly 1s ease-in-out infinite alternate;
+        }
+
+        .game-start-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #27ae60;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-start-subtitle {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #34495e;
+        }
+
+        @keyframes startModalFly {
+            0% {
+                transform: scale(0.2) translateY(100px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes rocketFly {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-15px) rotate(10deg);
+            }
+        }
+
+        /* ---------------- ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ ---------------- */
+        .join-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.25s ease forwards;
+        }
+
+        .join-popup-card {
+            background: #ffffff;
+            border: 4px solid #2ecc71;
+            border-radius: 32px;
+            padding: 25px 35px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            animation: popupScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            max-width: 380px;
+            width: 90%;
+        }
+
+        .join-popup-avatar {
+            width: 90px;
+            height: 90px;
+            background: #e8f8f5;
+            border-radius: 50%;
+            padding: 8px;
+            border: 3px solid #2ecc71;
+            box-shadow: 0 8px 18px rgba(46, 204, 113, 0.3);
+        }
+
+        .join-popup-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #27ae60;
+        }
+
+        .join-popup-name {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #2c3e50;
+            line-height: 1.2;
+        }
+
+        @keyframes popupScale {
+            0% {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive มือถือ/แท็บเล็ต */
+        @media (max-width: 980px) {
+            body {
+                padding: 70px 12px 20px 12px;
+                align-items: flex-start;
+                min-height: 100vh;
+                height: auto;
+            }
+
+            .edu-global-badge {
+                top: 10px;
+                left: 10px;
+                height: 40px;
+                padding: 0 14px;
+                font-size: 0.8rem;
+                gap: 6px;
+                border-width: 2px;
+                max-width: calc(50vw - 15px);
+            }
+
+            .edu-badge-logo {
+                width: 22px;
+                height: 22px;
+            }
+
+            .top-right-controls {
+                top: 10px;
+                right: 10px;
+                gap: 6px;
+            }
+
+            .btn-top-bar {
+                height: 40px;
+                padding: 0 14px;
+                font-size: 0.82rem;
+            }
+
+            .landscape-card {
+                flex-direction: column;
+                padding: 16px 12px;
+                gap: 14px;
+                border-radius: 26px;
+                margin-top: 6px;
+            }
+
+            .left-room-panel {
+                width: 100%;
+                padding: 16px 14px;
+                border-radius: 22px;
+            }
+
+            .ant-logo-big img {
+                width: 85px;
+            }
+
+            .room-code-box {
+                padding: 6px 10px;
+                border-radius: 14px;
+                max-width: 100%;
+            }
+
+            .room-code-display {
+                font-size: 1.6rem;
+            }
+
+            .qr-img {
+                width: 110px;
+                height: 110px;
+            }
+
+            .qr-modal-img {
+                width: 220px;
+                height: 220px;
+            }
+
+            .qr-modal-code {
+                font-size: 2.2rem;
+            }
+
+            .right-players-panel {
+                width: 100%;
+            }
+
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+                margin-bottom: 12px;
+            }
+
+            .player-card {
+                padding: 6px 4px;
+                border-radius: 14px;
+                min-height: 84px;
+            }
+
+            .player-avatar {
+                width: 36px;
+                height: 36px;
+            }
+
+            .lobby-tip-card {
+                padding: 12px;
+                gap: 10px;
+            }
+
+            .lobby-tip-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.8rem;
+            }
+
+            .lobby-tip-text {
+                font-size: 0.95rem;
+            }
+
+            .lobby-quick-guide-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .lobby-mini-steps-flow {
+                grid-template-columns: 1fr;
+            }
+
+            .dev-controls {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .btn-dev {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="edu-global-badge">
+        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo"
+            onerror="this.style.display='none'">
+        <span>สาขาวิชาคอมพิวเตอร์ศึกษา RERU</span>
+    </div>
+
+    <div class="top-right-controls">
+        <button class="btn-top-bar btn-top-back" onclick="leaveRoom()">
+            <span>←</span>
+            <span>ย้อนกลับหน้าแรก</span>
+        </button>
+    </div>
+
+    <div class="bg-decor leaf-1">🍃</div>
+    <div class="bg-decor leaf-2">🌱</div>
+    <div class="bg-decor leaf-3">🍄</div>
+    <div class="bg-decor leaf-4">🌾</div>
+    <div class="bg-decor leaf-5">🌿</div>
+    <div class="bg-decor leaf-6">🌸</div>
+
+    <div class="landscape-card">
+
+        <!-- ฝั่งซ้าย: ข้อมูลห้อง & ปุ่มเริ่มเกม / ปุ่มเตรียมพร้อม -->
+        <div class="left-room-panel">
+            <div class="room-header-wrap">
+                <div class="ant-logo-big">
+                    <img src="mod.png" alt="บอร์ดเกม มดนักสำรวจ"
+                        onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=ant'">
+                </div>
+            </div>
+
+            <div class="room-code-box">
+                <span class="room-code-label">รหัสห้องสำรวจ (PIN)</span>
+                <div class="room-code-display" id="displayRoomCode">----</div>
+
+                <div class="qr-wrapper" onclick="openQrModal()" title="คลิกเพื่อขยายเต็มหน้าจอ">
+                    <img id="roomQrCodeImg" class="qr-img" src="" alt="QR Code สแกนเข้าห้อง">
+                    <span class="qr-caption">📷 คลิกเพื่อขยาย QR Code</span>
+                </div>
+
+                <button class="btn-copy-code" id="btnCopyCode" onclick="copyRoomCode()">📋 คัดลอกรหัสห้อง</button>
+            </div>
+
+            <div class="room-timer-info">
+                <div>📅 สร้างเมื่อ: <span id="createdTimeLabel">กำลังโหลด...</span></div>
+                <div>⏱️ เวลาที่รอ: <span class="timer-highlight" id="timerCountLabel">00 : 00 น.</span></div>
+            </div>
+
+            <div class="status-msg" id="statusMessage">
+                ⚠️ รอสมาชิกเข้าร่วมอย่างน้อย 2 คนขึ้นไป...
+            </div>
+
+            <button class="btn-start-game" id="btnStartGame" disabled onclick="handleMainButtonClick()">
+                <span>เตรียมพร้อมก่อนเริ่มเกม</span>
+            </button>
+        </div>
+
+        <!-- ฝั่งขวา: แสดง 10 สล็อตผู้เล่น & เกร็ดความรู้ -->
+        <div class="right-players-panel">
+            <div>
+                <div class="players-panel-header">
+                    <span class="players-panel-title">👥 ทีมสำรวจที่เข้าร่วมห้อง</span>
+                    <span class="player-count-badge" id="playerCountLabel">0 / 10 กลุ่ม</span>
+                </div>
+
+                <!-- ตารางแสดง 10 ช่องรอผู้เล่น -->
+                <div class="players-grid" id="playersGrid"></div>
+
+                <!-- 1. การ์ดเกร็ดความรู้สลับอัตโนมัติ (Did You Know?) ขนาดใหญ่พิเศษ -->
+                <div class="lobby-tip-card">
+                    <div class="lobby-tip-icon" id="lobbyTipIcon">💡</div>
+                    <div class="lobby-tip-body">
+                        <span class="lobby-tip-tag">เกร็ดความรู้มดนักสำรวจ</span>
+                        <div class="lobby-tip-text" id="lobbyTipText">รหัสผ่านที่ดีควรจำง่ายสำหรับเรา
+                            แต่คาดเดายากสำหรับคนอื่น และห้ามบอกใครเด็ดขาด!</div>
+                    </div>
+                </div>
+
+                <!-- 2. สรุปกติกาและสัญลักษณ์แบบฉบับย่อ (Quick Guide) -->
+                <div class="lobby-quick-guide-grid">
+                    <div class="quick-guide-item">
+                        <span class="quick-guide-icon">🟩</span>
+                        <div>
+                            <div class="quick-guide-title">กล่องเขียว</div>
+                            <div class="quick-guide-desc">ถูก +10 (ผิดไม่หัก)</div>
+                        </div>
+                    </div>
+                    <div class="quick-guide-item">
+                        <span class="quick-guide-icon">🟨</span>
+                        <div>
+                            <div class="quick-guide-title">กล่องเหลือง</div>
+                            <div class="quick-guide-desc">ถูก +20 +1🪙 (ผิด -5)</div>
+                        </div>
+                    </div>
+                    <div class="quick-guide-item">
+                        <span class="quick-guide-icon">🟧</span>
+                        <div>
+                            <div class="quick-guide-title">กล่องส้ม</div>
+                            <div class="quick-guide-desc">ถูก +30 +2🪙 (ผิด ถอย 2)</div>
+                        </div>
+                    </div>
+                    <div class="quick-guide-item">
+                        <span class="quick-guide-icon">🪜</span>
+                        <div>
+                            <div class="quick-guide-title">บันได / หลุม</div>
+                            <div class="quick-guide-desc">ไต่ขึ้นหน้า / ลื่นถอยหลัง</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. แถบวิธีเล่น 3 ขั้นตอนง่ายๆ -->
+                <div class="lobby-mini-steps-flow">
+                    <div class="mini-step-item">
+                        <div class="mini-step-num">1</div>
+                        <div>
+                            <div class="mini-step-title">ทอยเต๋า 3D</div>
+                            <div class="mini-step-desc">จำกัดเวลา 10 วินาที</div>
+                        </div>
+                    </div>
+                    <div class="mini-step-item">
+                        <div class="mini-step-num">2</div>
+                        <div>
+                            <div class="mini-step-title">เดินหมาก</div>
+                            <div class="mini-step-desc">ตามแต้มลูกเต๋า 1–6</div>
+                        </div>
+                    </div>
+                    <div class="mini-step-item">
+                        <div class="mini-step-num">3</div>
+                        <div>
+                            <div class="mini-step-title">ตอบคำถาม</div>
+                            <div class="mini-step-desc">สะสมแต้มชิงอันดับ 1</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- แผงควบคุมถ่ายทอดสด -->
+            <div class="dev-controls">
+                <div class="spectator-info-tag">
+                    🔒 เปิดเฉพาะผู้จัดกิจกรรม
+                </div>
+                <button class="btn-dev btn-spectator-link" onclick="openSpectatorWindow()">📺 เปิดจอถ่ายทอดสด
+                    (โปรเจกเตอร์)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal QR Code เต็มหน้าจอ -->
+    <div class="qr-modal-overlay" id="qrModal">
+        <div class="qr-modal-card">
+            <div class="qr-modal-title">รหัสห้องสำรวจ PIN</div>
+            <div class="qr-modal-code" id="modalRoomCode">----</div>
+            <div class="qr-modal-title">📷 สแกน QR Code เข้าสู่ห้อง</div>
+            <img id="modalQrImg" class="qr-modal-img" src="" alt="QR Code สแกนเข้าห้อง ใหญ่">
+            <button class="btn-close-qr-modal" onclick="closeQrModal()">✖ ปิดหน้าต่าง</button>
+        </div>
+    </div>
+
+    <!-- Modal เด้งผ่านหน้าจอบอกเริ่มเกมแล้ว -->
+    <div class="game-start-modal-overlay" id="gameStartModal">
+        <div class="game-start-modal-card">
+            <div class="game-start-icon">🚀</div>
+            <div class="game-start-title">เริ่มเกมแล้ว!</div>
+            <div class="game-start-subtitle">กำลังนำทางเข้าสู่สนามสำรวจ...</div>
+        </div>
+    </div>
+
+    <!-- Container ป๊อปอัปแจ้งเตือนเมื่อมีทีมเข้ามาใหม่ (กลางหน้าจอ) -->
+    <div id="joinPopupContainer"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const AVATAR_SVGS = {
+            ant: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="32" r="17" fill="#e74c3c"/><circle cx="44" cy="30" r="3.5" fill="#2c3e50"/><circle cx="56" cy="30" r="3.5" fill="#2c3e50"/><ellipse cx="50" cy="54" rx="12" ry="10" fill="#c0392b"/><ellipse cx="50" cy="76" rx="18" ry="16" fill="#e74c3c"/><path d="M39 52 Q22 48 18 60" stroke="#a93226" stroke-width="4" fill="none"/><path d="M61 52 Q78 48 82 60" stroke="#a93226" stroke-width="4" fill="none"/></svg>`,
+            bee: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="68" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="50" cy="58" rx="26" ry="28" fill="#fbc02d"/><path d="M26 50 Q50 56 74 50 L75 58 Q50 64 25 58 Z" fill="#37474f"/><circle cx="42" cy="42" r="3.5" fill="#263238"/><circle cx="58" cy="42" r="3.5" fill="#263238"/></svg>`,
+            beetle: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 35 L50 14 Q50 6 42 6 M50 14 Q50 6 58 6 M50 20 L44 17 M50 20 L56 17" stroke="#4a148c" stroke-width="4.5" fill="none"/><ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c"/><circle cx="42" cy="36" r="3" fill="#ffca28"/><circle cx="58" cy="36" r="3" fill="#ffca28"/><ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a"/><line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3"/></svg>`
+        };
+
+        function getRenderedAvatar(avatarKey) {
+            return AVATAR_SVGS[avatarKey] || AVATAR_SVGS.ant;
+        }
+
+        const currentRoomCode = sessionStorage.getItem('ant_room') || '8492';
+        const hostGroupName = sessionStorage.getItem('ant_group') || 'ทีมมดสายลุย';
+        const hostAvatar = sessionStorage.getItem('ant_avatar_id') || 'ant';
+        const myRole = sessionStorage.getItem('ant_role') || 'player';
+        const isHostClient = myRole === 'host';
+
+        let myIsReady = false;
+        let players = [];
+        const MAX_SLOTS = 10;
+        let broadcastChan = null;
+
+        /* ---------------- ระบบ Modal แสดง QR Code เต็มหน้าจอ ---------------- */
+        function openQrModal() {
+            const joinUrl = `${window.location.origin}/index.html?room=${currentRoomCode}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(joinUrl)}`;
+
+            document.getElementById('modalRoomCode').innerText = currentRoomCode;
+            document.getElementById('modalQrImg').src = qrApiUrl;
+            document.getElementById('qrModal').style.display = 'flex';
+        }
+
+        function closeQrModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        /* ---------------- คลังเกร็ดความรู้สลับเปลี่ยนอัตโนมัติ ---------------- */
+        const LOBBY_TIPS = [
+            {icon: "💡", text: "รู้หรือไม่? รหัสผ่านที่ดีไม่ควรใช้วันเกิดหรือเบอร์โทรศัพท์นะ!"},
+            {icon: "🛡️", text: "เมื่อถูกแกล้งในแชต ให้แคปหน้าจอแล้วบอกคุณครูทันที ห้ามพิมพ์ด่าตอบโต้นะจ๊ะ"},
+            {icon: "🔍", text: "เจอข้อความแจกเงินหรือของฟรีในเกม อย่ากดลิงก์เด็ดขาด!"},
+            {icon: "🚪", text: "เลิกใช้งานคอมพิวเตอร์โรงเรียนทุกครั้ง อย่าลืมกดออกจากระบบ (Log out) เพื่อความปลอดภัย"},
+            {icon: "🧐", text: "ก่อนกดแชร์ข่าวสาร ยึดหลัก 'คิด เช็ก ชัวร์' ตรวจสอบความจริงจากแหล่งข่าวที่เชื่อถือได้เสมอ"}
+        ];
+
+        let tipIndex = 0;
+        function initLobbyTips() {
+            setInterval(() => {
+                tipIndex = (tipIndex + 1) % LOBBY_TIPS.length;
+                const currentTip = LOBBY_TIPS[tipIndex];
+                const textEl = document.getElementById('lobbyTipText');
+                const iconEl = document.getElementById('lobbyTipIcon');
+                if (textEl && iconEl) {
+                    textEl.style.opacity = 0;
+                    setTimeout(() => {
+                        iconEl.innerText = currentTip.icon;
+                        textEl.innerText = currentTip.text;
+                        textEl.style.opacity = 1;
+                    }, 250);
+                }
+            }, 6000);
+        }
+
+        /* ---------------- ระบบเวลา ---------------- */
+        let roomCreatedAt = sessionStorage.getItem('ant_created_at');
+        if (!roomCreatedAt) {
+            roomCreatedAt = new Date().toISOString();
+            sessionStorage.setItem('ant_created_at', roomCreatedAt);
+        }
+
+        function initRoomDateTime() {
+            const dateObj = new Date(roomCreatedAt);
+            const dateStr = dateObj.toLocaleDateString('th-TH', {
+                day: 'numeric',
+                month: 'short',
+                year: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('createdTimeLabel').innerText = dateStr + ' น.';
+        }
+
+        let secondsElapsed = 0;
+        function startTimer() {
+            const timerLabel = document.getElementById('timerCountLabel');
+            setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                timerLabel.innerText = `${mins} : ${secs} น.`;
+            }, 1000);
+        }
+
+        /* ---------------- BroadcastChannel ---------------- */
+        function initBroadcastChannel() {
+            if ('BroadcastChannel' in window) {
+                broadcastChan = new BroadcastChannel('ant_explorer_game_sync');
+                broadcastChan.onmessage = (event) => {
+                    const data = event.data;
+                    if (!data) return;
+                    if (data.type === 'GLOBAL_GO_HOME') {
+                        window.location.href = 'index.html';
+                    } else if (data.type === 'GLOBAL_RESTART') {
+                        location.reload();
+                    } else if (data.type === 'START_GAME_DIRECT') {
+                        triggerGameStartSequence();
+                    }
+                };
+            }
+        }
+
+        /* ---------------- การเชื่อมต่อห้อง Socket.io ---------------- */
+        let socket = null;
+        if (typeof io === 'function') {
+            socket = io();
+
+            socket.emit('join-room', {
+                roomCode: currentRoomCode,
+                isHost: isHostClient,
+                player: {
+                    name: hostGroupName,
+                    avatar: hostAvatar,
+                    isHost: isHostClient,
+                    isReady: isHostClient ? true : false
+                }
+            });
+
+            socket.on('lobby-update', (data) => {
+                const newPlayers = data.players || [];
+                if (newPlayers.length > players.length && players.length > 0) {
+                    const addedPlayer = newPlayers[newPlayers.length - 1];
+                    showJoinCenterPopup(addedPlayer);
+                }
+
+                newPlayers.forEach(np => {
+                    const existing = players.find(p => p.name === np.name);
+                    if (existing) {
+                        if (np.isReady === undefined) {
+                            np.isReady = existing.isReady;
+                        }
+                    }
+                });
+
+                players = newPlayers;
+                renderLobby();
+            });
+
+            socket.on('trigger-start-game', () => {
+                triggerGameStartSequence();
+            });
+
+            socket.on('game-start', (data) => {
+                const activePlayers = (data && data.players) ? data.players : players;
+                sessionStorage.setItem('ant_all_players', JSON.stringify(activePlayers));
+                triggerGameStartSequence();
+            });
+
+            socket.on('game-sync', (data) => {
+                if (!data) return;
+                if (data.type === 'TOGGLE_READY') {
+                    const p = players.find(player => player.name === data.playerName);
+                    if (p) {
+                        p.isReady = data.isReady;
+                        renderLobby();
+                    }
+                } else if (data.type === 'START_GAME_DIRECT') {
+                    triggerGameStartSequence();
+                } else if (data.type === 'GLOBAL_GO_HOME') {
+                    window.location.href = 'index.html';
+                } else if (data.type === 'GLOBAL_RESTART') {
+                    location.reload();
+                }
+            });
+        }
+
+        /* ป๊อปอัปกลางหน้าจอเมื่อมีสมาชิกใหม่เข้าร่วม */
+        function showJoinCenterPopup(player) {
+            const container = document.getElementById('joinPopupContainer');
+            const popup = document.createElement('div');
+            popup.className = 'join-popup-overlay';
+            popup.innerHTML = `
+                <div class="join-popup-card">
+                    <div class="join-popup-title">🎉 ยินดีต้อนรับทีมใหม่!</div>
+                    <div class="join-popup-avatar">${getRenderedAvatar(player.avatar)}</div>
+                    <div class="join-popup-name">${player.name}</div>
+                    <div style="font-size: 0.85rem; color: #7f8c8d; font-weight: 700;">เข้าร่วมการสำรวจแล้ว ✨</div>
+                </div>
+            `;
+            container.appendChild(popup);
+
+            setTimeout(() => {
+                popup.style.animation = 'fadeIn 0.25s reverse ease forwards';
+                setTimeout(() => popup.remove(), 250);
+            }, 2600);
+        }
+
+        /* ---------------- BGM Sound ---------------- */
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let bgmInterval = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBGMNote(freq, startTime, duration) {
+            if (!isMusicPlaying || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0.04, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + duration);
+            } catch (e) { }
+        }
+
+        function playMusicLoop() {
+            if (!isMusicPlaying) return;
+            initAudio();
+            const melody = [
+                {f: 523.25, d: 0.3}, {f: 659.25, d: 0.3}, {f: 783.99, d: 0.3}, {f: 1046.50, d: 0.5},
+                {f: 880.00, d: 0.3}, {f: 783.99, d: 0.3}, {f: 659.25, d: 0.5},
+                {f: 587.33, d: 0.3}, {f: 659.25, d: 0.3}, {f: 698.46, d: 0.3}, {f: 783.99, d: 0.5},
+                {f: 659.25, d: 0.3}, {f: 587.33, d: 0.3}, {f: 523.25, d: 0.6}
+            ];
+
+            let now = audioCtx.currentTime;
+            melody.forEach(note => {
+                playBGMNote(note.f, now, note.d);
+                now += note.d * 0.95;
+            });
+        }
+
+        function startBGM() {
+            if (isMusicPlaying) return;
+            initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isMusicPlaying = true;
+            playMusicLoop();
+            if (!bgmInterval) {
+                bgmInterval = setInterval(playMusicLoop, 6000);
+            }
+        }
+
+        function triggerAutoPlay() {
+            startBGM();
+            window.removeEventListener('click', triggerAutoPlay);
+            window.removeEventListener('keydown', triggerAutoPlay);
+            window.removeEventListener('touchstart', triggerAutoPlay);
+        }
+
+        window.addEventListener('click', triggerAutoPlay);
+        window.addEventListener('keydown', triggerAutoPlay);
+        window.addEventListener('touchstart', triggerAutoPlay);
+
+        /* ---------------- ฟังก์ชัน Render Lobby หลัก ---------------- */
+        function renderLobby() {
+            document.getElementById('displayRoomCode').innerText = currentRoomCode;
+
+            const joinUrl = `${window.location.origin}/index.html?room=${currentRoomCode}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(joinUrl)}`;
+            const qrImg = document.getElementById('roomQrCodeImg');
+            if (qrImg) qrImg.src = qrApiUrl;
+
+            const grid = document.getElementById('playersGrid');
+            grid.innerHTML = '';
+
+            players.forEach(p => {
+                const card = document.createElement('div');
+                card.className = `player-card ${p.isHost ? 'is-host' : ''}`;
+
+                const showReadyCheck = !p.isHost && p.isReady;
+
+                card.innerHTML = `
+                    ${p.isHost ? '<span class="host-tag">หัวหน้าห้อง</span>' : ''}
+                    ${showReadyCheck ? '<div class="ready-check-badge" title="เตรียมพร้อมแล้ว">✓</div>' : ''}
+                    <div class="player-avatar">
+                        ${getRenderedAvatar(p.avatar)}
+                    </div>
+                    <div class="player-name" title="${p.name}">${p.name}</div>
+                    ${showReadyCheck ? `<div class="team-ready-toast">ทีม ${p.name} พร้อมแล้ว!</div>` : ''}
+                `;
+                grid.appendChild(card);
+            });
+
+            /* เพิ่มช่องว่างรอเพื่อน พร้อมเอฟเฟกต์หมุนกำลังเตรียมพร้อม */
+            for (let i = players.length; i < MAX_SLOTS; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'player-card empty-slot';
+                empty.innerHTML = `
+                    <div class="waiting-status-header">
+                        <span class="spinner-icon">🔄</span>
+                        <span>กำลังรอ...</span>
+                    </div>
+                    <span style="font-weight: 800; color:#95a5a6;">+ กลุ่มที่ #${i + 1}</span>
+                `;
+                grid.appendChild(empty);
+            }
+
+            document.getElementById('playerCountLabel').innerText = `${players.length} / ${MAX_SLOTS} กลุ่ม`;
+
+            const btnMain = document.getElementById('btnStartGame');
+            const statusMsg = document.getElementById('statusMessage');
+
+            const nonHostPlayers = players.filter(p => !p.isHost);
+            const readyNonHosts = nonHostPlayers.filter(p => p.isReady);
+            const allNonHostsReady = nonHostPlayers.length > 0 && readyNonHosts.length === nonHostPlayers.length;
+
+            /* ===== ฝั่งผู้เล่นทั่วไป (ไม่ใช่หัวหน้าห้อง) ===== */
+            if (!isHostClient) {
+                const me = players.find(p => p.name === hostGroupName);
+                const isMeReady = me ? !!me.isReady : myIsReady;
+
+                btnMain.disabled = false;
+
+                if (isMeReady) {
+                    btnMain.className = 'btn-start-game ready-btn-active';
+                    btnMain.innerHTML = '<span>✅ พร้อมแล้ว (กดเพื่อยกเลิก)</span>';
+                } else {
+                    btnMain.className = 'btn-start-game ready-btn-normal';
+                    btnMain.innerHTML = '<span>✋ กดเตรียมพร้อม</span>';
+                }
+
+                if (players.length < 2) {
+                    statusMsg.className = 'status-msg';
+                    statusMsg.innerHTML = '⚠️ รอสมาชิกเข้าร่วมอย่างน้อย 2 กลุ่มขึ้นไป...';
+                } else if (allNonHostsReady) {
+                    statusMsg.className = 'status-msg ready';
+                    statusMsg.innerHTML = `✅ ทุกทีมพร้อมแล้ว (${readyNonHosts.length}/${nonHostPlayers.length})! รอหัวหน้าห้องกดเริ่มเกม...`;
+                } else {
+                    statusMsg.className = 'status-msg';
+                    statusMsg.innerHTML = `⏳ รอสมาชิกกดเตรียมพร้อม (พร้อมแล้ว ${readyNonHosts.length}/${nonHostPlayers.length} กลุ่ม)...`;
+                }
+                return;
+            }
+
+            /* ===== ฝั่งหัวหน้าห้อง (Host) ===== */
+            const canHostStart = players.length >= 2 && allNonHostsReady;
+
+            if (canHostStart) {
+                btnMain.className = 'btn-start-game active';
+                btnMain.disabled = false;
+                btnMain.innerHTML = '<span>เริ่มออกสำรวจเลย! 🚀</span>';
+                statusMsg.className = 'status-msg ready';
+                statusMsg.innerHTML = `✅ สมาชิกพร้อมแล้ว (${players.length} กลุ่ม)! กดเริ่มเกมได้เลย`;
+            } else {
+                btnMain.className = 'btn-start-game';
+                btnMain.disabled = true;
+                btnMain.innerHTML = '<span>รอสมาชิกพร้อมเพื่อเริ่มเกม</span>';
+
+                if (players.length < 2) {
+                    statusMsg.className = 'status-msg';
+                    statusMsg.innerHTML = `⚠️ รอสมาชิกเข้าร่วมอย่างน้อย 2 กลุ่มขึ้นไป (ปัจจุบัน ${players.length} กลุ่ม)`;
+                } else {
+                    statusMsg.className = 'status-msg';
+                    statusMsg.innerHTML = `⏳ รอสมาชิกทุกกลุ่มกดเตรียมพร้อม (พร้อมแล้ว ${readyNonHosts.length}/${nonHostPlayers.length} กลุ่ม)...`;
+                }
+            }
+        }
+
+        function handleMainButtonClick() {
+            if (isHostClient) {
+                handleStartAdventure();
+            } else {
+                togglePlayerReady();
+            }
+        }
+
+        function togglePlayerReady() {
+            myIsReady = !myIsReady;
+            const me = players.find(p => p.name === hostGroupName);
+            if (me) me.isReady = myIsReady;
+
+            if (socket) {
+                socket.emit('game-sync', {
+                    roomCode: currentRoomCode,
+                    type: 'TOGGLE_READY',
+                    playerName: hostGroupName,
+                    isReady: myIsReady
+                });
+            }
+            renderLobby();
+        }
+
+        function copyRoomCode() {
+            navigator.clipboard.writeText(currentRoomCode);
+            const btn = document.getElementById('btnCopyCode');
+            btn.innerText = 'คัดลอกแล้ว! ✨';
+            setTimeout(() => btn.innerText = '📋 คัดลอกรหัสห้อง', 1500);
+        }
+
+        function openSpectatorWindow() {
+            window.open('spectator.html', '_blank');
+        }
+
+        /* ฟังก์ชันเริ่มเกม โดยส่งสัญญาณให้ทุกคนย้ายหน้าทันที */
+        function handleStartAdventure() {
+            const nonHostPlayers = players.filter(p => !p.isHost);
+            const readyNonHosts = nonHostPlayers.filter(p => p.isReady);
+
+            if (!isHostClient || players.length < 2 || readyNonHosts.length < nonHostPlayers.length) return;
+
+            if (socket) {
+                socket.emit('game-sync', {
+                    roomCode: currentRoomCode,
+                    type: 'START_GAME_DIRECT'
+                });
+            }
+
+            triggerGameStartSequence();
+        }
+
+        /* ฟังก์ชันแสดงป๊อปอัปเด้งผ่านหน้าก่อนย้ายไปยังหน้าเล่นเกม board.html */
+        function triggerGameStartSequence() {
+            const startModal = document.getElementById('gameStartModal');
+            if (startModal) {
+                startModal.style.display = 'flex';
+            }
+            setTimeout(() => {
+                goToBoardPage();
+            }, 1400);
+        }
+
+        /* ฟังก์ชันย้ายไปยังหน้าเล่นเกม board.html */
+        function goToBoardPage() {
+            sessionStorage.setItem('ant_all_players', JSON.stringify(players));
+            window.location.href = 'board.html';
+        }
+
+        function leaveRoom() {
+            if (confirm('คุณต้องการออกจากห้องและย้อนกลับไปยังหน้าแรกใช่หรือไม่?')) {
+                clearInterval(bgmInterval);
+
+                if (socket) {
+                    socket.emit('leave-room', {roomCode: currentRoomCode});
+                }
+                window.location.href = 'index.html';
+            }
+        }
+
+        initRoomDateTime();
+        startTimer();
+        initBroadcastChannel();
+        initLobbyTips();
+        renderLobby();
+        startBGM();
+    </script>
+</body>
+
+</html>
