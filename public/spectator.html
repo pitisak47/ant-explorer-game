@@ -666,6 +666,10 @@
             background: #e67e22;
         }
 
+        .box-boss {
+            background: #d63031;
+        }
+
         .spec-team-badge {
             background: #fff8e1;
             color: #d84315;
@@ -1131,7 +1135,7 @@
 
     <!-- ป้ายสถาบันมุมซ้ายบนนอกกรอบเกม -->
     <div class="edu-global-badge">
-        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo">
+        <img src="comedu.png" alt="โลโก้สาขาวิชาคอมพิวเตอร์ศึกษา" class="edu-badge-logo" onerror="this.style.display='none'">
         <span>สาขาวิชาคอมพิวเตอร์ศึกษา RERU</span>
     </div>
 
@@ -1175,7 +1179,7 @@
             <div class="leaderboard-box">
                 <div class="lb-header">
                     <span>🏆 ตารางอันดับสด</span>
-                    <span style="font-size: 0.95rem; color: #b2bec3;">แต้ม / เหรียญ</span>
+                    <span style="font-size: 0.95rem; color: #b2bec3;">เหรียญ / แต้ม</span>
                 </div>
                 <div id="leaderboardList"></div>
             </div>
@@ -1293,21 +1297,35 @@
             {x: 89, y: 42}, {x: 85, y: 54}, {x: 86, y: 72}
         ];
 
+        const BOX_TILES = {
+            2: 'green', 3: 'green', 18: 'green', 21: 'green', 26: 'green', 34: 'green', 40: 'green', 44: 'green', 47: 'green',
+            8: 'yellow', 14: 'yellow', 20: 'yellow', 28: 'yellow', 36: 'yellow', 39: 'yellow', 49: 'yellow',
+            5: 'orange', 10: 'orange', 15: 'orange', 24: 'orange', 31: 'orange', 37: 'orange', 42: 'orange', 46: 'orange'
+        };
+
         const AVATAR_SVGS = {
             ant: `<svg viewBox="0 0 100 100"><circle cx="50" cy="32" r="17" fill="#e74c3c"/><circle cx="44" cy="30" r="3.5" fill="#2c3e50"/><circle cx="56" cy="30" r="3.5" fill="#2c3e50"/><ellipse cx="50" cy="54" rx="12" ry="10" fill="#c0392b"/><ellipse cx="50" cy="76" rx="18" ry="16" fill="#e74c3c"/><path d="M39 52 Q22 48 18 60" stroke="#a93226" stroke-width="4" fill="none"/><path d="M61 52 Q78 48 82 60" stroke="#a93226" stroke-width="4" fill="none"/></svg>`,
             bee: `<svg viewBox="0 0 100 100"><ellipse cx="32" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="68" cy="30" rx="14" ry="20" fill="#b3e5fc" opacity="0.8"/><ellipse cx="50" cy="58" rx="26" ry="28" fill="#fbc02d"/><path d="M26 50 Q50 56 74 50 L75 58 Q50 64 25 58 Z" fill="#37474f"/><circle cx="42" cy="42" r="3.5" fill="#263238"/><circle cx="58" cy="42" r="3.5" fill="#263238"/></svg>`,
             beetle: `<svg viewBox="0 0 100 100"><path d="M50 35 L50 14 Q50 6 42 6 M50 14 Q50 6 58 6 M50 20 L44 17 M50 20 L56 17" stroke="#4a148c" stroke-width="4.5" fill="none"/><ellipse cx="50" cy="38" rx="14" ry="10" fill="#4a148c"/><circle cx="42" cy="36" r="3" fill="#ffca28"/><circle cx="58" cy="36" r="3" fill="#ffca28"/><ellipse cx="50" cy="66" rx="25" ry="24" fill="#6a1b9a"/><line x1="50" y1="44" x2="50" y2="89" stroke="#311b92" stroke-width="3"/></svg>`
         };
 
-        const specRoomCode = sessionStorage.getItem('ant_room') || '8492';
+        const urlParams = new URLSearchParams(window.location.search);
+        const specRoomCode = urlParams.get('room') || sessionStorage.getItem('ant_room') || '8492';
         document.getElementById('lblRoomCode').innerText = specRoomCode;
 
         let players = [];
         const savedAllPlayers = sessionStorage.getItem('ant_all_players');
         if (savedAllPlayers) {
-            players = JSON.parse(savedAllPlayers).map((p, idx) => ({
-                id: p.id || idx + 1, name: p.name, avatar: p.avatar, pos: p.pos || 0, score: p.score || 0, coins: p.coins || 0
-            }));
+            try {
+                players = JSON.parse(savedAllPlayers).map((p, idx) => ({
+                    id: p.id || idx + 1, name: p.name, avatar: p.avatar, pos: p.pos || 0, score: p.score || 0, coins: p.coins || 0
+                }));
+            } catch (e) {
+                players = [
+                    {id: 1, name: 'ทีมมดสายลุย', avatar: 'ant', pos: 0, score: 0, coins: 0},
+                    {id: 2, name: 'ผึ้งน้อยไอที', avatar: 'bee', pos: 0, score: 0, coins: 0}
+                ];
+            }
         } else {
             players = [
                 {id: 1, name: 'ทีมมดสายลุย', avatar: 'ant', pos: 0, score: 0, coins: 0},
@@ -1408,7 +1426,7 @@
             }
         }
 
-        /* ---------------- ฟังก์ชันส่งคำสั่ง Broadcast & Socket แบบกระจายทุกเครื่อง ---------------- */
+        /* ---------------- ฟังก์ชันส่งคำสั่ง Broadcast & Socket ---------------- */
         function emitGlobalSync(payload) {
             payload.roomCode = specRoomCode;
             if (broadcastChan) {
@@ -1446,6 +1464,7 @@
         function sendGlobalGoHome() {
             if (!confirm('คุณต้องการนำทุกทีมออกจากเกมและกลับไปยังหน้าแรกพร้อมกันใช่หรือไม่?')) return;
             emitGlobalSync({ type: 'GLOBAL_GO_HOME' });
+            sessionStorage.removeItem('ant_all_players');
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 300);
@@ -1507,7 +1526,11 @@
         function updateLeaderboard() {
             const list = document.getElementById('leaderboardList');
             list.innerHTML = '';
-            const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
+            const sorted = [...players].sort((a, b) => {
+                if ((b.coins || 0) !== (a.coins || 0)) return (b.coins || 0) - (a.coins || 0);
+                if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+                return (b.pos || 0) - (a.pos || 0);
+            });
 
             sorted.forEach((p, idx) => {
                 const row = document.createElement('div');
@@ -1528,8 +1551,8 @@
                     </div>
                   </div>
                   <div class="spec-score-tag">
-                    <div class="spec-points">⭐ ${p.score}</div>
-                    <div class="spec-coins">🪙 ${p.coins}</div>
+                    <div class="spec-coins">🪙 ${p.coins || 0}</div>
+                    <div class="spec-points">⭐ ${p.score || 0}</div>
                   </div>
                 `;
                 list.appendChild(row);
@@ -1576,7 +1599,12 @@
         function handleSyncEvent(data) {
             if (!data) return;
 
-            if (data.playersState) players = data.playersState;
+            if (data.playersState) {
+                players = data.playersState;
+            }
+            if (data.currentTurnIndex !== undefined) {
+                currentTurnIndex = data.currentTurnIndex;
+            }
 
             if (data.type === 'SYNC_LOG') {
                 addFeed(`📝 ${data.msg}`);
@@ -1606,27 +1634,52 @@
                     addFeed(`🎲 <strong>${data.teamName || (players[currentTurnIndex] ? players[currentTurnIndex].name : 'ผู้เล่น')}</strong> ทอยได้ <strong>${data.steps}</strong> แต้ม`);
                     setTimeout(() => diceModal.style.display = 'none', 1400);
                 }, 1200);
-            } else if (data.type === 'ROLL_TIMEOUT' || data.type === 'UPDATE_POS') {
-                renderPawns(); updateLeaderboard();
-            } else if (data.type === 'SHOW_QUIZ') {
-                showQuizOnScreen(data.quiz, data.boxType, data.options);
-            } else if (data.type === 'QUIZ_RESULT') {
-                const userSelectedText = data.selectedOption || (data.choice !== undefined && currentQuizData && currentQuizData.options ? currentQuizData.options[data.choice] : null);
-                showResultOnScreen(data.isCorrect, data.rewardScore, userSelectedText, data.quiz, data.options);
-            } else if (data.type === 'NEXT_TURN') {
+            }
+            else if (data.type === 'ROLL_TIMEOUT' || data.type === 'UPDATE_POS') {
+                if (data.pos !== undefined && players[currentTurnIndex]) {
+                    players[currentTurnIndex].pos = data.pos;
+                }
+                renderPawns();
+                updateLeaderboard();
+            }
+            else if (data.type === 'UPDATE_SCORE') {
+                if (players[currentTurnIndex]) {
+                    if (data.score !== undefined) players[currentTurnIndex].score = data.score;
+                    if (data.coins !== undefined) players[currentTurnIndex].coins = data.coins;
+                }
+                updateLeaderboard();
+            }
+            else if (data.type === 'SHOW_QUIZ') {
+                showQuizOnScreen(data.quiz, data.boxType, data.options, data.teamName);
+            }
+            else if (data.type === 'SHOW_BOSS_QUIZ') {
+                showQuizOnScreen(data.quiz, 'boss', data.options, data.teamName || 'ทุกทีม');
+            }
+            else if (data.type === 'QUIZ_RESULT') {
+                showResultOnScreen(data.isCorrect, data.rewardScore, data.selectedOption, data.quiz, data.options, data.coinsGain);
+            }
+            else if (data.type === 'NEXT_TURN') {
                 if (data.nextTurn !== undefined) currentTurnIndex = data.nextTurn;
+                if (data.currentTurnIndex !== undefined) currentTurnIndex = data.currentTurnIndex;
+                closeSpecModal();
                 updateTurnStatus();
                 updateLeaderboard();
-            } else if (data.type === 'TAKEOVER') {
+            }
+            else if (data.type === 'TAKEOVER') {
                 const leader = players.find(p => p.id === data.leaderId) || players[0];
                 if (leader) triggerTakeoverPopup(leader);
-            } else if (data.type === 'WINNER') {
-                triggerPodiumScene();
-            } else if (data.type === 'GLOBAL_GO_HOME') {
+            }
+            else if (data.type === 'WINNER' || data.type === 'GAME_OVER') {
+                triggerPodiumScene(data.winner);
+            }
+            else if (data.type === 'GLOBAL_GO_HOME') {
+                sessionStorage.removeItem('ant_all_players');
                 window.location.href = 'index.html';
-            } else if (data.type === 'GLOBAL_RESTART') {
+            }
+            else if (data.type === 'GLOBAL_RESTART') {
                 location.reload();
-            } else if (data.type === 'PAUSE_GAME') {
+            }
+            else if (data.type === 'PAUSE_GAME') {
                 isGamePaused = data.isPaused;
                 const btn = document.getElementById('btnPauseGame');
                 const icon = document.getElementById('pauseIcon');
@@ -1644,39 +1697,42 @@
             }
         }
 
-        function showQuizOnScreen(quiz, boxType, options) {
+        function showQuizOnScreen(quiz, boxType, options, teamNameOverride = null) {
             currentQuizData = { quiz, boxType, options };
             const modal = document.getElementById('specQuizModal');
             const team = players[currentTurnIndex];
+            const displayTeamName = teamNameOverride || (team ? team.name : '-');
             const cardContent = document.getElementById('specModalCardContent');
 
             let badgeClass = 'box-green';
-            let badgeText = '🟩 กล่องเขียว';
-            if (boxType === 'yellow') { badgeClass = 'box-yellow'; badgeText = '🟨 กล่องเหลือง'; }
-            if (boxType === 'orange') { badgeClass = 'box-orange'; badgeText = '🟧 กล่องส้ม'; }
+            let badgeText = '🟩 กล่องเขียว (ง่าย)';
+            if (boxType === 'yellow') { badgeClass = 'box-yellow'; badgeText = '🟨 กล่องเหลือง (ปานกลาง)'; }
+            if (boxType === 'orange') { badgeClass = 'box-orange'; badgeText = '🟧 กล่องส้ม (ท้าทาย)'; }
+            if (boxType === 'boss') { badgeClass = 'box-boss'; badgeText = '👾 ภารกิจบอสไวรัส'; }
 
             const optList = options || (quiz ? quiz.options : []);
+            const questionText = quiz ? (quiz.q || quiz.question || 'คำถามเรื่องเทคโนโลยีสารสนเทศ') : 'คำถามพิเศษ';
 
             cardContent.innerHTML = `
                 <div class="spec-modal-header">
                     <span class="box-theme-badge ${badgeClass}">${badgeText}</span>
-                    <span class="spec-team-badge">ทีมผู้ตอบ: ${team ? team.name : '-'}</span>
+                    <span class="spec-team-badge">ทีมผู้ตอบ: ${displayTeamName}</span>
                 </div>
-                <div class="spec-question-box">${quiz ? (quiz.q || quiz.question || 'คำถามเรื่องเทคโนโลยีสารสนเทศ') : 'คำถามพิเศษ'}</div>
+                <div class="spec-question-box">${questionText}</div>
                 <div class="spec-options-grid">
                     ${optList && optList.length > 0 ? optList.map((opt, idx) => `
                         <div class="spec-opt-item">
                             <span style="background: rgba(0,0,0,0.08); width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight:800;">${String.fromCharCode(65 + idx)}</span>
                             <span>${opt}</span>
                         </div>
-                    `).join('') : '<div style="color:#666;">กำลังดึงรายการตัวเลือก...</div>'}
+                    `).join('') : '<div style="color:#666; padding: 20px 0;">กำลังแสดงตัวเลือก...</div>'}
                 </div>
             `;
             modal.style.display = 'flex';
-            addFeed(`❓ <strong>${team ? team.name : 'ผู้เล่น'}</strong> เปิดกล่องคำถาม`);
+            addFeed(`❓ <strong>${displayTeamName}</strong> เปิดกล่องคำถาม (${badgeText})`);
         }
 
-        function showResultOnScreen(isCorrect, rewardScore, selectedOption = null, syncQuiz = null, syncOptions = null) {
+        function showResultOnScreen(isCorrect, rewardScore, selectedOption = null, syncQuiz = null, syncOptions = null, coinsGain = 0) {
             const modal = document.getElementById('specQuizModal');
             const cardContent = document.getElementById('specModalCardContent');
             const team = players[currentTurnIndex];
@@ -1684,7 +1740,7 @@
 
             if (isCorrect) {
                 playCorrectSound();
-                addFeed(`✅ <strong>${teamNameStr}</strong> ตอบถูกต้อง (+${rewardScore || 0} แต้ม)`);
+                addFeed(`✅ <strong>${teamNameStr}</strong> ตอบถูกต้อง (+${rewardScore || 0} แต้ม${coinsGain ? `, +${coinsGain} เหรียญ` : ''})`);
             } else {
                 playWrongSound();
                 addFeed(`❌ <strong>${teamNameStr}</strong> ตอบไม่ถูกต้อง`);
@@ -1695,7 +1751,8 @@
 
             let correctAnswerText = '-';
             if (quizInfo) {
-                if (quizInfo.a) correctAnswerText = quizInfo.a;
+                if (quizInfo.correctText) correctAnswerText = quizInfo.correctText;
+                else if (quizInfo.a) correctAnswerText = quizInfo.a;
                 else if (quizInfo.ans !== undefined && optsInfo && optsInfo[quizInfo.ans]) correctAnswerText = optsInfo[quizInfo.ans];
                 else if (quizInfo.answer !== undefined && optsInfo && optsInfo[quizInfo.answer]) correctAnswerText = optsInfo[quizInfo.answer];
             }
@@ -1754,23 +1811,39 @@
             setTimeout(() => popup.style.display = 'none', 2800);
         }
 
-        function triggerPodiumScene() {
-            const sorted = [...players].sort((a, b) => (b.score + b.coins * 10) - (a.score + a.coins * 10));
-            const p1 = sorted[0] || { name: '-', avatar: 'ant', score: 0, coins: 0 };
-            const p2 = sorted[1] || { name: '-', avatar: 'bee', score: 0, coins: 0 };
-            const p3 = sorted[2] || { name: '-', avatar: 'beetle', score: 0, coins: 0 };
+        function triggerPodiumScene(winnerOverride = null) {
+            closeSpecModal();
+            const sorted = [...players].sort((a, b) => {
+                if ((b.coins || 0) !== (a.coins || 0)) return (b.coins || 0) - (a.coins || 0);
+                if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+                return (b.pos || 0) - (a.pos || 0);
+            });
+
+            const p1 = sorted[0] || winnerOverride || { name: '-', avatar: 'ant', score: 0, coins: 0 };
+            const p2 = sorted[1] || null;
+            const p3 = sorted[2] || null;
 
             document.getElementById('avatarRank1').innerHTML = AVATAR_SVGS[p1.avatar] || AVATAR_SVGS.ant;
             document.getElementById('nameRank1').innerText = p1.name;
-            document.getElementById('scoreRank1').innerText = `⭐ ${p1.score} | 🪙 ${p1.coins}`;
+            document.getElementById('scoreRank1').innerText = `🪙 ${p1.coins || 0} เหรียญ | ⭐ ${p1.score || 0} แต้ม`;
 
-            document.getElementById('avatarRank2').innerHTML = AVATAR_SVGS[p2.avatar] || AVATAR_SVGS.bee;
-            document.getElementById('nameRank2').innerText = p2.name;
-            document.getElementById('scoreRank2').innerText = `⭐ ${p2.score} | 🪙 ${p2.coins}`;
+            if (p2) {
+                document.getElementById('avatarRank2').innerHTML = AVATAR_SVGS[p2.avatar] || AVATAR_SVGS.bee;
+                document.getElementById('nameRank2').innerText = p2.name;
+                document.getElementById('scoreRank2').innerText = `🪙 ${p2.coins || 0} เหรียญ | ⭐ ${p2.score || 0} แต้ม`;
+                document.getElementById('podiumRank2').style.display = 'flex';
+            } else {
+                document.getElementById('podiumRank2').style.display = 'none';
+            }
 
-            document.getElementById('avatarRank3').innerHTML = AVATAR_SVGS[p3.avatar] || AVATAR_SVGS.beetle;
-            document.getElementById('nameRank3').innerText = p3.name;
-            document.getElementById('scoreRank3').innerText = `⭐ ${p3.score} | 🪙 ${p3.coins}`;
+            if (p3) {
+                document.getElementById('avatarRank3').innerHTML = AVATAR_SVGS[p3.avatar] || AVATAR_SVGS.beetle;
+                document.getElementById('nameRank3').innerText = p3.name;
+                document.getElementById('scoreRank3').innerText = `🪙 ${p3.coins || 0} เหรียญ | ⭐ ${p3.score || 0} แต้ม`;
+                document.getElementById('podiumRank3').style.display = 'flex';
+            } else {
+                document.getElementById('podiumRank3').style.display = 'none';
+            }
 
             const runnerUpBoard = document.getElementById('runnerUpBoard');
             const runnerUpGrid = document.getElementById('runnerUpGrid');
@@ -1782,7 +1855,7 @@
                     const rp = sorted[i];
                     const div = document.createElement('div');
                     div.className = 'runner-up-row';
-                    div.innerHTML = `<span>#${i + 1} ${rp.name}</span><span style="color: #ffeaa7;">⭐ ${rp.score} | 🪙 ${rp.coins}</span>`;
+                    div.innerHTML = `<span>#${i + 1} ${rp.name}</span><span style="color: #ffeaa7;">🪙 ${rp.coins || 0} | ⭐ ${rp.score || 0}</span>`;
                     runnerUpGrid.appendChild(div);
                 }
             } else {
